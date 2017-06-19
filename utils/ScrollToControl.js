@@ -1,6 +1,3 @@
-import * as types from './../constants';
-
-
 export default function(elem, topTarget, callback) {
     if (!elem)
         return;

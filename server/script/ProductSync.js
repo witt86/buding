@@ -17,7 +17,6 @@ async function System_synSuppliers({pos=0}={pos:0}) {
         return suppliers;
     }
     for (let supplier of suppliers) {
-        console.dir(supplier.primary_contact);
         const {name,mobile,email,phone} = supplier.primary_contact||{};
         let primary_contact2 = {name,mobile,email,phone}
         var Obj = {
@@ -179,19 +178,11 @@ export const ProductSync = async ()=> {
         }
         const result_Products = await System_synProducts(query);
         console.dir(`商品同步完成: ${JSON.stringify(result_Products)}`);
-
-        try {
-            //同步所有表数据后,更新商品表中的类别排序
-            await DataModel.Functions.updateProvincesProductcount();
-            console.dir(`更新各省市的商品数量,done`);
-        } catch (err) {
-            console.dir(`更新各省市的商品数量,遇到错误${err}`);
-        }
     } catch (err) {
         console.log("同步商品库,发生错误:");
         console.log(err);
     }
-}
+};
 
 
 // (async ()=>{
