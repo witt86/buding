@@ -1,30 +1,26 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var session = require("express-session");
+import express from "express";
+import path from "path";
+import logger from "morgan";
+import cookieParser from "cookie-parser";
+import bodyParser from "body-parser";
+import session from "express-session";
 import connectRedis from "connect-redis";
 import {merge} from 'lodash';
-
 import {delayRun} from "./server/util/util";
 import * as globals from "./server/global";
 import main from './routes/main';
 import wechat_auth from "./server/wechat/wechat_auth.js";
 import _businessTool from './server/util/BusinessTool';
-var routes = require('./routes/index');
-import {OnWebSiteStartEvent} from './server/util/BusinessEvent';
+
 import moment from "moment";
+
 var app = express();
-var config = require('./config');
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -45,7 +41,7 @@ app.use(session({
   }),
   resave:false,
   saveUninitialized: true,
-  secret:config.cookieSecret,
+  secret:"kdjcy23Yhne24*763",
   key:sessionCookieKey,
   cookie:{
     maxAge:8000 * 1000,
@@ -96,8 +92,6 @@ app.post('/xhr_wx_js_config_js', function(req, res, next) {
     console.log(e);
   }
 });
-
-app.get('*',wechat_auth, routes);
 //api
 app.use("/api",main);
 

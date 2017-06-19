@@ -2,7 +2,7 @@ import * as DataModel from './DataModel';
 import _config from './../../config.js';
 import {delayRun} from './../util/util';
 import * as types from './../constants';
-import TMSProductAPI from './../util/TMSProductAPI';
+import TMSProductAPI from '../lib/TMSProductAPI';
 
 export const loadappStaticInfo  = async ({uid})=> {
     const user1 = await DataModel.RegUser.findOne({

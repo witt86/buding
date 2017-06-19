@@ -281,6 +281,10 @@ let ShopManagerInfo=sequelize.define('shopmanagerinfo',{  //店长、店员信�
             types.ShopStaff
         ),
         'defaultValue': types.ShopStaff
+    },
+    pid:{
+        'type': Sequelize.INTEGER,
+        'allowNull': true
     }
 });
 

@@ -1,5 +1,5 @@
 import DataModel from './DataModel';
-import TMSProductAPI from './../util/TMSProductAPI';
+import TMSProductAPI from '../lib/TMSProductAPI';
 import {keys,groupBy} from "lodash";
 import md5 from 'md5';
 
