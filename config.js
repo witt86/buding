@@ -14,6 +14,11 @@ const config = {
             charset: "utf8m64_general_ci",
             database: "buding"
         },
+        thmall: {
+            apiURL: "http://test.tmonkey.cn:8001/tms-api/",
+            secret: "......",
+            resourceRoot: "http://test.tmonkey.cn:8001"
+        },
         wxconfig: {
             appid: "wx3e37a71515f5b412",
             secret: "aa9816351b7606a584178f547a2113d5",
@@ -43,6 +48,11 @@ const config = {
             charset: "utf8m64_general_ci",
             database: "buding"
         },
+        thmall: {
+            apiURL: "http://test.tmonkey.cn:8001/tms-api/",
+            secret: "......",
+            resourceRoot: "http://test.tmonkey.cn:8001"
+        },
         wxconfig: {
             appid: "wx3e37a71515f5b412",
             secret: "aa9816351b7606a584178f547a2113d5",
@@ -71,6 +81,11 @@ const config = {
             password: "1q2w3e",
             charset: "utf8m64_general_ci",
             database: "buding"
+        },
+        thmall: {
+            apiURL: "http://tms.twohou.com:8001/tms-api/",
+            secret: "......",
+            resourceRoot: "http://static.itravelbuy.twohou.com"
         },
         wxconfig: {
             appid: "wx3e37a71515f5b412",
