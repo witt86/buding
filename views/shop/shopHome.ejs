@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<% include ./../header.ejs %>
+<link href="/stylesheets/shopHome.css" rel="stylesheet">
+
+<div id="shopHome" style="width: 100%;height: 100%;">
+    <div class="shopHomeNavbar">
+        <div class="shopHomeSearch">
+            <div class="shopHomeLocation">
+                上海
+                <i class="fa fa-sort-desc"></i>
+            </div>
+
+            <div class="weui-search-bar" id="searchBar">
+                <div class="weui-search-bar__form">
+                    <div class="weui-search-bar__box">
+                        <i class="weui-icon-search"></i>
+                        <input type="search" class="weui-search-bar__input searchInput" id="searchInput" placeholder="搜索商品" required="">
+                        <a href="javascript:" class="weui-icon-clear"></a>
+                    </div>
+                    <label class="weui-search-bar__label" id="searchText">
+                        <i class="weui-icon-search"></i>
+                        <span>搜索商品</span>
+                    </label>
+                </div>
+                <a href="javascript:" class="weui-search-bar__cancel-btn confirmSearch">搜索</a>
+            </div>
+        </div>
+        <div class="shopHomeCate">
+            <div style="width: <%= 86 * (sections.length + 1) %>px">
+                <div class="shopHomeCateItem shopHomeCateActive" id="homeNav">
+                    首页
+                    <input type="hidden" value="home">
+                </div>
+                <% sections.length > 0 && sections.map(function (item) { %>
+                <div class="shopHomeCateItem" id="<%= item.url %>Nav">
+                    <%= item.title %>
+                    <input type="hidden" value="<%= item.url %>">
+                </div>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+
+    <div class="shopHomeBody">
+        <div class="swiper-container" data-space-between='10' data-pagination='.swiper-pagination' data-autoplay="1000" id="home">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide" onclick=""><img src="http://tmpwx.yichihui.com/haoli/86241495684337259.jpg" alt=""></div>
+                <div class="swiper-slide" onclick=""><img src="http://tmpwx.yichihui.com/haoli/86241495684337259.jpg" alt=""></div>
+                <div class="swiper-slide" onclick=""><img src="http://tmpwx.yichihui.com/haoli/86241495684337259.jpg" alt=""></div>
+            </div>
+        </div>
+
+        <!--<div class="shopHomeTab">-->
+        <!--<div>-->
+        <!--<img src="/images/icon_tabbar.png" alt="">-->
+        <!--<p>签到有奖</p>-->
+        <!--</div>-->
+        <!--<div>-->
+        <!--<img src="/images/icon_tabbar.png" alt="">-->
+        <!--<p>新客礼包</p>-->
+        <!--</div>-->
+        <!--<div>-->
+        <!--<img src="/images/icon_tabbar.png" alt="">-->
+        <!--<p>会员中心</p>-->
+        <!--</div>-->
+        <!--<div>-->
+        <!--<img src="/images/icon_tabbar.png" alt="">-->
+        <!--<p>身边门店</p>-->
+        <!--</div>-->
+        <!--<div>-->
+        <!--<img src="/images/icon_tabbar.png" alt="">-->
+        <!--<p>积分商城</p>-->
+        <!--</div>-->
+        <!--</div>-->
+
+        <div class="shopHomeActivity">
+            <div class="shopHomeActivityTitle">
+                <p>
+                    每日秒杀
+                    <span>距离结束&nbsp;&nbsp;&nbsp;01:03:55</span>
+                </p>
+            </div>
+            <div class="shopHomeActivityContent">
+                <div>
+                    <img src="/images/icon_tabbar.png" alt="">
+                    <p>532</p>
+                </div>
+                <div>
+                    <img src="/images/icon_tabbar.png" alt="">
+                    <p>132</p>
+                </div>
+                <div>
+                    <img src="/images/icon_tabbar.png" alt="">
+                    <p>52</p>
+                </div>
+                <div>
+                    <img src="/images/icon_tabbar.png" alt="">
+                    <p>252</p>
+                </div>
+            </div>
+        </div>
+
+        <!--<div class="shopHomeSubActivity">-->
+        <!--<div>-->
+        <!--<div>-->
+        <!--<img src="/images/icon_tabbar.png" alt="">-->
+        <!--</div>-->
+        <!--<div>-->
+        <!--<p>拼团</p>-->
+        <!--<p>全场9.9元包邮</p>-->
+        <!--</div>-->
+        <!--</div>-->
+        <!--<div>-->
+        <!--<div>-->
+        <!--<img src="/images/icon_tabbar.png" alt="">-->
+        <!--</div>-->
+        <!--<div>-->
+        <!--<p>聚划算</p>-->
+        <!--<p>多件购买更优惠</p>-->
+        <!--</div>-->
+        <!--</div>-->
+        <!--</div>-->
+
+        <% sections.map(function (section) { %>
+        <div class="shopHomeSection" id="<%= section.url %>">
+            <div class="shopHomeSectionTitle">
+                ----<%= section.title %>----
+            </div>
+            <div class="shopHomeSectionImg" >
+                <img src="http://tmpwx.yichihui.com/haoli/86241495684337259.jpg" alt="">
+            </div>
+            <div class="shopHomeSectionProducts">
+                <div style="width: <%= 110 * section.products.length %>px">
+                    <% section.products.length > 0 && section.products.map(function (product) { %>
+                    <div>
+                        <img src="/images/icon_tabbar.png" alt="">
+                        <p><%= product.name %></p>
+                        <p><%= product.retail_price %></p>
+                    </div>
+                    <% }) %>
+                </div>
+            </div>
+        </div>
+        <% }) %>
+
+        <div style="width:100%;height: 40px;"></div>
+    </div>
+</div>
+
+<% include ../components/floatBottomBar.ejs %>
+
+<% include ./../footer.ejs %>
+
+<script type='text/javascript' src="/libs/jQuery-weui/js/swiper.min.js" charset='utf-8'></script>
+<script type='text/javascript' src="/libs/jQuery/jquery.scrollTo.min.js" charset='utf-8'></script>
+
+<script type='text/javascript' src="/javascripts/history.js" charset='utf-8'></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //搜索框
+        $('#searchText').on('click',function () {
+            $('#searchBar').addClass('weui-search-bar_focusing');
+            $('#searchInput').focus();
+        });
+        $('#searchInput').on('blur',function () {
+            $('#searchBar').removeClass('weui-search-bar_focusing');
+            $('#searchText').show();
+        }).on('keydown',function () {
+            if(event.keyCode == "13"){
+                $('.searchBar').removeClass('weui-search-bar_focusing');
+                $('.searchText').show();
+                //
+            }
+        });
+        $('.confirmSearch').on('click',function () {
+            $('.searchBar').removeClass('weui-search-bar_focusing');
+            $('.searchText').show();
+            //
+        });
+
+        //轮播
+        $(".swiper-container").swiper({
+            loop: true,
+            autoplay: 4000
+        });
+
+        //导航滚动
+        $('.shopHomeCateItem').on('click',function () {
+            var target = $(this).children('input').val().trim();
+            var scrollHeight = $('#' + target).position().top - 83 + $('.shopHomeBody').scrollTop();
+            $('.shopHomeCateItem').removeClass('shopHomeCateActive');
+            $(this).addClass('shopHomeCateActive');
+            $('.shopHomeBody').scrollTo(scrollHeight,500);
+            $('.shopHomeCate').scrollTo(this,500);
+        })
+
+        //监听滚动
+//        $('.shopHomeBody').on('scroll',function () {
+//            var scrollTop = $('.shopHomeBody').scrollTop();
+//            var sections = $('.shopHomeBody').children('.shopHomeSection');
+//            for(var i = 0;i < sections.length ;i++){
+//                console.log($('#' + sections[sections.length - 1].id).position().top + scrollTop);
+//                if(scrollTop < ($('#' + sections[0].id).position().top + 190)){
+//                    $('.shopHomeCate').removeClass('shopHomeCateActive');
+//                    $('#homeNav').addClass('shopHomeCateActive');
+//                }else if(scrollTop > ($('#' + sections[sections.length - 1].id).position().top + 190)){
+////                    console.log(sections[sections.length - 1].id);
+////                    console.log('s:' + scrollTop);
+////                    console.log($('#' + sections[sections.length - 1].id).position().top);
+//                } else{
+//                    if(scrollTop < ($('#' + sections[i].id).position().top + 190)){
+////                        console.log(i);
+//                        $('.shopHomeCateItem').removeClass('shopHomeCateActive');
+//                        $('#' + sections[i].id + 'Nav').addClass('shopHomeCateActive');
+//                        break;
+//                    }
+//                }
+//            }
+//        })
+    });
+</script>
+
+</html>

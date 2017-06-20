@@ -99,4 +99,4 @@ if(typeof global.__config_loaded == "undefined") {
     global.__config_loaded = config[env_name];
 }
 
-export default global.__config_loaded;
+module.exports =  global.__config_loaded;

@@ -8,7 +8,7 @@ export const findAndCreateUserFromWeixinAuthor=async (accessTokenInfo)=>{
         if (!accessTokenInfo)throw "微信accessTokenInfo不允许为空";
         const weixin=accessTokenInfo;
         //包含管理员属性
-        let olduser= await DataModel.WxUser.findOne({
+        let olduser= await DataModel.RegUser.findOne({
             where: {"wx_openID": weixin.openid }
         });
         if (!olduser){
@@ -21,7 +21,7 @@ export const findAndCreateUserFromWeixinAuthor=async (accessTokenInfo)=>{
             };
             let regResult=await TMSProductAPI("get_user",userRegInfo);
             console.log("TMS注册结果："+JSON.stringify(regResult));
-            let newUser= await DataModel.WxUser.create({
+            let newUser= await DataModel.Reguser.create({
                 uid: regResult.uid,
                 wx_openID: weixin.openid,
                 nickname: weixin.nickname||"",
@@ -69,12 +69,12 @@ export const findAndCreateUserFromWeixinOpnId=async (accessTokenInfo)=>{
         if (!accessTokenInfo)throw "微信accessTokenInfo不允许为空";
         const weixin=accessTokenInfo;
         //包含管理员属性
-        let olduser= await DataModel.WxUser.findOne({
+        let olduser= await DataModel.RegUser.findOne({
             where: {"wx_openID": weixin.openid }
         });
         if (!olduser){
             console.log("准备创建新用户，openid："+weixin.openid);
-            let newUser= await DataModel.WxUser.create({
+            let newUser= await DataModel.Reguser.create({
                 wx_openID: weixin.openid
             });
             return newUser;

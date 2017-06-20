@@ -1,0 +1,61 @@
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
+.floatBottomBar {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 50px;
+    z-index: 100;
+    background: #fff;
+}
+.floatBottomBar .floatBottomItem,
+.floatBottomBar .floatBottomItem:visited {
+    width: 19%;
+    float: left;
+    display: inline-block;
+    height: 100%;
+    text-align: center;
+    font-size: 12px;
+    line-height: 14px;
+    color: #000;
+}
+.floatBottomBar .floatBottomItem img {
+    width: 25px;
+    height: auto;
+    margin-top: 5px;
+}
+.floatBottomBar .floatBottomBigItem,
+.floatBottomBar .floatBottomBigItem:visited {
+    width: 24%;
+    float: left;
+    display: inline-block;
+    height: 100%;
+    text-align: center;
+    font-size: 12px;
+    position: relative;
+    color: #000;
+}
+.floatBottomBar .floatBottomBigItem div {
+    position: absolute;
+    left: 0;
+    top: -32px;
+    width: 100%;
+    height: auto;
+    border-radius: 1000px;
+    text-align: center;
+}
+.floatBottomBar .floatBottomBigItem div img {
+    width: 60px;
+    height: 60px;
+}
+.floatBottomBar .floatBottomBigItem p {
+    margin-top: 30px;
+}
+
+.floatBottomBar .routeActive p {
+    color: #D8013C !important;
+}
