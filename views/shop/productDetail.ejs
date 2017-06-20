@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<% include ./../header.ejs %>
+<link href="/stylesheets/productDetail.css" rel="stylesheet">
+
+<div class="productDetailBody">
+    <div class="swiper-container" data-space-between='10' data-pagination='.swiper-pagination' data-autoplay="1000" id="home">
+        <div class="swiper-wrapper">
+            <% productInfo.images.length > 0 && productInfo.images.map(function (image) { %>
+            <div class="swiper-slide">
+                <img src="<%- image %>" alt="">
+            </div>
+            <% }) %>
+        </div>
+    </div>
+
+    <p class="productPrice"><%= productInfo.retail_price %>
+        <span><%= productInfo.market_price %></span>
+    </p>
+
+    <p class="productName"><%= productInfo.name %></p>
+
+    <div class="productAmount">
+        <p>购买数量</p>
+        <div class="btnGroup">
+            <div>+</div>
+            <input type="number" value="0">
+            <div>-</div>
+        </div>
+    </div>
+
+    <div style="height: 30px;width: 100%;border-bottom: 2px solid #EFEFEF;"></div>
+
+    <div class="productDetail">
+        <%- productInfo.intro %>
+    </div>
+</div>
+
+<div class="productFloatBottomBar">
+    <div>
+        <img src="/images/icon_tabbar.png" alt="">
+        <p>电话</p>
+    </div>
+    <div>
+        <img src="/images/icon_tabbar.png" alt="">
+        <p>购物车</p>
+    </div>
+    <div>
+        加入购物车
+    </div>
+    <div>
+        立即购买
+    </div>
+</div>
+
+<% include ./../footer.ejs %>
+
+<script type='text/javascript' src="/libs/jQuery-weui/js/swiper.min.js" charset='utf-8'></script>
+
+<script type='text/javascript' src="/javascripts/history.js" charset='utf-8'></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //轮播
+        $('.swiper-container').css('height',window.innerWidth);
+        $(".swiper-container").swiper({
+            loop: true,
+            autoplay: 4000
+        });
+    });
+</script>
+
+</html>
