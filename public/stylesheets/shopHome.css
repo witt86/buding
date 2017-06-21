@@ -1,0 +1,266 @@
+.shopHomeNavbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 76px;
+    z-index: 100;
+    background: #fff;
+    overflow: hidden;
+}
+.shopHomeNavbar .shopHomeSearch {
+    overflow: hidden;
+    height: 42px;
+    width: 100%;
+}
+.shopHomeNavbar .shopHomeSearch .shopHomeLocation {
+    width: 60px;
+    height: 42px;
+    line-height: 42px;
+    overflow: hidden;
+    text-align: center;
+    font-size: 14px;
+    display: inline-block;
+    float: left;
+}
+.shopHomeNavbar .shopHomeSearch .shopHomeLocation i {
+    font-size: 18px;
+}
+.shopHomeNavbar .shopHomeSearch .weui-search-bar {
+    width: calc(100% - 60px);
+    height: 42px;
+    overflow: hidden;
+    display: inline-block;
+    float: left;
+    background: #fff !important;
+    border: none;
+}
+.shopHomeNavbar .shopHomeSearch .weui-search-bar::before,
+.shopHomeNavbar .shopHomeSearch .weui-search-bar::after {
+    border-bottom: none !important;
+}
+.shopHomeNavbar .shopHomeSearch .weui-search-bar .weui-search-bar__form{
+    border-radius: 5px;
+}
+.shopHomeNavbar .shopHomeSearch .weui-search-bar .weui-search-bar__label{
+    background: #EFEFEF;
+}
+.shopHomeNavbar .shopHomeCate {
+    overflow: hidden;
+    height: 33px;
+    width: 100%;
+    font-size: 14px;
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+}
+.shopHomeNavbar .shopHomeCate div .shopHomeCateItem,
+.shopHomeNavbar .shopHomeCate div .shopHomeCateItem:hover,
+.shopHomeNavbar .shopHomeCate div .shopHomeCateItem:visited {
+    height: 33px;
+    line-height: 33px;
+    width: 86px;
+    text-align: center;
+    overflow: hidden;
+    float: left;
+    box-sizing: border-box;
+    color: #000;
+}
+.shopHomeNavbar .shopHomeCate div .shopHomeCateActive {
+    color: #D8013C !important;
+    border-bottom: 1px solid #D8013C;
+}
+
+.shopHomeBody {
+    background: #EFEFEF;
+    padding-top: 80px;
+    padding-bottom: 53px;
+    height: calc(100% - 80px - 53px);
+    overflow-y: scroll;
+    overflow-scrolling: touch;
+    -webkit-overflow-scrolling: touch;
+}
+.shopHomeBody .swiper-container {
+    height: 160px;
+    overflow: hidden;
+}
+.shopHomeBody .swiper-container div {
+    width: 100%;
+    height: 100%;
+}
+.shopHomeBody .swiper-container div img {
+    width: 100%;
+    height: 100%;
+}
+
+.shopHomeBody .shopHomeTab {
+    height: 95px;
+    width: 100%;
+    background: #fff;
+}
+.shopHomeBody .shopHomeTab div {
+    height: 100%;
+    width: 20%;
+    text-align: center;
+    box-sizing: border-box;
+    float: left;
+    display: inline-block;
+}
+.shopHomeBody .shopHomeTab div img {
+    width: 70%;
+    height: auto;
+    margin-top: 10px;
+}
+.shopHomeBody .shopHomeTab div p {
+    color: #A5A5A5;
+    font-size: 12px;
+}
+.shopHomeBody .shopHomeActivity {
+    width: 100%;
+    height: 140px;
+    background: #fff;
+    margin-top: 2px;
+}
+.shopHomeBody .shopHomeActivity .shopHomeActivityTitle {
+    height: 20px;
+    width: 100%;
+}
+.shopHomeBody .shopHomeActivity .shopHomeActivityTitle p {
+    margin-left: 10px;
+    color: #D70039;
+    font-weight: 700;
+    font-size: 14px;
+}
+.shopHomeBody .shopHomeActivity .shopHomeActivityTitle p span {
+    color: #000;
+    font-size: 12px;
+    font-weight: 200;
+    margin-left: 10px;
+}
+.shopHomeBody .shopHomeActivity .shopHomeActivityContent {
+    height: 110px;
+    width: calc(100% - 20px);
+    padding: 0 10px;
+}
+.shopHomeBody .shopHomeActivity .shopHomeActivityContent div {
+    width: 25%;
+    height: 100%;
+    display: inline-block;
+    float: left;
+    text-align: center;
+}
+.shopHomeBody .shopHomeActivity .shopHomeActivityContent div img {
+    width: 72px;
+    height: 72px;
+    margin-top: 10px;
+}
+.shopHomeBody .shopHomeActivity .shopHomeActivityContent div p {
+    color: #D70238;
+    font-size: 14px;
+    margin-top: 5px;
+}
+.shopHomeBody .shopHomeActivity .shopHomeActivityContent div p:before {
+    content: '￥';
+    color: #D70238;
+    font-size: 14px;
+}
+
+.shopHomeBody .shopHomeSubActivity {
+    width: 100%;
+    height: 90px;
+    background: #fff;
+    margin-top: 2px;
+}
+.shopHomeBody .shopHomeSubActivity div {
+    width: 50%;
+    box-sizing: border-box;
+    height: 100%;
+    display: inline-block;
+    float: left;
+}
+.shopHomeBody .shopHomeSubActivity > div:first-child {
+    border-right: 1px solid #EFEFEF;
+}
+.shopHomeBody .shopHomeSubActivity > div:last-child {
+    border-left: 1px solid #EFEFEF;
+}
+.shopHomeBody .shopHomeSubActivity div div:first-child {
+    width: 40%;
+    height: 100%;
+    display: inline-block;
+    float: left;
+    text-align: center;
+}
+.shopHomeBody .shopHomeSubActivity div div:first-child img {
+    width: 80%;
+    margin-top: 20%;
+}
+.shopHomeBody .shopHomeSubActivity div div:last-child {
+    width: 60%;
+    height: 100%;
+    display: inline-block;
+    float: left;
+}
+.shopHomeBody .shopHomeSubActivity div div:last-child p:first-child {
+    font-size: 16px;
+    margin: 15px 0 0 0;
+    font-weight: 300;
+}
+.shopHomeBody .shopHomeSubActivity div div:last-child p:last-child {
+    font-size: 14px;
+    margin: 5px 0 0 0;
+    color: #B3B3B3;
+}
+
+.shopHomeBody .shopHomeSection .shopHomeSectionTitle {
+    height: 40px;
+    line-height: 40px;
+    overflow: hidden;
+    width: 100%;
+    text-align: center;
+    color: #D70238;
+    font-size: 16px;
+}
+.shopHomeBody .shopHomeSection .shopHomeSectionImg {
+    height: 160px;
+    width: 100%;
+}
+.shopHomeBody .shopHomeSection .shopHomeSectionImg img {
+    height: 100%;
+    width: 100%;
+}
+.shopHomeBody .shopHomeSection .shopHomeSectionProducts {
+    overflow-x: scroll;
+    background: #fff;
+    margin-top: 3px;
+    overflow-scrolling: touch;
+    webkit-overflow-scrolling: touch;
+}
+.shopHomeBody .shopHomeSection .shopHomeSectionProducts div div {
+    width: 110px;
+    height: 170px;
+    display: inline-block;
+    float: left;
+    text-align: center;
+}
+.shopHomeBody .shopHomeSection .shopHomeSectionProducts div div img {
+    margin-top: 8px;
+    width: 90px;
+    height: 90px;
+}
+.shopHomeBody .shopHomeSection .shopHomeSectionProducts div div p {
+    font-size: 13px;
+    margin: 0 10px;
+    color: #333;
+}
+.shopHomeBody .shopHomeSection .shopHomeSectionProducts div div img + p {
+    height: 40px;
+    overflow: hidden;
+}
+.shopHomeBody .shopHomeSection .shopHomeSectionProducts div div p:last-child {
+    color: #D70238;
+}
+.shopHomeBody .shopHomeSection .shopHomeSectionProducts div div p:last-child:before {
+    content:'￥';
+    color: #D70238;
+}

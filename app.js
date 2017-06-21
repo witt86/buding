@@ -17,6 +17,8 @@ import moment from "moment";
 var app = express();
 
 
+import router_shop from './routes/shop';
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -92,8 +94,13 @@ app.post('/xhr_wx_js_config_js', function(req, res, next) {
     console.log(e);
   }
 });
+
+// app.get('*',wechat_auth, routes);
 //api
 app.use("/api",main);
+
+//店铺
+app.use("/shop",router_shop);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
