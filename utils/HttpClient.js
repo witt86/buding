@@ -81,8 +81,7 @@ const HttpClient = {
                     resolve(res);
                 }
             });
-    }),
-
+    })
 };
 
 export default HttpClient;
