@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<% include ./../header.ejs %>
+<body class="shopCategory">
+
+<div class="pageContainer">
+
+    <div class="pageContainerSearch weui-search-bar" id="searchBar">
+        <div class="weui-search-bar__form">
+            <div class="weui-search-bar__box">
+                <i class="weui-icon-search"></i>
+                <input type="search" class="weui-search-bar__input searchInput" id="searchInput" placeholder="搜索商品" required="">
+                <a href="javascript:" class="weui-icon-clear"></a>
+            </div>
+            <label class="weui-search-bar__label" id="searchText">
+                <i class="weui-icon-search"></i>
+                <span>搜索商品</span>
+            </label>
+        </div>
+        <a href="javascript:" class="weui-search-bar__cancel-btn confirmSearch">搜索</a>
+    </div>
+
+    <div class="shopCategoryNav">
+        <div class="shopCategoryNavContainer" style="height: <%= 50 * ( categorys.length + 1 ) %>px;">
+            <div class="shopCategoryNavItem shopCategoryNavActive" id="hot">
+                热销推荐
+            </div>
+            <% categorys.map(function (cate) { %>
+            <div class="shopCategoryNavItem" id="<%= cate.code %>">
+                <%= cate.name %>
+            </div>
+            <% }) %>
+        </div>
+    </div>
+
+</div>
+
+
+<% include ../components/floatBottomBar.ejs %>
+<% include ./../footer.ejs %>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //搜索框
+        $('#searchText').on('click',function () {
+            $('#searchBar').addClass('weui-search-bar_focusing');
+            $('#searchInput').focus();
+        });
+        $('#searchInput').on('blur',function () {
+            $('#searchBar').removeClass('weui-search-bar_focusing');
+            $('#searchText').show();
+        }).on('keydown',function () {
+            if(event.keyCode == "13"){
+                $('.searchBar').removeClass('weui-search-bar_focusing');
+                $('.searchText').show();
+            }
+        });
+        $('.confirmSearch').on('click',function () {
+            $('.searchBar').removeClass('weui-search-bar_focusing');
+            $('.searchText').show();
+        });
+        
+        //左侧导航
+        $('.shopCategoryNavItem').on('click',function () {
+            loadProducts(this.id);
+            $('.shopCategoryNavItem').removeClass('shopCategoryNavActive');
+            $(this).addClass('shopCategoryNavActive');
+            history.replaceState(null, document.title, location.href.split("?")[0] + "?" + 'query=' + this.id);
+        })
+
+        //默认加载推荐
+        var kw = location.search;
+        if(kw.indexOf('?') != -1){
+            kw = kw.split('=')[1];
+            $('.shopCategoryNavItem').removeClass('shopCategoryNavActive');
+            $('#' + kw).addClass('shopCategoryNavActive');
+            loadProducts(kw)
+        }else{
+            loadProducts('hot')
+        }
+    });
+    
+    function loadProducts(code) {
+        ApiInvoke('shop','loadProducts',{shopcode:'<%= shopcode %>',code:code},function (err,result) {
+            if(err){
+                $('#errorMsg').text(err);
+                $('#errorDialog').fadeIn(200);
+                return false;
+            }
+
+            console.log(result);
+        });
+    }
+</script>
+
+</html>

@@ -59,6 +59,25 @@ router.get('/:shopcode/productDetail/:code', async (req, res, next) => {
     }
 });
 
+router.get('/:shopcode/productCategory', async (req, res, next) => {
+    try{
+        let [rs,shopcode] = [{},req.params.shopcode];
+
+        // rs.productList = await DataModel.ProductSource.findAll({where:{}});
+
+        rs.categorys = await DataModel.ProductCategory.findAll();
+
+        rs.title = '分类';
+
+        rs.shopcode = shopcode;
+
+        res.render('shop/shopCategory', rs);
+    }catch (e){
+        console.error('-----e:/productCategory-----');
+        console.error(e);
+    }
+});
+
 router.all("*",async (req, res, next)=> {
     res.render('unknown');
 });

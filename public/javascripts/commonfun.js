@@ -14,7 +14,7 @@ function getKey(keyname, callback) {
 function setKey(keyname, keyvalue , callback) {
     ApiInvoke_appglobal("setValue", keyname, keyvalue, callback);
 }
-function ApiInvokeAdmin(apiRoot,method,data,callback) {
+function ApiInvoke(apiRoot,method,data,callback) {
     if(arguments.length<4) {
         callback('缺少基本参数', null);
         return;
@@ -22,18 +22,18 @@ function ApiInvokeAdmin(apiRoot,method,data,callback) {
     if($.showLoading){
         $.showLoading("处理中...");
     }
-    if (toast){
-        toast.loading({title:"处理中"});
-    }
+    // if (toast){
+    //     toast.loading({title:"处理中"});
+    // }
     $.ajax({
         url: "/api/"+apiRoot+"/"+method,
         type: "POST",
         data: JSON.stringify({  "queryObj": data}),
         contentType:'application/json',
         success: function (result, status, xhr) {
-            if (toast){
-                toast.hide();
-            }
+            // if (toast){
+            //     toast.hide();
+            // }
             callback(result.err, result.result);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
