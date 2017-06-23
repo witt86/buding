@@ -1,3 +1,459 @@
-body {
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+.productDetail .productDetailBody {
+    padding-bottom: 53px;
+    height: calc(100% - 53px);
+    overflow-y: scroll;
+    overflow-scrolling: touch;
+    -webkit-overflow-scrolling: touch
+}
+
+.productDetail .productDetailBody .swiper-container {
+    overflow: hidden;
+    width: 100%
+}
+
+.productDetail .productDetailBody .swiper-container .swiper-slide {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    background: #fff
+}
+
+.productDetail .productDetailBody .swiper-container .swiper-slide img {
+    width: 100%
+}
+
+.productDetail .productDetailBody .productPrice {
+    margin: 10px 0 0 15px;
+    color: #EF7F00;
+    font-size: 20px;
+    height: 20px;
+    line-height: 20px
+}
+
+.productDetail .productDetailBody .productPrice :before {
+    content: '￥';
+    color: #EF7F00;
+    font-size: 20px
+}
+
+.productDetail .productDetailBody .productPrice span {
+    color: #9F9F9F;
+    font-size: 18px;
+    margin-left: 15px;
+    text-decoration: line-through
+}
+
+.productDetail .productDetailBody .productPrice span :before {
+    content: '￥';
+    color: #9F9F9F;
+    font-size: 16px
+}
+
+.productDetail .productDetailBody .productName {
+    font-size: 16px;
+    margin: 15px;
+    color: #404040
+}
+
+.productDetail .productDetailBody .productAmount {
+    margin-top: 25px;
+    padding: 0 15px;
+    width: calc(100% - 30px)
+}
+
+.productDetail .productDetailBody .productAmount p {
+    font-size: 16px;
+    display: inline-block
+}
+
+.productDetail .productDetailBody .productAmount .btnGroup {
+    float: right
+}
+
+.productDetail .productDetailBody .productAmount .btnGroup div {
+    height: 28px;
+    width: 28px;
+    text-align: center;
+    line-height: 28px;
+    overflow: hidden;
+    background: #EFEFEF;
+    color: #000;
+    float: right;
+    margin-left: 2px
+}
+
+.productDetail .productDetailBody .productAmount .btnGroup input {
+    height: 28px;
+    width: 56px;
+    text-align: center;
+    line-height: 28px;
+    background: #EFEFEF;
+    color: #000;
+    float: right;
+    border: none;
+    margin-left: 2px
+}
+
+.productDetail .productDetailBody .productDetail {
+    margin-top: 20px;
+    width: calc(100% - 30px);
+    padding: 0 15px;
+    text-align: left
+}
+
+.productDetail .productDetailBody .productDetail img {
+    width: 100%;
+    height: auto
+}
+
+.productDetail .productFloatBottomBar {
+    width: 100%;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    bottom: 0;
+    background: #fff
+}
+
+.productDetail .productFloatBottomBar div:nth-child(1), .productDetail .productFloatBottomBar div:nth-child(2) {
+    width: 20%;
+    text-align: center;
+    float: left;
+    display: inline-block;
+    height: 50px
+}
+
+.productDetail .productFloatBottomBar div:nth-child(1) img, .productDetail .productFloatBottomBar div:nth-child(2) img {
+    height: 24px;
+    width: 24px
+}
+
+.productDetail .productFloatBottomBar div:nth-child(1) p, .productDetail .productFloatBottomBar div:nth-child(2) p {
+    font-size: 12px;
+    line-height: 14px
+}
+
+.productDetail .productFloatBottomBar div:nth-child(3), .productDetail .productFloatBottomBar div:nth-child(4) {
+    width: 30%;
+    text-align: center;
+    float: left;
+    display: inline-block;
+    height: 50px;
+    line-height: 50px;
+    overflow: hidden;
+    color: #fff
+}
+
+.productDetail .productFloatBottomBar div:nth-child(3) {
+    background: #727071
+}
+
+.productDetail .productFloatBottomBar div:nth-child(4) {
+    background: #ED8002
+}
+
+.shopHome .shopHomeNavbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 76px;
+    z-index: 100;
+    background: #fff;
+    overflow: hidden
+}
+
+.shopHome .shopHomeNavbar .shopHomeSearch {
+    overflow: hidden;
+    height: 42px;
+    width: 100%
+}
+
+.shopHome .shopHomeNavbar .shopHomeSearch .shopHomeLocation {
+    width: 60px;
+    height: 42px;
+    line-height: 42px;
+    overflow: hidden;
+    text-align: center;
+    font-size: 14px;
+    display: inline-block;
+    float: left
+}
+
+.shopHome .shopHomeNavbar .shopHomeSearch .shopHomeLocation i {
+    font-size: 18px
+}
+
+.shopHome .shopHomeNavbar .shopHomeSearch .weui-search-bar {
+    width: calc(100% - 60px);
+    height: 42px;
+    overflow: hidden;
+    display: inline-block;
+    float: left;
+    background: #fff !important;
+    border: none
+}
+
+.shopHome .shopHomeNavbar .shopHomeSearch .weui-search-bar .weui-search-bar__form {
+    border-radius: 5px
+}
+
+.shopHome .shopHomeNavbar .shopHomeSearch .weui-search-bar .weui-search-bar__label {
+    background: #EFEFEF
+}
+
+.shopHome .shopHomeNavbar .shopHomeSearch .weui-search-bar::before, .shopHome .shopHomeNavbar .shopHomeSearch .weui-search-bar::after {
+    border-bottom: none !important
+}
+
+.shopHome .shopHomeNavbar .shopHomeCate {
+    overflow: hidden;
+    height: 33px;
+    width: 100%;
+    font-size: 14px;
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch
+}
+
+.shopHome .shopHomeNavbar .shopHomeCate div .shopHomeCateItem, .shopHome .shopHomeNavbar .shopHomeCate div .shopHomeCateItem:hover, .shopHome .shopHomeNavbar .shopHomeCate div .shopHomeCateItem:visited {
+    height: 33px;
+    line-height: 33px;
+    width: 86px;
+    text-align: center;
+    overflow: hidden;
+    float: left;
+    box-sizing: border-box;
+    color: #000
+}
+
+.shopHome .shopHomeNavbar .shopHomeCate div .shopHomeCateActive {
+    color: #D8013C !important;
+    border-bottom: 1px solid #D8013C
+}
+
+.shopHome .shopHomeBody {
+    background: #EFEFEF;
+    padding-top: 80px;
+    padding-bottom: 53px;
+    height: calc(100% - 80px - 53px);
+    overflow-y: scroll;
+    overflow-scrolling: touch;
+    -webkit-overflow-scrolling: touch
+}
+
+.shopHome .shopHomeBody .swiper-container {
+    height: 160px;
+    overflow: hidden
+}
+
+.shopHome .shopHomeBody .swiper-container div {
+    width: 100%;
+    height: 100%
+}
+
+.shopHome .shopHomeBody .swiper-container div img {
+    width: 100%;
+    height: 100%
+}
+
+.shopHome .shopHomeBody .shopHomeTab {
+    height: 95px;
+    width: 100%;
+    background: #fff
+}
+
+.shopHome .shopHomeBody .shopHomeTab div {
+    height: 100%;
+    width: 20%;
+    text-align: center;
+    box-sizing: border-box;
+    float: left;
+    display: inline-block
+}
+
+.shopHome .shopHomeBody .shopHomeTab div img {
+    width: 70%;
+    height: auto;
+    margin-top: 10px
+}
+
+.shopHome .shopHomeBody .shopHomeTab div p {
+    color: #A5A5A5;
+    font-size: 12px
+}
+
+.shopHome .shopHomeBody .shopHomeActivity {
+    width: 100%;
+    height: 140px;
+    background: #fff;
+    margin-top: 2px
+}
+
+.shopHome .shopHomeBody .shopHomeActivity .shopHomeActivityTitle {
+    height: 20px;
+    width: 100%
+}
+
+.shopHome .shopHomeBody .shopHomeActivity .shopHomeActivityTitle p {
+    margin-left: 10px;
+    color: #D70039;
+    font-weight: 700;
+    font-size: 14px
+}
+
+.shopHome .shopHomeBody .shopHomeActivity .shopHomeActivityTitle p span {
+    color: #000;
+    font-size: 12px;
+    font-weight: 200;
+    margin-left: 10px
+}
+
+.shopHome .shopHomeBody .shopHomeActivity .shopHomeActivityContent {
+    height: 110px;
+    width: calc(100% - 20px);
+    padding: 0 10px
+}
+
+.shopHome .shopHomeBody .shopHomeActivity .shopHomeActivityContent div {
+    width: 25%;
+    height: 100%;
+    display: inline-block;
+    float: left;
+    text-align: center
+}
+
+.shopHome .shopHomeBody .shopHomeActivity .shopHomeActivityContent div img {
+    width: 72px;
+    height: 72px;
+    margin-top: 10px
+}
+
+.shopHome .shopHomeBody .shopHomeActivity .shopHomeActivityContent div p {
+    color: #D70238;
+    font-size: 14px;
+    margin-top: 5px
+}
+
+.shopHome .shopHomeBody .shopHomeActivity .shopHomeActivityContent div p:before {
+    content: '￥';
+    color: #D70238;
+    font-size: 14px
+}
+
+.shopHome .shopHomeBody .shopHomeSubActivity {
+    width: 100%;
+    height: 90px;
+    background: #fff;
+    margin-top: 2px
+}
+
+.shopHome .shopHomeBody .shopHomeSubActivity div {
+    width: 50%;
+    box-sizing: border-box;
+    height: 100%;
+    display: inline-block;
+    float: left
+}
+
+.shopHome .shopHomeBody .shopHomeSubActivity div div:first-child {
+    width: 40%;
+    height: 100%;
+    display: inline-block;
+    float: left;
+    text-align: center
+}
+
+.shopHome .shopHomeBody .shopHomeSubActivity div div:first-child img {
+    width: 80%;
+    margin-top: 20%
+}
+
+.shopHome .shopHomeBody .shopHomeSubActivity div div:last-child {
+    width: 60%;
+    height: 100%;
+    display: inline-block;
+    float: left
+}
+
+.shopHome .shopHomeBody .shopHomeSubActivity div div:last-child p :first-child {
+    font-size: 16px;
+    margin: 15px 0 0 0;
+    font-weight: 300
+}
+
+.shopHome .shopHomeBody .shopHomeSubActivity div div:last-child p :last-child {
+    font-size: 14px;
+    margin: 5px 0 0 0;
+    color: #B3B3B3
+}
+
+.shopHome .shopHomeBody .shopHomeSubActivity > div:first-child {
+    border-right: 1px solid #EFEFEF
+}
+
+.shopHome .shopHomeBody .shopHomeSubActivity > div:last-child {
+    border-left: 1px solid #EFEFEF
+}
+
+.shopHome .shopHomeBody .shopHomeSection .shopHomeSectionTitle {
+    height: 40px;
+    line-height: 40px;
+    overflow: hidden;
+    width: 100%;
+    text-align: center;
+    color: #D70238;
+    font-size: 16px
+}
+
+.shopHome .shopHomeBody .shopHomeSection .shopHomeSectionImg {
+    height: 160px;
+    width: 100%
+}
+
+.shopHome .shopHomeBody .shopHomeSection .shopHomeSectionImg img {
+    height: 100%;
+    width: 100%
+}
+
+.shopHome .shopHomeBody .shopHomeSection .shopHomeSectionProducts {
+    overflow-x: scroll;
+    background: #fff;
+    margin-top: 3px;
+    overflow-scrolling: touch;
+    webkit-overflow-scrolling: touch
+}
+
+.shopHome .shopHomeBody .shopHomeSection .shopHomeSectionProducts div div {
+    width: 110px;
+    height: 170px;
+    display: inline-block;
+    float: left;
+    text-align: center
+}
+
+.shopHome .shopHomeBody .shopHomeSection .shopHomeSectionProducts div div img {
+    margin-top: 8px;
+    width: 90px;
+    height: 90px
+}
+
+.shopHome .shopHomeBody .shopHomeSection .shopHomeSectionProducts div div img + p {
+    height: 40px;
+    overflow: hidden
+}
+
+.shopHome .shopHomeBody .shopHomeSection .shopHomeSectionProducts div div p {
+    font-size: 13px;
+    margin: 0 10px;
+    color: #333
+}
+
+.shopHome .shopHomeBody .shopHomeSection .shopHomeSectionProducts div div p:last-child {
+    color: #D70238
+}
+
+.shopHome .shopHomeBody .shopHomeSection .shopHomeSectionProducts div div p:last-child:before {
+    content: '￥';
+    color: #D70238
 }

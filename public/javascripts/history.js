@@ -11,6 +11,7 @@ var eleMenus = $(".routeItem").bind("click", function(event) {
 
             var title = $(this).text();
             document.title = title;
+
             if (event && /\d/.test(event.button)) {
                 history.pushState({ title: title }, title, location.href.split("?")[0] + "?" + query);
             }
@@ -43,5 +44,5 @@ if (history.pushState) {
     window.addEventListener("popstate", function() {
         clickTrigger();
     });
-    clickTrigger();
+     clickTrigger();
 }

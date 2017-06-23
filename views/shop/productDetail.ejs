@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <% include ./../header.ejs %>
-<link href="/stylesheets/productDetail.css" rel="stylesheet">
-
+<body class="productDetail">
 <div class="productDetailBody">
-    <div class="swiper-container" data-space-between='10' data-pagination='.swiper-pagination' data-autoplay="1000" id="home">
+    <div class="swiper-container" data-space-between='10' data-pagination='.swiper-pagination' data-autoplay="1000"
+         id="home">
         <div class="swiper-wrapper">
             <% productInfo.images.length > 0 && productInfo.images.map(function (image) { %>
             <div class="swiper-slide">
@@ -35,7 +35,6 @@
         <%- productInfo.intro %>
     </div>
 </div>
-
 <div class="productFloatBottomBar">
     <div>
         <img src="/images/icon_tabbar.png" alt="">
@@ -52,21 +51,17 @@
         立即购买
     </div>
 </div>
-
 <% include ./../footer.ejs %>
-
-<script type='text/javascript' src="/libs/jQuery-weui/js/swiper.min.js" charset='utf-8'></script>
-
-<script type='text/javascript' src="/javascripts/history.js" charset='utf-8'></script>
+<script type='text/javascript' src="/libs/jq-weui/js/swiper.min.js" charset='utf-8'></script>
 <script type="text/javascript">
     $(document).ready(function () {
         //轮播
-        $('.swiper-container').css('height',window.innerWidth);
-        $(".swiper-container").swiper({
-            loop: true,
-            autoplay: 4000
-        });
+        $('.swiper-container')
+                .css('height', window.innerWidth)
+                .swiper({
+                    loop: true,
+                    autoplay: 4000
+                });
     });
 </script>
-
 </html>

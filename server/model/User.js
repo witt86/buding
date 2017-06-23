@@ -1,4 +1,4 @@
-import DataModel from './DataModel';
+import * as DataModel from './DataModel';
 import TMSProductAPI from '../lib/TMSProductAPI';
 import {keys,groupBy} from "lodash";
 import md5 from 'md5';
@@ -21,7 +21,7 @@ export const findAndCreateUserFromWeixinAuthor=async (accessTokenInfo)=>{
             };
             let regResult=await TMSProductAPI("get_user",userRegInfo);
             console.log("TMS注册结果："+JSON.stringify(regResult));
-            let newUser= await DataModel.Reguser.create({
+            let newUser= await DataModel.RegUser.create({
                 uid: regResult.uid,
                 wx_openID: weixin.openid,
                 nickname: weixin.nickname||"",
@@ -74,7 +74,7 @@ export const findAndCreateUserFromWeixinOpnId=async (accessTokenInfo)=>{
         });
         if (!olduser){
             console.log("准备创建新用户，openid："+weixin.openid);
-            let newUser= await DataModel.Reguser.create({
+            let newUser= await DataModel.RegUser.create({
                 wx_openID: weixin.openid
             });
             return newUser;

@@ -321,7 +321,7 @@ export const params = (key, defaultvalue) => {
     } else {
         return window._params
     }
-}
+};
 
 export const  utf16toEntities=(str)=>{
     return encodeURIComponent(str);

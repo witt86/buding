@@ -1,4 +1,5 @@
 import express from "express";
+import * as _ from "lodash";
 import path from "path";
 import logger from "morgan";
 import cookieParser from "cookie-parser";
@@ -11,11 +12,11 @@ import * as globals from "./server/global";
 import main from './routes/main';
 import wechat_auth from "./server/wechat/wechat_auth.js";
 import _businessTool from './server/util/BusinessTool';
+import xhr_wx_js_config from "./routes/xhr_wx_js_config";
 
 import moment from "moment";
 
 var app = express();
-
 
 import router_shop from './routes/shop';
 
@@ -52,6 +53,7 @@ app.use(session({
 }));
 
 app.locals.moment = moment;
+app.locals._ = _;
 //全局http处理函数, 用在服务器端express/ejs页面中。react产品端用不到
 app.use(function(req, res, next) {
   //微信分享信息设定,如果为空,则客户端的JS会从网页基本信息中提取
@@ -75,32 +77,14 @@ app.use(function(req, res, next) {
   next();
 });
 
-
-app.post('/xhr_wx_js_config_js', function(req, res, next) {
-  try{
-    // var referpage = req.get('referer')||"";
-    // console.log(referpage);
-    // _businessTool.get_weixin_JS_SDK_signInfo(referpage, function(err, signInfo){
-    //   var data = merge({signInfo: signInfo||{}},{session:req.session});
-    //   res.render('_weixin_js_config', data);
-    // });
-    var refer = req.body.url;
-    _businessTool.get_weixin_JS_SDK_signInfo(refer, function(err, signInfo){
-      var data = merge({signInfo: signInfo||{}},{session:req.session});
-      res.json(data);
-    });
-  }catch (e){
-    console.log('xhr_wx_js_config_js err');
-    console.log(e);
-  }
-});
+app.use("/xhr_wx_js_config_js", xhr_wx_js_config);
 
 // app.get('*',wechat_auth, routes);
 //api
 app.use("/api",main);
 
 //店铺
-app.use("/shop",router_shop);
+app.use("/shop",wechat_auth,router_shop);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

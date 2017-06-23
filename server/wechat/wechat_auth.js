@@ -106,6 +106,7 @@ router.all('*', async function(req, res, next) {
             const userInfo = await User.findAndCreateUserFromWeixinAuthor(weixinUserInfo);
             req.session.user =userInfo.get();
 
+
             req.session.user.wxauth_state = state;
             req.session.user.wxauth_code = code;
             console.info(`session内用户信息建立：${req.session.user}`);

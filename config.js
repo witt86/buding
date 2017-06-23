@@ -31,7 +31,8 @@ const config = {
                 partner_key: "u2Cd8d7040Ee6e1e5a8EDe43e765f5Z6",
                 notify_url: "{sitehost}/wxpay_notify/pay"
             }
-        }
+        },
+        jsApiList: ["checkJsApi", "openAddress" ,'chooseImage','uploadImage','downloadImage',"onMenuShareTimeline", "onMenuShareAppMessage", "onMenuShareQQ", "onMenuShareWeibo", "hideMenuItems", "showMenuItems","scanQRCode"]
     },
     "test":{
         version: "1.0",
@@ -65,7 +66,8 @@ const config = {
                 partner_key: "u2Cd8d7040Ee6e1e5a8EDe43e765f5Z6",
                 notify_url: "{sitehost}/wxpay_notify/pay"
             }
-        }
+        },
+        jsApiList: ["checkJsApi", "openAddress" ,'chooseImage','uploadImage','downloadImage',"onMenuShareTimeline", "onMenuShareAppMessage", "onMenuShareQQ", "onMenuShareWeibo", "hideMenuItems", "showMenuItems","scanQRCode"]
     },
     "production":{
         version: "1.0",
@@ -99,7 +101,8 @@ const config = {
                 partner_key: "u2Cd8d7040Ee6e1e5a8EDe43e765f5Z6",
                 notify_url: "{sitehost}/wxpay_notify/pay"
             }
-        }
+        },
+        jsApiList: ["checkJsApi", "openAddress" ,'chooseImage','uploadImage','downloadImage',"onMenuShareTimeline", "onMenuShareAppMessage", "onMenuShareQQ", "onMenuShareWeibo", "hideMenuItems", "showMenuItems","scanQRCode"]
     }
 };
 

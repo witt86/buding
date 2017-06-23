@@ -6,10 +6,10 @@ import DataModel from './../server/model/DataModel';
 
 const router = new Router();
 
-router.get('/shopHome', async (req, res, next) => {
+router.get('/:shopcode', async (req, res, next) => {
     try{
         let [rs] = [{}];
-
+        const { shopcode }=req.params;
         rs.title = '布丁酒店';
 
         rs.activityProducts = await DataModel.ProductSource.findAll({
@@ -33,28 +33,29 @@ router.get('/shopHome', async (req, res, next) => {
             });
         }
         rs.sections = categorys;
-
-        // console.log(rs.category[0].productList);
+        rs.shopcode=shopcode;
         res.render('shop/shopHome', rs);
     }catch (e){
-        console.log('-----e:/shopHome-----');
-        console.log(e);
+        console.error('-----e:/shopHome-----');
+        console.error(e);
     }
 });
 
 
-router.get('/productDetail/:code', async (req, res, next) => {
+router.get('/:shopcode/productDetail/:code', async (req, res, next) => {
     try{
-        let [rs,code] = [{},req.params.code];
+        let [rs,code,shopcode] = [{},req.params.code,req.params.shopcode];
 
         rs.productInfo = await TMSProductAPI('get_product',{code:code});
 
         rs.title = rs.productInfo.name;
 
+        rs.shopcode=shopcode;
+
         res.render('shop/productDetail', rs);
     }catch (e){
-        console.log('-----e:/productDetail-----');
-        console.log(e);
+        console.error('-----e:/productDetail-----');
+        console.error(e);
     }
 });
 

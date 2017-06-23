@@ -4,7 +4,6 @@ import wechatAPI from 'wechat-api';
 import WXPay from 'weixin-pay';
 import request from 'request';
 import xml2js from 'xml2js';
-import fs from 'fs';
 import _config from './../config.js';
 import {getValue, setValue} from './model/AppGlobal';
 import ext from './wechat/wechat-api-ext.js';
