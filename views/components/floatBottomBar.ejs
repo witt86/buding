@@ -1,33 +1,16 @@
 <div class="floatBottomBar">
-    <a class="floatBottomItem routeItem routeActive" href="/shop/090703">
+    <a class="floatBottomItem routeItem <%= type == 'shopHome' ? 'routeActive' : '' %>" href="/shop/090703">
         <img src="/images/sc1.png" alt="">
-    <a class="floatBottomItem routeItem routeActive" href="/shop/<%= shopcode %>">
-        <img src="/images/icon_tabbar.png" alt="">
-        <p>商城</p>
-    </a>
-    <a class="floatBottomItem routeItem" href="/shop/090703/category">
+    <a class="floatBottomItem routeItem  <%= type == 'shopCategory' ? 'routeActive' : '' %>" href="/shop/090703/category">
         <img src="/images/fl0.png" alt="">
-    <a class="floatBottomItem routeItem" href="/shop/<%= shopcode %>/productCategory">
-        <img src="/images/icon_tabbar.png" alt="">
-        <p>分类</p>
-    </a>
     <a class="floatBottomBigItem routeItem" href="/shop/090703/qrcode">
-    <a class="floatBottomBigItem routeItem" href="">
         <div>
             <img src="/images/sm.png" alt="">
         </div>
         <p>扫码购</p>
     </a>
-    <a class="floatBottomItem routeItem" href="/shop/090703/shopcar">
+    <a class="floatBottomItem routeItem <%= type == 'shopCar' ? 'routeActive' : '' %>" href="/shop/090703/shopcar">
         <img src="/images/gwc0.png" alt="">
-    <a class="floatBottomItem routeItem" href="">
-        <img src="/images/icon_tabbar.png" alt="">
-        <p>购物车</p>
-    </a>
     <a class="floatBottomItem routeItem" href="/shop/090703/mine">
         <img src="/images/wo0.png" alt="">
-    <a class="floatBottomItem routeItem" href="">
-        <img src="/images/icon_tabbar.png" alt="">
-        <p>我的</p>
-    </a>
 </div>

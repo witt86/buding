@@ -141,9 +141,6 @@ export const payOrder = async({uid, orderId})=> {
     return requestSign;
 };
 
-
-import DataModel from './DataModel';
-
 export const loadProducts = async ({shopcode,code})=> {
     try{
         if(!shopcode || !code) return {err:'缺少参数'};

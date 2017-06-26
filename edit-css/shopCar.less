@@ -1,0 +1,72 @@
+.shopCar {
+  .pageContainer {
+    background: #f8f8f8;
+    width: 100%;
+    height: 100%;
+    .shopCarBody {
+      width: 100%;
+      height: 100%;
+    }
+    .shopCarBar {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 50px;
+      background: #fff;
+      z-index: 100;
+      .shopCarSelectAll {
+        width: 80px;
+        height: 50px;
+        line-height: 50px;
+        overflow: hidden;
+        float: left;
+        display: inline-block;
+        padding-left: 40px;
+        div {
+          display: inline-block;
+          position: absolute;
+          left: 10px;
+          bottom: 5px;
+          height: 39px;
+          input {
+            display: none;
+          }
+          label {
+            border: 1px solid #999;
+            padding: 12px;
+            border-radius: 12px;
+            display: inline-block;
+            color: #fff !important;
+          }
+          input:checked + label {
+            content: url(/images/duigou.png);
+            border: none;
+            padding: 0;
+            width: 26px;
+            height: 26px;
+            color: #fff !important;
+          }
+        }
+      }
+      .shopCarCount {
+        height: 50px;
+        line-height: 50px;
+        overflow: hidden;
+        max-width: calc(~'100% - 80px - 100px - 10px');
+        float: left;
+        padding: 0 5px;
+      }
+      .shopCarAccount {
+        height: 50px;
+        width: 100px;
+        line-height: 50px;
+        overflow: hidden;
+        background: #F52D26;
+        color: #fff;
+        float: right;
+        text-align: center;
+      }
+    }
+  }
+}
