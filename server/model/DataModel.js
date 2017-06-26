@@ -57,7 +57,7 @@ let RegUser = sequelize.define('reguser', {
         allowNull: false,
         defaultValue: false
     },
-    issubscribed:{   //是否通过扫二维码关注过公众号，默认没关注，解决重复取消关注的冲突
+    issubscribed: {   //是否通过扫二维码关注过公众号，默认没关注，解决重复取消关注的冲突
         type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: false
@@ -67,27 +67,27 @@ let RegUser = sequelize.define('reguser', {
         allowNull: false,
         defaultValue: ''
     },
-    loginFromApp:{
+    loginFromApp: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: false
     },
-    userType:{
+    userType: {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0    //0：实际用户  ，1：企业虚拟用户
     },
-    countrycode:{
+    countrycode: {
         type: Sequelize.STRING(32),
         allowNull: false,
         defaultValue: ''
     },
-    prousertype:{
+    prousertype: {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0   //0:普通用户，1：准导游，2：导游，3：供应商
     },
-    Referrer:{  //推荐人
+    Referrer: {  //推荐人
         'type': Sequelize.STRING(64),
         'allowNull': false,
         'defaultValue': ''
@@ -99,7 +99,7 @@ let RegUser = sequelize.define('reguser', {
         unique: true
     }, {
         name: 'idx_wx_openID_unique',
-        fields: ['wx_openID','userType'],
+        fields: ['wx_openID', 'userType'],
         unique: true
     }, {
         name: 'idx_unionid_unique',
@@ -112,21 +112,21 @@ let RegUser = sequelize.define('reguser', {
 });
 
 let Supplier = sequelize.define('supplier', {
-    province:Sequelize.STRING(32),
-    city:Sequelize.STRING(32),
-    code:Sequelize.STRING(32),
-    name:Sequelize.STRING(32),
-    address:Sequelize.STRING(32),
-    primary_contact:Sequelize.STRING(255),
-    offerimage:Sequelize.STRING(1024),
-    supId:Sequelize.INTEGER,  //TMS自增ID,
-    notices:{
-        'type':Sequelize.STRING(900),
+    province: Sequelize.STRING(32),
+    city: Sequelize.STRING(32),
+    code: Sequelize.STRING(32),
+    name: Sequelize.STRING(32),
+    address: Sequelize.STRING(32),
+    primary_contact: Sequelize.STRING(255),
+    offerimage: Sequelize.STRING(1024),
+    supId: Sequelize.INTEGER,  //TMS自增ID,
+    notices: {
+        'type': Sequelize.STRING(900),
         'defaultValue': '[]'
     },
-    is_active:Sequelize.BOOLEAN,
-    shipfee_desc:{
-        'type':Sequelize.STRING(1024),
+    is_active: Sequelize.BOOLEAN,
+    shipfee_desc: {
+        'type': Sequelize.STRING(1024),
         'defaultValue': '[]'
     }
 }, {
@@ -152,13 +152,13 @@ let ShopkeeperInfo = sequelize.define('shopkeeperinfo', {  //店主信息表
         'unique': true,
         'comment': "微信公众号ID"
     },
-    TrueName:{
+    TrueName: {
         'type': Sequelize.STRING(64),
         'allowNull': false,
         'unique': true,
         'comment': "个人是真实名称"
-    } ,
-    mobile:Sequelize.STRING(15),
+    },
+    mobile: Sequelize.STRING(15),
     City: {
         'type': Sequelize.INTEGER,
         'allowNull': true,
@@ -204,13 +204,11 @@ let ShopkeeperInfo = sequelize.define('shopkeeperinfo', {  //店主信息表
         unique: true
     }, {
         name: 'idx_wx_openID_unique_shopkeeperinfo',
-        fields: ['wx_openID','uid'],
+        fields: ['wx_openID', 'uid'],
         unique: true
     }],
-    classMethods: {
-    },
-    instanceMethods: {
-    }
+    classMethods: {},
+    instanceMethods: {}
 });
 ShopkeeperInfo.hook('afterCreate', function (shopkeeperinfo, options) {
     //BusinessTool.onGuiderCreate(guider);
@@ -226,7 +224,7 @@ let SaleShop = sequelize.define('saleshop', {  //店铺信息表
     name: Sequelize.STRING(32), //店铺名称
     comment: Sequelize.STRING(255), //
     qrcode: Sequelize.STRING(255), // 店铺二维码
-    keeperqrcode:Sequelize.STRING(255),//店主邀请二维码
+    keeperqrcode: Sequelize.STRING(255),//店主邀请二维码
     shopIcon: Sequelize.STRING(255), // 店铺头像
     cover: Sequelize.STRING(255), //封面
     watchCount: { //关注人数
@@ -239,7 +237,7 @@ let SaleShop = sequelize.define('saleshop', {  //店铺信息表
         'allowNull': false,
         'defaultValue': 0
     }
-},{
+}, {
     indexes: [{
         name: 'idx_code_unique_saleshop',
         fields: ['code'],
@@ -250,7 +248,7 @@ SaleShop.hook('afterCreate', function (SaleShop, options) {
 
 });
 
-let ShopManagerInfo=sequelize.define('shopmanagerinfo',{  //店长、店员信息表
+let ShopManagerInfo = sequelize.define('shopmanagerinfo', {  //店长、店员信息表
     uid: {
         'type': Sequelize.STRING(64),
         'allowNull': false,
@@ -263,26 +261,26 @@ let ShopManagerInfo=sequelize.define('shopmanagerinfo',{  //店长、店员信�
         'unique': true,
         'comment': "微信公众号ID"
     },
-    TrueName:{
+    TrueName: {
         'type': Sequelize.STRING(64),
         'allowNull': false,
         'unique': true,
         'comment': "个人是真实名称"
     },
-    mobile:Sequelize.STRING(15),
-    shopcode:{
+    mobile: Sequelize.STRING(15),
+    shopcode: {
         'type': Sequelize.STRING(64),
         'allowNull': false,
         'defaultValue': ''
     },
-    role:{
+    role: {
         'type': Sequelize.ENUM(
             types.ShopManage,
             types.ShopStaff
         ),
         'defaultValue': types.ShopStaff
     },
-    pid:{
+    pid: {
         'type': Sequelize.INTEGER,
         'allowNull': true
     }
@@ -298,7 +296,7 @@ let ProductCategory = sequelize.define('productcategory', {
     'paranoid': true,
     indexes: [{
         name: 'idx_productcategory_name',
-        fields: ['name','list_order'],
+        fields: ['name', 'list_order'],
         unique: false
     }]
 });
@@ -314,11 +312,11 @@ let ProductSource = sequelize.define('productsource', {
     code: Sequelize.STRING(256),//值与sourceCode相同, 为与tms的product对象兼容用
     name: Sequelize.STRING(256),
     brand: Sequelize.STRING(32),
-    market_price: Sequelize.DECIMAL(8,2),
-    retail_price: Sequelize.DECIMAL(8,2),
-    settle_price: Sequelize.DECIMAL(8,2),
+    market_price: Sequelize.DECIMAL(8, 2),
+    retail_price: Sequelize.DECIMAL(8, 2),
+    settle_price: Sequelize.DECIMAL(8, 2),
     stock_volume: Sequelize.INTEGER,
-    margin: Sequelize.DECIMAL(8,2),
+    margin: Sequelize.DECIMAL(8, 2),
     monthly_sales: Sequelize.INTEGER,
     list_order: Sequelize.INTEGER,
     icon: Sequelize.STRING(256),
@@ -343,12 +341,12 @@ let ProductSource = sequelize.define('productsource', {
         'allowNull': false,
         'defaultValue': false
     },
-    is_local_hot:{
+    is_local_hot: {
         'type': Sequelize.BOOLEAN,
         'allowNull': false,
         'defaultValue': false
     },
-    is_car_buy:{
+    is_car_buy: {
         'type': Sequelize.BOOLEAN,
         'allowNull': false,
         'defaultValue': false
@@ -365,11 +363,11 @@ let ProductSource = sequelize.define('productsource', {
     unit: Sequelize.STRING,
     tags: Sequelize.STRING,
     catagory: Sequelize.STRING,
-    allow_local_ship:Sequelize.INTEGER,
+    allow_local_ship: Sequelize.INTEGER,
     local_ship_desc: Sequelize.STRING,
     status: Sequelize.BOOLEAN,
     status_txt: Sequelize.STRING(32),
-    allow_free_ship:Sequelize.BOOLEAN,
+    allow_free_ship: Sequelize.BOOLEAN,
     shipfee_desc: {
         'type': Sequelize.STRING(1024),
         'allowNull': false,
@@ -380,10 +378,10 @@ let ProductSource = sequelize.define('productsource', {
     second_ship_fee: Sequelize.INTEGER,
     create_time: Sequelize.STRING,
     update_time: Sequelize.STRING,
-    origin_country:Sequelize.STRING(32),
-    origin_province:Sequelize.STRING(32),
-    origin_city:Sequelize.STRING(32),
-    key_word:Sequelize.STRING(256)
+    origin_country: Sequelize.STRING(32),
+    origin_province: Sequelize.STRING(32),
+    origin_city: Sequelize.STRING(32),
+    key_word: Sequelize.STRING(256)
 }, {
     'deletedAt': 'dtime',
     'paranoid': true,
@@ -442,11 +440,11 @@ let ProductSource = sequelize.define('productsource', {
                 `origin_city`,
                 `allow_free_ship`,
                 `key_word`,
-                `initial_ship_fee`,`createdAt`,`updatedAt`],
+                `initial_ship_fee`, `createdAt`, `updatedAt`],
             where: {
                 status: 1
             },
-            include:[
+            include: [
                 ProductCategory,
                 Supplier
             ]
@@ -500,11 +498,11 @@ let ProductSource = sequelize.define('productsource', {
                 `update_time`,
                 `allow_free_ship`,
                 `key_word`,
-                `initial_ship_fee`,`createdAt`,`updatedAt`],
+                `initial_ship_fee`, `createdAt`, `updatedAt`],
             where: {
                 status: 1
             },
-            include:[
+            include: [
                 ProductCategory,
                 Supplier
             ]
@@ -512,7 +510,7 @@ let ProductSource = sequelize.define('productsource', {
     }
 });
 
-let SaleShop_ProductSource=sequelize.define('saleshop_productsource', {
+let SaleShop_ProductSource = sequelize.define('saleshop_productsource', {
     sort: {
         'type': Sequelize.INTEGER,
         'allowNull': false,
@@ -520,49 +518,29 @@ let SaleShop_ProductSource=sequelize.define('saleshop_productsource', {
     }
 }, {
     hooks: {
-        afterCreate: function(obj, options) {
+        afterCreate: function (obj, options) {
 
         },
     }
-});
-
-//由关联表改为独立表
-let Buyment = sequelize.define('buyment', {
-    orderID: Sequelize.STRING(32),
-    amount: Sequelize.DECIMAL(8,2),//商品合计的金额
-    pay_amount: Sequelize.DECIMAL(8,2),//需实际支付的金额
-    coupon: Sequelize.STRING(32),
-    status: {
-        'type': Sequelize.STRING(11),
-        'allowNull': false,
-        'defaultValue': '0'
-        //0：等待支付/1：等待发货/2：已发货/3|31：已签收/98:取消
-    }
-});
-Buyment.hook('afterCreate', function (buying1, options) {
-});
-
-//订单中购买的商品
-let BuyItem = sequelize.define('buyitem', {
-    pcs: Sequelize.INTEGER, //购买份数,
-    price: Sequelize.DECIMAL(8,2) //购买时的价格
 });
 
 //支付记录:
 //分三类: 单笔订单支付, 复合多笔支付, 退款记录
 //退款记录只对应到单笔支付记录上,mergepay记录没有直接对应的退款记录(因为没有合并退款,退款都是针对单个商品的)
 let PayRecord = sequelize.define('payrecord', {
-    out_trade_no: Sequelize.STRING(64), //外部跟踪编号
-    trantype: {'type': Sequelize.STRING, 'allowNull': false, 'defaultValue': "pay"},//交易类型: pay(默认) / refund
-    payAmount: Sequelize.DECIMAL(8,2),//支付金额
-    pay_type: Sequelize.STRING, //'weixin', 'alipay'
-    isSelf: Sequelize.BOOLEAN,  //是否为自己支付,
-    success: Sequelize.BOOLEAN, //是否支付成功
-    transaction_id: Sequelize.STRING(64),   //第三方支付记录编号, 只有成功支付的才会有, 包括退款
-    ori_out_trade_no: Sequelize.STRING //退款记录时,记录原付款记录的交易跟踪号
-});
+        out_trade_no: Sequelize.STRING(64), //外部跟踪编号
+        trantype: {'type': Sequelize.STRING, 'allowNull': false, 'defaultValue': "pay"},//交易类型: pay(默认) / refund
+        payAmount: Sequelize.DECIMAL(8, 2),//支付金额
+        pay_type:{ 'type':Sequelize.STRING,'allowNull': false, 'defaultValue': "weixin" } , //'weixin', 'alipay'
+        isSelf:{ 'type':Sequelize.BOOLEAN,'allowNull': false, 'defaultValue': 1 },  //是否为自己支付,默认是,
+        success:{ 'type':Sequelize.BOOLEAN,'allowNull': false, 'defaultValue': 0 } , //是否支付成功
+        transaction_id: Sequelize.STRING(64),   //第三方支付记录编号, 只有成功支付的才会有, 包括退款
+        ori_out_trade_no: Sequelize.STRING, //退款记录时,记录原付款记录的交易跟踪号
+        orderID: Sequelize.STRING(64)
+    }
+)
 
-let Paynotify_weixin= sequelize.define('paynotify_weixin',
+let Paynotify_weixin = sequelize.define('paynotify_weixin',
     {
         appid: {'type': Sequelize.STRING, 'allowNull': false, 'defaultValue': ""},
         bank_type: {'type': Sequelize.STRING, 'allowNull': false, 'defaultValue': ""},
@@ -586,7 +564,7 @@ let Paynotify_weixin= sequelize.define('paynotify_weixin',
         indexes: [
             {
                 name: 'idx_paynotify_transaction_id',
-                fields: ['transaction_id','time_end'],
+                fields: ['transaction_id', 'time_end'],
                 unique: true
             },
             {
@@ -599,7 +577,7 @@ let Paynotify_weixin= sequelize.define('paynotify_weixin',
 );
 
 //热搜
-let HotSearch=sequelize.define('hotsearch', {
+let HotSearch = sequelize.define('hotsearch', {
     district: Sequelize.STRING(32),
     code: Sequelize.STRING(16),
     name: Sequelize.STRING(32)
@@ -610,7 +588,7 @@ let UserKeyProp = sequelize.define('userkeyprop', {
     uid: Sequelize.STRING(64),
     propKey: Sequelize.STRING(128),
     propValue: Sequelize.STRING(512),
-    random:Sequelize.INTEGER,
+    random: Sequelize.INTEGER,
 }, {
     indexes: [{
         name: 'idx_UserKeyProp',
@@ -644,9 +622,9 @@ let RefundLog_Weixin = sequelize.define('refundlog_weixin', {
     'paranoid': true
 });
 
-let SMSMessage=sequelize.define('smsmessage',{
-    targetPhones:Sequelize.STRING(512),
-    content:Sequelize.STRING(1024),
+let SMSMessage = sequelize.define('smsmessage', {
+    targetPhones: Sequelize.STRING(512),
+    content: Sequelize.STRING(1024),
     sendNum: {
         type: Sequelize.INTEGER,
         defaultValue: 0
@@ -676,38 +654,24 @@ ShopkeeperInfo.hasMany(SaleShop);
 SaleShop.belongsTo(ShopkeeperInfo);
 //订单与用户\微店\订单商品\支付
 //订单 N:1 用户
-Buyment.belongsTo(RegUser);
-RegUser.hasMany(Buyment);
-//订单 N:1 微店
-Buyment.belongsTo(SaleShop);
-SaleShop.hasMany(Buyment);
-//订单 1:N 订单商品
-Buyment.hasMany(BuyItem);
-BuyItem.belongsTo(Buyment);
-//订单 1:N 支付记录
-Buyment.hasMany(PayRecord); //每个订单可以建立多个支付请求,但确保只有一个成功支付
-PayRecord.belongsTo(Buyment);
 //支付记录1:1支付者(用户)
-RegUser.hasMany(PayRecord, {as: 'Payer', foreignKey:"payerID"});
-PayRecord.belongsTo(RegUser, {as: 'Payer', foreignKey:"payerID"});
+RegUser.hasMany(PayRecord, {as: 'Payer', foreignKey: "payerID"});
+PayRecord.belongsTo(RegUser, {as: 'Payer', foreignKey: "payerID"});
 //支付记录 1:N 支付通讯日志
 PayRecord.hasMany(Paynotify_weixin);
 Paynotify_weixin.belongsTo(PayRecord);
 
 //关注:
 //店主关注供应商
-SaleShop.belongsToMany(ProductSource, { through: SaleShop_ProductSource, as:'FavProductSource' });
-ProductSource.belongsToMany(SaleShop, { through: SaleShop_ProductSource, as:'FollowerSaleShop'  });
+SaleShop.belongsToMany(ProductSource, {through: SaleShop_ProductSource, as: 'FavProductSource'});
+ProductSource.belongsToMany(SaleShop, {through: SaleShop_ProductSource, as: 'FollowerSaleShop'});
 
 module.exports.RegUser = RegUser;
 module.exports.Supplier = Supplier;
-module.exports.ShopkeeperInfo=ShopkeeperInfo;
+module.exports.ShopkeeperInfo = ShopkeeperInfo;
 module.exports.ProductSource = ProductSource;
 module.exports.SaleShop = SaleShop;
-module.exports.ShopManagerInfo=ShopManagerInfo;
-
-module.exports.Buyment = Buyment;
-module.exports.BuyItem = BuyItem;
+module.exports.ShopManagerInfo = ShopManagerInfo;
 module.exports.PayRecord = PayRecord;
 module.exports.ProductCategory = ProductCategory;
 module.exports.UserKeyProp = UserKeyProp;
@@ -716,22 +680,19 @@ module.exports.Paynotify_weixin = Paynotify_weixin;
 module.exports.HotSearch = HotSearch;
 module.exports.SMSMessage = SMSMessage;
 
-module.exports.SaleShop_ProductSource=SaleShop_ProductSource;
+module.exports.SaleShop_ProductSource = SaleShop_ProductSource;
 
 
 //由sql组成的函数方法,注意:需要对传入的所有参数做防SQL注入过滤(字符串替换或数值转换操作)
-module.exports.Functions = {
-
-};
+module.exports.Functions = {};
 
 if (process.env.BUID == 78901234 && process.env.DEBUG == 'resetdb3') {
     if (process.env.NODE_ENV != 'production') {
-        sequelize.sync({ force: true }).then(function () {
+        sequelize.sync({force: true}).then(function () {
             console.info("DB Inited! ");
         });
     }
 }
-
 
 
 //BUID=78901234 DEBUG=resetdb3 NODE_ENV=development node test/run-resetModel.js

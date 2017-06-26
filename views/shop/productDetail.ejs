@@ -8,56 +8,35 @@
         <div class="swiper-wrapper">
             <% productInfo.images.length > 0 && productInfo.images.map(function (image) { %>
             <div class="swiper-slide">
-                <img src="<%- image %>" alt="">
+                <img src="<%= image %>" alt="">
             </div>
             <% }) %>
         </div>
     </div>
-
-    <p class="productPrice"><%= productInfo.retail_price %>
-        <span><%= productInfo.market_price %></span>
-    </p>
-
-    <p class="productName"><%= productInfo.name %></p>
-
-    <div class="productAmount">
-        <p>购买数量</p>
-        <div class="btnGroup">
-            <div>+</div>
-            <input type="number" value="0">
-            <div>-</div>
+    <div class="productName">
+        <p class="productNameText">
+            <%= productInfo.name %>
+        </p>
+        <p class="productDesc">
+            <%= productInfo.brief %>
+        </p>
+    </div>
+    <div class="productPrice">
+        <div class="price_wrap">
+            <span class="price" id="priceSale"><%= productInfo.retail_price%></span>
         </div>
     </div>
-
-    <div style="height: 30px;width: 100%;border-bottom: 2px solid #EFEFEF;"></div>
-
     <div class="productDetail">
         <%- productInfo.intro %>
     </div>
 </div>
-<div class="productFloatBottomBar">
-    <div>
-        <img src="/images/icon_tabbar.png" alt="">
-        <p>电话</p>
-    </div>
-    <div>
-        <img src="/images/icon_tabbar.png" alt="">
-        <p>购物车</p>
-    </div>
-    <div>
-        加入购物车
-    </div>
-    <div>
-        立即购买
-    </div>
-</div>
+<% include ./../components/productFloatBottomBar.ejs %>
 <% include ./../footer.ejs %>
 <script type='text/javascript' src="/libs/jq-weui/js/swiper.min.js" charset='utf-8'></script>
 <script type="text/javascript">
     $(document).ready(function () {
         //轮播
-        $('.swiper-container')
-                .css('height', window.innerWidth)
+        $('.swiper-container')//轮播图统一传750*750的图片
                 .swiper({
                     loop: true,
                     autoplay: 4000

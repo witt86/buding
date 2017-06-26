@@ -13,13 +13,14 @@ import main from './routes/main';
 import wechat_auth from "./server/wechat/wechat_auth.js";
 import _businessTool from './server/util/BusinessTool';
 import xhr_wx_js_config from "./routes/xhr_wx_js_config";
-
+import wxpay_notify from "./server/wechat/wechat_paynotify";
+import * as types from './server/constants';
 import moment from "moment";
 
 var app = express();
 
 import router_shop from './routes/shop';
-
+import router_order from './routes/order';
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -53,6 +54,7 @@ app.use(session({
 }));
 
 app.locals.moment = moment;
+app.locals.types=types;
 app.locals._ = _;
 //全局http处理函数, 用在服务器端express/ejs页面中。react产品端用不到
 app.use(function(req, res, next) {
@@ -79,12 +81,26 @@ app.use(function(req, res, next) {
 
 app.use("/xhr_wx_js_config_js", xhr_wx_js_config);
 
+//接收微信的支付成功的异步通知
+app.use("/wxpay_notify", wxpay_notify);
+
 // app.get('*',wechat_auth, routes);
 //api
 app.use("/api",main);
 
 //店铺
 app.use("/shop",wechat_auth,router_shop);
+//订单
+app.use("/order",wechat_auth,router_order);
+
+//清空当前访问者的session
+app.get("/___clearsession", async (req, res) => {
+  if (req.session.user) {
+    req.session.user = null;
+    console.error("___clearsession.......ok!");
+  }
+  res.alert(types.ALERT_SUCCESS, "您的session已清空", " ");
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -92,8 +108,6 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
-
-// error handlers
 
 // development error handler
 // will print stacktrace
