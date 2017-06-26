@@ -1,0 +1,71 @@
+html, body {
+  height: 100%;
+  width: 100%;
+  font-family: sans-serif;
+}
+
+.floatBottomBar {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 50px;
+  z-index: 100;
+  background: #fff;
+}
+.floatBottomBar .floatBottomItem,
+.floatBottomBar .floatBottomItem:visited {
+  width: 19%;
+  float: left;
+  display: inline-block;
+  height: 100%;
+  text-align: center;
+  font-size: 12px;
+  line-height: 14px;
+  color: #000;
+}
+.floatBottomBar .floatBottomItem img {
+  width: 25px;
+  height: auto;
+  margin-top: 5px;
+}
+.floatBottomBar .floatBottomBigItem,
+.floatBottomBar .floatBottomBigItem:visited {
+  width: 24%;
+  float: left;
+  display: inline-block;
+  height: 100%;
+  text-align: center;
+  font-size: 12px;
+  position: relative;
+  color: #000;
+}
+@whfloatBottomBigItem:60px;
+.floatBottomBar .floatBottomBigItem div {
+  background-color: #eceaea;
+  border-radius: 50%;
+  width: @whfloatBottomBigItem;
+  height: @whfloatBottomBigItem;
+  position: absolute;
+  left: 50%;
+  top: -30px;
+  text-align: center;
+  margin-left: -@whfloatBottomBigItem/2;
+}
+
+.floatBottomBar .floatBottomBigItem div img {
+  @wh:30px;
+  @mt:60px-@wh;
+  width: @wh;
+  height: @wh;
+  margin-top:@mt/2;
+}
+.floatBottomBar .floatBottomBigItem p {
+  margin-top: 30px;
+}
+
+.floatBottomBar .routeActive p {
+  color: #D8013C !important;
+}
+
+

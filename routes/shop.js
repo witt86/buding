@@ -1,10 +1,21 @@
 import { Router } from "express";
-
 import TMSProductAPI from './../server/lib/TMSProductAPI';
-
-import DataModel from './../server/model/DataModel';
-
+import * as DataModel from './../server/model/DataModel';
+import * as types from './../server/constants';
 const router = new Router();
+
+router.all("*",async (req, res, next)=>{
+    if(!req.session.user) {
+        const msg = "请先登录!";
+        if (req.xhr) {
+            res.json({err: msg, result: ""});
+        } else {
+            res.alert(types.ALERT_WARN, msg, " ");
+        }
+        return;
+    }
+    next();
+});
 
 router.get('/:shopcode', async (req, res, next) => {
     try{
@@ -55,6 +66,18 @@ router.get('/:shopcode/productDetail/:code', async (req, res, next) => {
         res.render('shop/productDetail', rs);
     }catch (e){
         console.error('-----e:/productDetail-----');
+        console.error(e);
+    }
+});
+
+router.get('/:shopcode/ordersettle', async (req, res, next) => {
+    try{
+        let [rs,shopcode] = [{},req.params.shopcode];
+        rs.title="填写订单";
+        rs.shopcode=shopcode;
+        res.render('shop/orderSettle', rs);
+    }catch (e){
+        console.error('-----e:/ordersettle-----');
         console.error(e);
     }
 });

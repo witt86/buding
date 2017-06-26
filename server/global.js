@@ -1,25 +1,18 @@
+import _config from './../config.js';
+import * as util from './util/util';
 import redis from 'redis';
-import Promise from 'bluebird';
+import fs from 'fs';
 import wechatAPI from 'wechat-api';
 import WXPay from 'weixin-pay';
+import Promise from 'bluebird';
+import ext from './wechat/wechat-api-ext.js';
 import request from 'request';
 import xml2js from 'xml2js';
-import _config from './../config.js';
-import {getValue, setValue} from './model/AppGlobal';
-import ext from './wechat/wechat-api-ext.js';
+import path from "path";
+import qiniu from 'qiniu';
+
 Promise.promisifyAll(request);
 
-global.appsetting = {
-    set:async (key, value)=> {
-        setValue({uid: -99, key, value: JSON.stringify(value)});
-    },
-    get:async (key)=> {
-        const avalue = await getValue({uid: -99, key});
-        if (!avalue)
-            return null;
-        return JSON.parse(avalue.propValue);
-    }
-};
 
 const redisClient = global.redisClient = redis.createClient({
     host:_config.redis.host,
@@ -34,6 +27,7 @@ global.redisClient.on("error", function (err) {
 
 const tokenKey_forappID = _config.wxconfig.appid + "_wechatapitoken";
 const tokenKey_jsTicket_forappID = _config.wxconfig.appid + "_wechatapitoken_jsticket";
+
 
 wechatAPI.mixin( ext );
 global.wechat_api=new wechatAPI(_config.wxconfig.appid, _config.wxconfig.secret, async function (callback) {
@@ -56,7 +50,7 @@ global.wechat_api=new wechatAPI(_config.wxconfig.appid, _config.wxconfig.secret,
     try {
         await redisClient.setAsync(tokenKey_forappID, JSON.stringify(token));
         //redis中缓存的值, 提前10秒失效
-        const diff = Math.max(1, Math.floor((token.expireTime - new Date().getTime())/1000-1800));
+        const diff = Math.max(1, Math.floor((token.expireTime - new Date().getTime())/1000-10));
         console.log(`-------------- wechat_api 设置全局token=${JSON.stringify(token)} ---expire Second=${diff}-------`);
         await global.redisClient.expireAsync(tokenKey_forappID, diff);
         callback(null, true);
@@ -109,16 +103,7 @@ const clearWeChatData=(data)=>{
         copydata[key]=v;
     }
     return copydata;
-};
-
-global.wechat_api.sendTemplateAsyncCopy=global.wechat_api.sendTemplateAsync;
-global.wechat_api.sendTemplateAsync=async (openid,templateId,url,data)=>{
-    if (!openid||!templateId||!data)throw '参数不允许为空!';
-    const senddata=clearWeChatData(data);//清洗字段
-
-    let result=  await  global.wechat_api.sendTemplateAsyncCopy(openid,templateId,url,senddata); //客户消息推送
-    return result;
-};
+}
 
 WXPay.mix('EnterprisePay', async (opts,fn)=>{
     try{
@@ -136,7 +121,7 @@ WXPay.mix('EnterprisePay', async (opts,fn)=>{
                 pfx: wxpay.options.pfx,
                 passphrase: wxpay.options.mch_id
             }
-        };
+        }
         let {body}=await request.postAsync(query);
         let parser = new xml2js.Parser({ trim:true, explicitArray:false, explicitRoot:false });
         Promise.promisifyAll(parser);
@@ -151,6 +136,27 @@ WXPay.mix('EnterprisePay', async (opts,fn)=>{
     }
 });
 
+const wxpay = global.wxpay = WXPay({
+    appid: _config.wxconfig.pay.appid,
+    mch_id: _config.wxconfig.pay.mch_id,
+    partner_key: _config.wxconfig.pay.partner_key, //微信商户平台API密钥
+    pfx: fs.readFileSync('./apiclient_cert.p12')//微信商户平台证书
+});
+Promise.promisifyAll(global.wxpay);
+
+global.EnterprisePay= async (partner_trade_no,wx_openID,money)=>{
+    let PayParams={
+        partner_trade_no: partner_trade_no,
+        openid: wx_openID,
+        check_name: 'NO_CHECK',
+        amount: money * 100,
+        desc: '导游收益提现',
+        spbill_create_ip: _config.siteIP
+    }
+    let PayResult=await global.wxpay.EnterprisePay(PayParams);
+    return PayResult;
+};
+
 export const initWeixinTokens = async ()=> {
     //当pm2运行模式时, 利用NODE_APP_INSTANCE环境变量,让第一个进程实例来清空redis中的token缓存
     const type = "jsapi";
@@ -162,4 +168,69 @@ export const initWeixinTokens = async ()=> {
     setTimeout(()=> {
         console.dir('-------------- weixin tokens refreshed! -------------- ');
     }, 10000);
+};
+
+const saveBufferTo7liu=global.saveBufferTo7liu= (buffer,bucketname,siteurl,key)=> {
+    return new Promise((resolve,reject)=>{
+        qiniu.conf.ACCESS_KEY = _config.qiniu.ACCESS_KEY;
+        qiniu.conf.SECRET_KEY = _config.qiniu.SECRET_KEY;
+        const putPolicy = new qiniu.rs.PutPolicy(bucketname);
+        const token = putPolicy.token();
+
+        const fileName = "data/" + new Date().getTime() + ".jpg";
+
+        fs.writeFile(fileName, buffer, function (err) {
+            if (err) {
+                console.error(`保存图片到本地发生错误:${err}`);
+                reject(err);
+                return;
+            }
+            console.log(`__dirname:${__dirname}`);
+            const filepath=path.join(__dirname,`./../../${fileName}`);
+            uploadFile2Qiniu(token,key,filepath,function (err, rethash, retkey, retpersistentId) {
+                if (err){
+                    reject(err);
+                }else {
+                    // fs.unlinkSync(filepath);
+                    resolve(siteurl + "/" + key);
+                }
+            });
+        });
+    });
+};
+function uploadFile2Qiniu(token,key,filepath,callback) {
+    var extra = new qiniu.io.PutExtra();
+    qiniu.io.putFile(token, key, filepath, extra, function (err, ret) {
+        if (!err) {
+            // 上传成功， 处理返回值
+            callback(err, ret.hash, ret.key, ret.persistentId);
+        } else {
+            // 上传失败， 处理返回代码
+            callback(err, null);
+        }
+    });
 }
+function createQiniuToken() {
+    var bucketname = _config.qiniu.SITE_bucket;
+    var putPolicy = new qiniu.rs.PutPolicy(bucketname);
+    return putPolicy.token();
+}
+
+const errorObj=(code,msg,error)=>{
+   const errObj={ code,msg,error };
+   console.dir(errObj);
+   return errObj;
+};
+global.errobj=function () {
+    if (arguments.length<=0)return;
+    else if (arguments.length=1){
+        return arguments[0];
+    }else if (arguments.length=2){
+        return errorObj(arguments[0],arguments[1]);
+    }else{
+        return errorObj(arguments[0],arguments[1],arguments[2]);
+    }
+}
+
+
+

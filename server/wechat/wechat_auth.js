@@ -32,7 +32,11 @@ Promise.promisifyAll(oauthApi);
 
 export const InjectSimulateUserSession = async(req, res, next) => {
     console.info('模拟微信用户。。。');
-    global.weixin_user = require('./../../fixture/wx_wangtao.json');
+    if (process.env.WXUSER) {
+        global.weixin_user = require('./../../fixture/' + process.env.WXUSER + '.json');
+    } else {
+        global.weixin_user = require('./../../fixture/wx_caijianbo.json');
+    }
     //获取微信用户身份，绑定土猴身份信息
     const userInfo = await User.findAndCreateUserFromWeixinAuthor(global.weixin_user);
     req.session.user = userInfo.get();
