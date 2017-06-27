@@ -2,6 +2,7 @@ import { Router } from "express";
 import TMSProductAPI from './../server/lib/TMSProductAPI';
 import * as DataModel from './../server/model/DataModel';
 import * as types from './../server/constants';
+import * as Shop from './../server/model/Shop';
 const router = new Router();
 
 router.all("*",async (req, res, next)=>{
@@ -73,14 +74,35 @@ router.get('/:shopcode/productDetail/:code', async (req, res, next) => {
 router.get('/:shopcode/ordersettle', async (req, res, next) => {
     try{
         let [rs,shopcode] = [{},req.params.shopcode];
+        const user=req.session.user;
         rs.title="填写订单";
         rs.shopcode=shopcode;
+
+        let shopCartItems=await Shop.GetShopCart({ uid:user.uid,select:1,shopcode });
+
+        rs.shopCartItems=shopCartItems;
+
         res.render('shop/orderSettle', rs);
     }catch (e){
         console.error('-----e:/ordersettle-----');
         console.error(e);
     }
 });
+
+router.get('/:shopcode/orderpayresult', async (req, res, next) => {
+    try{
+        let [rs,shopcode] = [{},req.params.shopcode];
+        const user=req.session.user;
+        rs.title="支付结果";
+        rs.shopcode=shopcode;
+        res.render('shop/orderPayResult', rs);
+    }catch (e){
+        console.error('-----e:/ordersettle-----');
+        console.error(e);
+    }
+});
+
+
 
 router.all("*",async (req, res, next)=> {
     res.render('unknown');

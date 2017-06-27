@@ -14,20 +14,17 @@
 </header>
 <div class="order-tab bdb-1px">
     <ul>
-        <li class="li_orderlist" func-id="newUserAllOrderList">
+        <li class="li_orderlist <%= fun_id=='newUserAllOrderList'?'curr':'' %>" func-id="newUserAllOrderList">
             <a href="javascript:;"><span>全部</span></a>
         </li>
-        <li class="li_orderlist curr" func-id="wait4Payment">
+        <li class="li_orderlist <%= fun_id=='wait4Payment'?'curr':'' %>" func-id="wait4Payment">
             <a href="javascript:;"><span>待付款</span></a>
         </li>
-        <li class="li_orderlist" func-id="wait4Delivery">
+        <li class="li_orderlist <%= fun_id=='wait4Delivery'?'curr':'' %>" func-id="wait4Delivery">
             <a href="javascript:;"><span>待收货</span></a>
         </li>
-        <li class="li_orderlist" func-id="userCompletedOrderList">
+        <li class="li_orderlist <%= fun_id=='userCompletedOrderList'?'curr':'' %>" func-id="userCompletedOrderList">
             <a href="javascript:;"><span>已完成</span></a>
-        </li>
-        <li class="li_orderlist" func-id="otherOrderList">
-            <a href="javascript:;"><span>其他订单</span></a>
         </li>
     </ul>
 </div>
@@ -42,13 +39,12 @@
         <span>您还没有相关订单</span>
     </div>
 </div>
-
 <script type="text/html" id="tpl_orderList">
     <~ if(orderlist && orderlist.length>0 ) { ~>
 
     <~ orderlist.forEach(function(item){ ~>
 
-    <div class="weui-panel  nopadding weui-panel_access">
+    <div class="weui-panel nopadding weui-panel_access" onclick="go_to('/order/orderdetail/<~= item.order_no~>')">
         <div class="weui-panel__hd weui-flex">
             <div class="weui-flex__item" style="color: #000;">
                    <span style="overflow: hidden;
@@ -126,27 +122,55 @@
 
     <~ } ~>
 </script>
-
 <% include ../footer.ejs %>
 <script>
+    $(function () {
+        $(".li_orderlist").click(function () {
+            $(".li_orderlist").removeClass('curr');
+            $(this).addClass("curr");
+            var func_id=$(this).attr("func-id");
+            getOrderListByFun_ID(func_id);
+        });
+        var fun_id="<%= fun_id %>";
+        getOrderListByFun_ID(fun_id);
+    });
+
+    function getOrderListByFun_ID(func_id) {
+        if (func_id=="newUserAllOrderList"){
+            loadOrder("",0);//全部
+        }else if (func_id=="wait4Payment"){
+            loadOrder(0,0);//待付款
+        }else if (func_id=="wait4Delivery"){
+            loadOrder(2,0);//待收货
+        }else if (func_id=="userCompletedOrderList"){
+            loadOrder("3,31",0);//已完成
+        }
+    }
     //加载订单
     function loadOrder(status, pos) {
-        ApiInvokeAdmin("order", "GetOrderList", {status: status, pos: pos, size: 10}, function (err, result) {
+        ApiInvoke("order", "GetOrderList", {status: status, pos: pos, size: 100}, function (err, result) {
             if (err) {
-
+                $("#noOrder").show();
+                $("#allOrders").hide();
             } else {
-                var render_tpl_orderlistview = _.template($("#tpl_orderList").html().replace(/\~/igm, "%"));
-                var render_tpl_orderlistviewHtml=render_tpl_orderlistview({orderlist: result});
-                $("#allOrders").append(render_tpl_orderlistviewHtml);
+                if (!result || result.length==0){
+                    $("#noOrder").show();
+                    $("#allOrders").hide();
+                    return;
+                }else {
+                    $("#noOrder").hide();
+                    $("#allOrders").show();
+                    var render_tpl_orderlistview = _.template($("#tpl_orderList").html().replace(/\~/igm, "%"));
+                    var render_tpl_orderlistviewHtml=render_tpl_orderlistview({orderlist: result});
+
+                    if (pos==0){
+                        $("#allOrders").html(render_tpl_orderlistviewHtml);
+                    }else {
+                        $("#allOrders").append(render_tpl_orderlistviewHtml);
+                    }
+                }
             }
         });
     }
-
-    $(function () {
-        loadOrder('',0);
-    });
-
-
-
 </script>
 </html>

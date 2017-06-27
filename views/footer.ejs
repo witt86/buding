@@ -23,6 +23,11 @@
 <script>
     $(document).ready(function () {
         FastClick.attach(document.body);
+        if ($("#reset_btn_back")){
+            $("#reset_btn_back").click(function () {
+                window.history.go(-1);
+            });
+        }
     });
 </script>
 

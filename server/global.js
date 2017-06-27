@@ -14,12 +14,12 @@ import qiniu from 'qiniu';
 Promise.promisifyAll(request);
 
 
-const redisClient = global.redisClient = redis.createClient({
+const _redisClient = global.redisClient = redis.createClient({
     host:_config.redis.host,
     port:_config.redis.port
 });
 
-Promise.promisifyAll(redisClient);
+Promise.promisifyAll(_redisClient);
 global.redisClient.on("error", function (err) {
     console.error("redisClient .. Error ");
     console.error( err );
@@ -48,7 +48,7 @@ global.wechat_api=new wechatAPI(_config.wxconfig.appid, _config.wxconfig.secret,
     }
 },async function (token, callback) {
     try {
-        await redisClient.setAsync(tokenKey_forappID, JSON.stringify(token));
+        await _redisClient.setAsync(tokenKey_forappID, JSON.stringify(token));
         //redis中缓存的值, 提前10秒失效
         const diff = Math.max(1, Math.floor((token.expireTime - new Date().getTime())/1000-10));
         console.log(`-------------- wechat_api 设置全局token=${JSON.stringify(token)} ---expire Second=${diff}-------`);
@@ -80,7 +80,7 @@ global.wechat_api.registerTicketHandle(async (type, callback)=>{
 }, async (type, _ticketToken, callback)=>{
     const cacheKey = type+"_"+tokenKey_jsTicket_forappID;
     try {
-        await redisClient.setAsync(cacheKey, JSON.stringify(_ticketToken));
+        await _redisClient.setAsync(cacheKey, JSON.stringify(_ticketToken));
         //redis中缓存的值, 提前10秒失效
         const diff = Math.max(1, Math.floor((_ticketToken.expireTime - new Date().getTime())/1000 -10 ));
         console.log(`-------------- registerTicketHandle saveTicketToken=${JSON.stringify(_ticketToken)} ----expire Second=${diff}--------`);
@@ -160,8 +160,8 @@ global.EnterprisePay= async (partner_trade_no,wx_openID,money)=>{
 export const initWeixinTokens = async ()=> {
     //当pm2运行模式时, 利用NODE_APP_INSTANCE环境变量,让第一个进程实例来清空redis中的token缓存
     const type = "jsapi";
-    await redisClient.delAsync(type + "_" + tokenKey_jsTicket_forappID);
-    await redisClient.delAsync(tokenKey_forappID);
+    await _redisClient.delAsync(type + "_" + tokenKey_jsTicket_forappID);
+    await _redisClient.delAsync(tokenKey_forappID);
     global.wechat_api.getLatestTicket(async(err, result)=> {
         console.log(`-------------- global.wechat_api.getTicket=${JSON.stringify(result)} --------------`);
     });
@@ -223,9 +223,10 @@ const errorObj=(code,msg,error)=>{
 };
 global.errobj=function () {
     if (arguments.length<=0)return;
-    else if (arguments.length=1){
+    else if (arguments.length==1){
+
         return arguments[0];
-    }else if (arguments.length=2){
+    }else if (arguments.length==2){
         return errorObj(arguments[0],arguments[1]);
     }else{
         return errorObj(arguments[0],arguments[1],arguments[2]);
