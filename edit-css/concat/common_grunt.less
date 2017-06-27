@@ -774,7 +774,7 @@ html, body {
     }
     .productDetail {
       margin-top: 20px;
-      width: calc(~"100% - @{xww}");
+      width: 100%;
       padding: 0 15px;
       text-align: left;
       img {
@@ -835,9 +835,124 @@ html, body {
     background: #f8f8f8;
     width: 100%;
     height: 100%;
+    .select (@left,@bottom) {
+      div {
+        display: inline-block;
+        position: absolute;
+        left: @left;
+        bottom: @bottom;
+        height: 39px;
+        input {
+          display: none;
+        }
+        label {
+          border: 1px solid #999;
+          padding: 10px;
+          border-radius: 10px;
+          display: inline-block;
+          color: #fff !important;
+        }
+        input:checked + label {
+          content: url(/images/duigou.png);
+          border: none;
+          padding: 0;
+          width: 24px;
+          height: 24px;
+          color: #fff !important;
+        }
+      }
+    }
     .shopCarBody {
       width: 100%;
       height: 100%;
+      padding-bottom: 55px;
+      overflow-y: scroll;
+      .shopCarItem {
+        margin: 10px 5px 0 5px;
+        width: calc(~"100% - 10px");
+        height: 135px;
+        position: relative;
+        background: #fff;
+        .shopCarSelect {
+          .select(5px,53px)
+        }
+        .shopCarImg {
+          padding-top: 10px;
+          margin-left: 35px;
+          height: 100px;
+          width: 90px;
+          img {
+            width: 100%;
+            height: 100%;
+          }
+        }
+        .shopCarItemInfo {
+          position: absolute;
+          top: 10px;
+          right:5px;
+          height: 90px;
+          width: calc(~'100% - 35px - 100px');
+          p {
+            font-size: 15px;
+            max-height: 48px;
+            overflow: hidden;
+          }
+          span {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            color: #F52D26;
+            font-size: 16px;
+          }
+          span:before {
+            content: '￥';
+            color: #F52D26;
+            font-size: 16px;
+          }
+          .shopCarBtns {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            border: 1px solid #ccc;
+            border-radius: 1px;
+            div {
+              height: 25px;
+              line-height: 25px;
+              float: right;
+              width: 25px;
+              text-align: center;
+              box-sizing: border-box;
+            }
+            input {
+              float: right;
+              height: 25px;
+              line-height: 30px;
+              width: 35px;
+              text-align: center;
+              box-sizing: border-box;
+              border:none;
+            }
+          }
+        }
+        .shopCarOpt {
+          position: absolute;
+          bottom: 5px;
+          right: 5px;
+          div {
+            padding: 0 10px;
+            font-size: 14px;
+            border-left: 1px solid #ccc ;
+            float: right;
+            margin-left: 15px;
+          }
+        }
+      }
+      .shopCarEmpty {
+        padding-top: 250px;
+        text-align: center;
+        color: #aaa;
+        font-size: 24px;
+      }
     }
     .shopCarBar {
       position: fixed;
@@ -855,31 +970,7 @@ html, body {
         float: left;
         display: inline-block;
         padding-left: 40px;
-        div {
-          display: inline-block;
-          position: absolute;
-          left: 10px;
-          bottom: 5px;
-          height: 39px;
-          input {
-            display: none;
-          }
-          label {
-            border: 1px solid #999;
-            padding: 12px;
-            border-radius: 12px;
-            display: inline-block;
-            color: #fff !important;
-          }
-          input:checked + label {
-            content: url(/images/duigou.png);
-            border: none;
-            padding: 0;
-            width: 26px;
-            height: 26px;
-            color: #fff !important;
-          }
-        }
+        .select(10px,7px)
       }
       .shopCarCount {
         height: 50px;

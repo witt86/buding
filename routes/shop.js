@@ -1,6 +1,7 @@
 import { Router } from "express";
 import TMSProductAPI from './../server/lib/TMSProductAPI';
 import * as DataModel from './../server/model/DataModel';
+import * as Shop from './../server/model/Shop';
 import * as types from './../server/constants';
 const router = new Router();
 
@@ -109,14 +110,15 @@ router.get('/:shopcode/shopCar', async (req, res, next) => {
 
         rs.shopCar = await TMSProductAPI('get_shopcart',{
             uid:uid,
-            is_selected:0
+            agent_code:'05987386'
         });
 
         rs.title = '购物车';
         rs.shopcode = shopcode;
         rs.type = 'shopCar';
+        rs.isAll = await Shop.checkAll({shopCar:rs.shopCar});
 
-        console.log(rs.shopCar);
+        console.log(rs);
         res.render('shop/shopCar', rs);
     }catch (e){
         console.error('-----e:/shopCar-----');
