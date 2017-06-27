@@ -100,7 +100,7 @@ app.use("/user",wechat_auth,router_user);
 //支付
 app.get("/dopay/:orderId",wechat_auth, async ( req,res )=> {
       const orderId=req.params.orderId;
-      const { status,shopcode }=req.query;
+      const { status,shopcode="05987386" }=req.query;
       let buttons=[
         {url: '/order/orderlist', title: '我的订单'},
         {url: '/shop/'+shopcode, title: '商城首页'},

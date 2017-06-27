@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <% include ./header.ejs %>
-<body class="dopay">
+<body class="<% status==undefined?'dopay':'' %>">
 <% if (status==undefined) { %>
 
 <header>
@@ -84,10 +84,9 @@
                 console.log(requestSign);
                 wechatPay(requestSign,function (res) {
                     if (res.errMsg == "chooseWXPay:ok" || res.err_msg == "get_brand_wcpay_request:ok") {
-                        document.location.href=location.href+"&status=1";
+                        document.location.href="/dopay/"+orderId+"?status=1";
                     } else {
-                        $.alert("下单成功, 但支付未完成! \n\r60分钟逾期未支付的将自动取消, 请在订单详情页重新支付!");
-                        document.location.href=location.href+"&status=0";
+                        document.location.href="/dopay/"+orderId+"?status=0";
                     }
                 });
             });

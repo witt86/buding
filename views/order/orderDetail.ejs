@@ -156,25 +156,30 @@
 
             <% if ( orderInfo.order_state==0 ) { %>
             <div class="bottom-but">
-                <a href="#" class="bb-btn1-box" id="publishBtn">
+                <a href="/dopay/<%= orderInfo.order_no %>" class="bb-btn1-red">
+                    去支付
+                </a>
+            </div>
+            <div class="bottom-but">
+                <a href="#" class="bb-btn1-box">
                     <div class="bb-btn1">取消订单</div>
                 </a>
             </div>
             <% } else if (orderInfo.order_state==3 || orderInfo.order_state == 31) { %>
             <div class="bottom-but">
-                <a href="#" class="bb-btn1-red" id="publishBtn">
+                <a href="#" class="bb-btn1-red">
                     再次购买
                 </a>
             </div>
             <div class="bottom-but">
-                <a href="#" class="bb-btn1-box" id="publishBtn">
+                <a href="#" class="bb-btn1-box">
                     <div class="bb-btn1">申请售后</div>
                 </a>
             </div>
             <% } else if ( orderInfo.order_state==2 ) { %>
 
             <div class="bottom-but">
-                <a href="#" class="bb-btn1-red" id="publishBtn">
+                <a href="#" class="bb-btn1-red">
                     确认收货
                 </a>
             </div>

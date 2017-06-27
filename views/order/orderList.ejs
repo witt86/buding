@@ -44,7 +44,7 @@
 
     <~ orderlist.forEach(function(item){ ~>
 
-    <div class="weui-panel nopadding weui-panel_access" onclick="go_to('/order/orderdetail/<~= item.order_no~>')">
+    <div class="weui-panel nopadding weui-panel_access">
         <div class="weui-panel__hd weui-flex">
             <div class="weui-flex__item" style="color: #000;">
                    <span style="overflow: hidden;
@@ -62,7 +62,7 @@
             </div>
         </div>
 
-        <div class="weui-panel__bd">
+        <div class="weui-panel__bd"  onclick="go_to('/order/orderdetail/<~= item.order_no~>')">
             <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
 
                 <~ if(item.items.length<=1){ ~>
@@ -96,7 +96,7 @@
                 <div class="weui-cell__bd" style="color: #000">实付款:¥<~= item.pay_amount ~></div>
                 <div class="weui-cell__ft">
                     <~ if(item.order_state==0){ ~>
-                    <a href="javascript:;"
+                    <a href="/dopay/<~= item.order_no~>"
                        class="weui-btn weui-btn_mini weui-btn_plain-primary "
                        style="border: 1px solid #f15353;color: #f15353;">
                         去支付

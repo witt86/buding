@@ -16,17 +16,17 @@
     <div class="checkout">
         <div class="step1 border-1px">
             <div class="m step1-in ">
-                <a href="#" class="s-href">
+                <a href="#" class="s-href" onclick="openwechatAddress()">
                     <div class="mt_new">
                         <div class="s1-name">
-                            <span id="receiver-text">王涛</span>
+                            <span id="receiver_text">王涛</span>
                             <input type="hidden" id="receiver_value" />
                         </div>
                         <div class="s1-phone">
                             <span id="receiver_mobile_text">134****4768</span>
                             <input type="hidden" id="receiver_mobile_value" />
                         </div>
-                        <div class="s1-default-new" id="address-default" style="display: none">
+                        <div class="s1-default-new" id="address-default" style="display: block">
                             默认
                         </div>
                     </div>
@@ -40,7 +40,6 @@
                         <input type="hidden" id="ship_province_value" />
                         <input type="hidden" id="ship_district_value" />
                     </div>
-                    <input type="hidden" id="addressId" value="138710097">
                 </a>
             </div>
             <b class="s1-borderB"></b>
@@ -84,7 +83,6 @@
             </a>
         </div>
     </div>
-
     <div class="weui-cells nopadding">
         <a class="weui-cell weui-cell_access" href="javascript:;">
             <div class="weui-cell__bd">
@@ -161,6 +159,33 @@
                   }
              });
          });
-     })
+     });
+     function openwechatAddress() {
+         window.wx.openAddress({
+             trigger: function (res) {
+                 // alert('用户开始拉出地址');
+             },
+             success: function (res) {
+                 $("#receiver_value").val(res.userName);
+                 $("#receiver-text").text(res.userName);
+
+                 $("#receiver_mobile_value").val(res.telNumber);
+                 $("#receiver_mobile_text").text(res.telNumber?res.telNumber.substring(0,3)+"****"+res.telNumber.substring(7):"");
+
+                 $("#address-where").text(res.provinceName+" "+res.cityName+" "+res.countryName+ " " +res.detailInfo);
+
+                 $("#ship_address_value").val(res.detailInfo);
+                 $("#ship_city_value").val(res.cityName);
+                 $("#ship_province_value").val(res.provinceName);
+                 $("#ship_district_value").val(res.countryName);
+             },
+             cancel: function (res) {
+                 console.log(res);
+             },
+             fail: function (res) {
+                 console.log(fail);
+             }
+         });
+     }
 </script>
 </html>
