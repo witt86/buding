@@ -22,18 +22,12 @@ function ApiInvoke(apiRoot,method,data,callback) {
     if($.showLoading){
         $.showLoading("处理中...");
     }
-    // if (toast){
-    //     toast.loading({title:"处理中"});
-    // }
     $.ajax({
         url: "/api/"+apiRoot+"/"+method,
         type: "POST",
         data: JSON.stringify({  "queryObj": data}),
         contentType:'application/json',
         success: function (result, status, xhr) {
-            // if (toast){
-            //     toast.hide();
-            // }
             callback(result.err, result.result);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -47,7 +41,6 @@ function ApiInvoke(apiRoot,method,data,callback) {
             if ($.hideLoading) {
                 $.hideLoading();
             }
-
         }
     });
 }
