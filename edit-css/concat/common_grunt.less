@@ -235,6 +235,19 @@ html, body {
   font-size: 12px;
   line-height: 14px;
   color: #000;
+  position: relative;
+  .shopcarDot {
+    position: absolute;
+    right: 15%;
+    top: 1px;
+    padding: 0 5px;
+    height: 15px;
+    line-height: 15px;
+    border-radius: 10px;
+    color: #fff;
+    background: #D8013C;
+    font-size: 8px;
+  }
 }
 .floatBottomBar .floatBottomItem img {
   width: 25px;
@@ -1551,13 +1564,13 @@ html, body {
     left: 0;
     bottom: 0;
     background: #fff;
-    div:nth-child(1),
-    div:nth-child(2) {
+    .floatBottomItem {
       width: 20%;
       text-align: center;
       float: left;
       display: inline-block;
       height: 50px;
+      position: relative;
       img {
         width: 25px;
         height: auto;
@@ -1568,6 +1581,18 @@ html, body {
         line-height: 14px;
         position: relative;
         top: -3px;
+      }
+      .shopcarDot {
+        position: absolute;
+        right: 15%;
+        top: 1px;
+        padding: 0 5px;
+        height: 15px;
+        line-height: 15px;
+        border-radius: 10px;
+        color: #fff;
+        background: #D8013C;
+        font-size: 8px;
       }
     }
     div:nth-child(3),

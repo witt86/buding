@@ -278,7 +278,7 @@ export const statusToggle = async ({uid,status = 1,item_id})=> {
     }
 };
 
-export const selectAll = async ({uid,status = true})=> {
+export const selectAll = async ({uid,status = 1})=> {
     try{
         const shopCar = await TMSProductAPI('get_shopcart',{
             uid:uid,
@@ -303,6 +303,29 @@ export const selectAll = async ({uid,status = true})=> {
         return res;
     }catch (e) {
         console.log("--------selectAll:e--------");
+        console.log(e);
+        throw e;
+    }
+};
+
+export const fastBuy = async ({uid,prd_code})=> {
+    try{
+        if(!prd_code) throw '缺少参数';
+
+        const shopCar = await selectAll({uid:uid,status:0});
+
+        const list = filter(shopCar.items, function (item) {
+            return item.product.code == prd_code;
+        });
+
+        if(list.length > 0){
+            await UpdateCartItem({uid:uid,item_id:list[0].id,pcs:1});
+            await statusToggle({uid:uid,item_id:list[0].id,status:1});
+        }else await AddToCart({uid:uid,prd_code:prd_code});
+
+        return true;
+    }catch (e) {
+        console.log("--------fastBuy:e--------");
         console.log(e);
         throw e;
     }

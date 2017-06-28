@@ -1,16 +1,17 @@
 <div class="productFloatBottomBar">
-    <div onclick="go_to('/shop/<%= shopcode %>')">
+    <div class="floatBottomItem" onclick="go_to('/shop/<%= shopcode %>')">
         <img src="/images/sc0.png" alt="">
         <p>商城</p>
     </div>
-    <div  onclick="go_to('/shop/<%= shopcode %>/shopcar')">
+    <div class="floatBottomItem" onclick="go_to('/shop/<%= shopcode %>/shopcar')">
         <img src="/images/gwc0.png" alt="">
+        <div class="shopcarDot"></div>
         <p>购物车</p>
     </div>
     <div onclick="addShopCart()">
         加入购物车
     </div>
-    <div>
+    <div onclick="fastBuy()">
         立即购买
     </div>
 </div>
