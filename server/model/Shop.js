@@ -232,7 +232,8 @@ export const checkAll = async ({shopCar})=> {
 
         const res = filter(shopCar.items, {is_selected:false});
 
-        return (res.length == 0 && shopCar.items.length > 0);
+        if(res.length == 0 && shopCar.items.length > 0) return true;
+        else return false;
     }catch (e) {
         console.log("--------checkAll:e--------");
         console.log(e);
@@ -240,20 +241,54 @@ export const checkAll = async ({shopCar})=> {
     }
 };
 
-export const statusToggle = async ({uid,status,item_id})=> {
+export const statusToggle = async ({uid,status = 1,item_id})=> {
     try{
-        if(!status || !item_id) return {err:'缺少参数'};
+        if(!item_id) return {err:'缺少参数'};
 
-        const res = await TMSProductAPI('mark_selected_cartitem',{
+        const query = {
             uid:uid,
             item_id:item_id,
             agent_code:'05987386',
             is_selected:status
-        });
+        };
+
+        const res = await TMSProductAPI('mark_selected_cartitem',query);
+
+        res.isAll = await checkAll({shopCar:res});
 
         return res;
     }catch (e) {
         console.log("--------statusToggle:e--------");
+        console.log(e);
+        throw e;
+    }
+};
+
+export const selectAll = async ({uid,status = true})=> {
+    try{
+        const shopCar = await TMSProductAPI('get_shopcart',{
+            uid:uid,
+            agent_code:'05987386'
+        });
+
+        let idList = '';
+        if(shopCar.items.length > 0){
+            for(const item of shopCar.items){
+                idList += (idList.length > 0 ? ',' : '') + item.id
+            }
+        }
+
+        const query = {
+            uid:uid,
+            item_id:idList,
+            agent_code:'05987386',
+            is_selected:status
+        };
+        const res = await TMSProductAPI('mark_selected_cartitem',query);
+
+        return res;
+    }catch (e) {
+        console.log("--------selectAll:e--------");
         console.log(e);
         throw e;
     }
