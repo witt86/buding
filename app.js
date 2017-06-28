@@ -11,16 +11,21 @@ import {delayRun} from "./server/util/util";
 import * as globals from "./server/global";
 import main from './routes/main';
 import wechat_auth from "./server/wechat/wechat_auth.js";
-import _businessTool from './server/util/BusinessTool';
 import xhr_wx_js_config from "./routes/xhr_wx_js_config";
 import wxpay_notify from "./server/wechat/wechat_paynotify";
 import * as types from './server/constants';
 import moment from "moment";
 
+import TMSProductAPI from './server/lib/TMSProductAPI';
+
+import { OnWebSiteStartEvent } from './server/model/BusinessEvent';
+
 var app = express();
 
 import router_shop from './routes/shop';
 import router_order from './routes/order';
+import router_user from './routes/user';
+import openid_map from "./routes/openid-map";
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -92,6 +97,38 @@ app.use("/api",main);
 app.use("/shop",wechat_auth,router_shop);
 //订单
 app.use("/order",wechat_auth,router_order);
+//订单
+app.use("/user",wechat_auth,router_user);
+//支付
+app.get("/dopay/:orderId",wechat_auth, async ( req,res )=> {
+      const orderId=req.params.orderId;
+      const { status,shopcode="05987386" }=req.query;
+      let buttons=[
+        {url: '/order/orderlist', title: '我的订单'},
+        {url: '/shop/'+shopcode, title: '商城首页'},
+      ];
+      if (!orderId){
+        res.alert(types.ALERT_WARN, "支付异常", "订单信息不允许为空",buttons);
+      }else {
+         const orderInfo=await TMSProductAPI("get_order",{ order_no:orderId });
+         if (!orderInfo){
+           res.alert(types.ALERT_WARN, "支付异常", "支付订单不存在",buttons);
+         } else if (orderInfo.order_state!=0){
+           res.alert(types.ALERT_WARN, "支付异常", "订单已支付",buttons);
+         }
+         else {
+           let rs={};
+           rs.title="布丁收银台";
+           rs.orderInfo=orderInfo;
+           rs.shopcode=shopcode;
+           rs.status=status;
+           res.render('dopay', rs);
+         }
+      }
+});
+//微信测试支付openId映射
+
+app.use("/openid-map", wechat_auth, openid_map );
 
 //清空当前访问者的session
 app.get("/___clearsession", async (req, res) => {
@@ -123,7 +160,7 @@ if (app.get('env') === 'development') {
 
 //网站启动事件
 delayRun(()=> {
-  //OnWebSiteStartEvent(app);
+  //OnWebSiteStartEvent();
 }, 10, (err)=> {
   console.dir("网站启动事件运行出错:" + err);
 });

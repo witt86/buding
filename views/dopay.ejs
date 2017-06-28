@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<% include ./header.ejs %>
+<body class="<%= status==undefined?'dopay':'' %>">
+<% if (status==undefined) { %>
+
+<header>
+    <div class="bd-index-header">
+        <div class="bd-index-header-icon-back" id="reset_btn_back">
+            <span></span>
+        </div>
+        <div class="bd-index-header-title">
+            <%= title%>
+        </div>
+    </div>
+</header>
+<div class="weui-cells">
+    <div class="weui-cell">
+        <div class="weui-cell__bd">
+            <p style="font-size: 15px">支付金额</p>
+        </div>
+        <div class="weui-cell__ft" style="color: #e4393c"><%= orderInfo.pay_amount %>元</div>
+    </div>
+</div>
+<div class="weui-cells">
+    <div class="weui-cell">
+        <div class="weui-cell__bd">
+            <a href="javascript:;" id="payorder" class="weui-btn weui-btn_primary">微信支付</a>
+
+        </div>
+    </div>
+</div>
+
+<% } else if (status==1) { %>
+
+<div class="weui-msg">
+    <div class="weui-msg__icon-area"><i class="weui-icon-success weui-icon_msg"></i></div>
+    <div class="weui-msg__text-area">
+        <h2 class="weui-msg__title">支付成功</h2>
+    </div>
+    <div class="weui-msg__opr-area">
+        <p class="weui-btn-area">
+            <a href="/order/orderlist" class="weui-btn weui-btn_primary">查看订单</a>
+            <a href="/shop/<%= shopcode %>" class="weui-btn weui-btn_default">返回首页</a>
+        </p>
+    </div>
+    <div class="weui-msg__extra-area">
+        <div class="weui-footer">
+
+        </div>
+    </div>
+</div>
+
+<% } else if(status==0){ %>
+<div class="weui-msg">
+<div class="weui-msg__icon-area"><i class="weui-icon-warn weui-icon_msg"></i></div>
+<div class="weui-msg__text-area">
+    <h2 class="weui-msg__title">支付失败</h2>
+</div>
+<div class="weui-msg__opr-area">
+    <p class="weui-btn-area">
+        <a href="/order/orderlist" class="weui-btn weui-btn_primary">查看订单</a>
+        <a href="/shop/<%= shopcode %>" class="weui-btn weui-btn_default">返回首页</a>
+    </p>
+</div>
+<div class="weui-msg__extra-area">
+    <div class="weui-footer">
+
+    </div>
+</div>
+</div>
+<%} %>
+
+
+<% include ./footer.ejs %>
+<script type="text/javascript">
+    $(function () {
+        $("#payorder").click(function () {
+            var orderId="<%= orderInfo.order_no %>";
+            ApiInvoke('shop','payOrder',{ orderId:orderId },function (err,result) {
+                console.log(err);
+                console.log(result);
+                var requestSign=result.requestSign;
+                console.log(requestSign);
+                wechatPay(requestSign,function (res) {
+                    if (res.errMsg == "chooseWXPay:ok" || res.err_msg == "get_brand_wcpay_request:ok") {
+                        document.location.href="/dopay/"+orderId+"?status=1";
+                    } else {
+                        document.location.href="/dopay/"+orderId+"?status=0";
+                    }
+                });
+            });
+        });
+    })
+</script>
+</html>

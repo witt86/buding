@@ -16,23 +16,30 @@
     <div class="checkout">
         <div class="step1 border-1px">
             <div class="m step1-in ">
-                <a href="#" class="s-href">
+                <a href="#" class="s-href" onclick="openwechatAddress()">
                     <div class="mt_new">
                         <div class="s1-name">
-                            <span id="address-name">王涛</span>
+                            <span id="receiver_text">王涛</span>
+                            <input type="hidden" id="receiver_value" />
                         </div>
                         <div class="s1-phone">
-                            <span id="address-mobile">134****4768</span>
+                            <span id="receiver_mobile_text">134****4768</span>
+                            <input type="hidden" id="receiver_mobile_value" />
                         </div>
-                        <div class="s1-default-new" id="address-default" style="display: none">
+                        <div class="s1-default-new" id="address-default" style="display: block">
                             默认
                         </div>
                     </div>
                     <div class="mc step1-in-con">
                         <i class="location-pic"></i>
-                        <span id="address-where" class="address-where">上海徐汇区城区上海市徐汇区城区南丹东路238新东亚大厦6-14层</span>
+                        <span id="address-where" class="ship_address_text">
+                            上海徐汇区城区上海市徐汇区城区南丹东路238新东亚大厦6-14层
+                        </span>
+                        <input type="hidden" id="ship_address_value" />
+                        <input type="hidden" id="ship_city_value" />
+                        <input type="hidden" id="ship_province_value" />
+                        <input type="hidden" id="ship_district_value" />
                     </div>
-                    <input type="hidden" id="addressId" value="138710097">
                 </a>
             </div>
             <b class="s1-borderB"></b>
@@ -42,42 +49,32 @@
     <div class="weui-panel weui-panel_access">
         <div class="weui-panel__hd">商品列表</div>
         <div class="weui-panel__bd">
-            <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
-                <div class="weui-media-box__hd">
-                    <img class="weui-media-box__thumb"
-                         src="https://img10.360buyimg.com/n4/jfs/t5887/73/1454021621/286573/b6a887b6/59267f83N026678e6.jpg">
-                </div>
-                <div class="weui-media-box__bd">
-                    <h4 class="weui-media-box__title">商品名称</h4>
-                    <p class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p>
-                </div>
-                <div class="weui-cell__ft">
-                    <p>
-                        <span class="price mini">1000</span>
-                    </p>
-                    <p>
-                        <span class="quantity">2</span>
-                    </p>
-                </div>
-            </a>
-            <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
-                <div class="weui-media-box__hd">
-                    <img class="weui-media-box__thumb"
-                         src="https://img10.360buyimg.com/n4/jfs/t5887/73/1454021621/286573/b6a887b6/59267f83N026678e6.jpg">
-                </div>
-                <div class="weui-media-box__bd">
-                    <h4 class="weui-media-box__title">商品名称</h4>
-                    <p class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p>
-                </div>
-                <div class="weui-cell__ft">
-                    <p>
-                        <span class="price mini">1000</span>
-                    </p>
-                    <p>
-                        <span class="quantity">2</span>
-                    </p>
-                </div>
-            </a>
+            <% if ( shopCartItems.items && shopCartItems.items.length>0 ) { %>
+
+               <%  shopCartItems.items.forEach(function (item) { %>
+
+                   <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+                       <div class="weui-media-box__hd">
+                           <img class="weui-media-box__thumb"
+                                src="<%= item.product.image  %>">
+                       </div>
+                       <div class="weui-media-box__bd">
+                           <h4 class="weui-media-box__title"><%= item.product.name  %></h4>
+                           <p class="weui-media-box__desc"> <%= item.product.brief %> </p>
+                       </div>
+                       <div class="weui-cell__ft">
+                           <p>
+                               <span class="price mini"><%= item.product.retail_price %></span>
+                           </p>
+                           <p>
+                               <span class="quantity"><%= item.pcs %></span>
+                           </p>
+                       </div>
+                   </a>
+
+              <%}) %>
+
+            <% } %>
         </div>
         <div class="weui-panel__ft">
             <a href="javascript:void(0);" class="weui-cell weui-cell_access weui-cell_link">
@@ -86,7 +83,6 @@
             </a>
         </div>
     </div>
-
     <div class="weui-cells nopadding">
         <a class="weui-cell weui-cell_access" href="javascript:;">
             <div class="weui-cell__bd">
@@ -112,21 +108,84 @@
               <span class="price-items-all">
                      <span>
                          总价:
-                         <span class="price maxnoweight">100.00</span>
+                         <span class="price maxnoweight"><%= shopCartItems.pay_amount  %></span>
                      </span>
               </span>                                                                                                                                                                                                                                                                                                             <em class="priceweight">(总重:0.680kg)</em>                                                                                                                                                                                                                                                                                                                                            </span>                                                                                                                                                                                                                                                                                         <em class="priceweight">(总重:0.680kg)</em>                                                                                                                                                                                                                                                                                                                                            </span>
         </div>
         <a href="javascript:;">
-            <div class="pay-leak-btn-red">在线支付</div>
+            <div class="pay-leak-btn-red" id="makeorder">在线支付</div>
         </a>
-        <a href="javascript:;">
-            <div class="pay-leak-btn">货到付款</div>
-        </a>
+        <!--<a href="javascript:;">-->
+            <!--<div class="pay-leak-btn">货到付款</div>-->
+        <!--</a>-->
     </div>
 </div>
 <% include ./../footer.ejs %>
 <script type='text/javascript' src="/libs/jq-weui/js/swiper.min.js" charset='utf-8'></script>
 <script type="text/javascript">
+     $(function () {
+         $("#makeorder").click(function () {
+             var buyInfo={
+                 buyer_note:"",
+                 note_to_receiver:"",
+                 coupon:"",
+                 ship_type:"express",
+                 local_address:{
+                     receiver:$("#receiver_value").val()||"-",
+                     receiver_mobile:$("#receiver_mobile_value").val()||"-",
+                     ship_address:$("#ship_address_value").val()||"-",
+                     ship_city:$("#ship_city_value").val()||"-",
+                     ship_district:$("#ship_district_value").val()||"-",
+                     ship_province:$("#ship_province_value").val()||"-"
+                 }
+             };
+             var shopcode="<%= shopcode %>";
 
+             ApiInvoke('shop','makeOrder',{ buyInfo:buyInfo,shopcode:shopcode },function (err,result) {
+                  if (err){
+                        if (typeof err == 'string'){
+                            $.alert(err);
+                        }else if (typeof err == 'object'){
+                            console.log(err);
+                            $.alert(err.msg);
+                        }
+                  }else {
+                      var orderId=result.orderId;
+                      if (orderId && orderId.length>0){
+                          window.location.href="/dopay/"+orderId+"?shopcode="+shopcode;
+                      }else {
+                          $.alert("下单失败，请稍后重试!");
+                      }
+                  }
+             });
+         });
+     });
+     function openwechatAddress() {
+         window.wx.openAddress({
+             trigger: function (res) {
+                 // alert('用户开始拉出地址');
+             },
+             success: function (res) {
+                 $("#receiver_value").val(res.userName);
+                 $("#receiver-text").text(res.userName);
+
+                 $("#receiver_mobile_value").val(res.telNumber);
+                 $("#receiver_mobile_text").text(res.telNumber?res.telNumber.substring(0,3)+"****"+res.telNumber.substring(7):"");
+
+                 $("#address-where").text(res.provinceName+" "+res.cityName+" "+res.countryName+ " " +res.detailInfo);
+
+                 $("#ship_address_value").val(res.detailInfo);
+                 $("#ship_city_value").val(res.cityName);
+                 $("#ship_province_value").val(res.provinceName);
+                 $("#ship_district_value").val(res.countryName);
+             },
+             cancel: function (res) {
+                 console.log(res);
+             },
+             fail: function (res) {
+                 console.log(fail);
+             }
+         });
+     }
 </script>
 </html>

@@ -14,25 +14,22 @@
 </header>
 <div class="order-tab bdb-1px">
     <ul>
-        <li class="li_orderlist" func-id="newUserAllOrderList">
+        <li class="li_orderlist <%= fun_id=='newUserAllOrderList'?'curr':'' %>" func-id="newUserAllOrderList">
             <a href="javascript:;"><span>全部</span></a>
         </li>
-        <li class="li_orderlist curr" func-id="wait4Payment">
+        <li class="li_orderlist <%= fun_id=='wait4Payment'?'curr':'' %>" func-id="wait4Payment">
             <a href="javascript:;"><span>待付款</span></a>
         </li>
-        <li class="li_orderlist" func-id="wait4Delivery">
+        <li class="li_orderlist <%= fun_id=='wait4Delivery'?'curr':'' %>" func-id="wait4Delivery">
             <a href="javascript:;"><span>待收货</span></a>
         </li>
-        <li class="li_orderlist" func-id="userCompletedOrderList">
+        <li class="li_orderlist <%= fun_id=='userCompletedOrderList'?'curr':'' %>" func-id="userCompletedOrderList">
             <a href="javascript:;"><span>已完成</span></a>
-        </li>
-        <li class="li_orderlist" func-id="otherOrderList">
-            <a href="javascript:;"><span>其他订单</span></a>
         </li>
     </ul>
 </div>
 <div id="div_orderlist">
-    <div id="allOrders" style="position: relative;display: block">
+    <div id="allOrders" style="position: relative;display: block;padding-bottom: 50px">
 
     </div>
     <div class="no-order" id="noOrder" style="display: none;">
@@ -42,13 +39,12 @@
         <span>您还没有相关订单</span>
     </div>
 </div>
-
 <script type="text/html" id="tpl_orderList">
     <~ if(orderlist && orderlist.length>0 ) { ~>
 
     <~ orderlist.forEach(function(item){ ~>
 
-    <div class="weui-panel  nopadding weui-panel_access">
+    <div class="weui-panel nopadding weui-panel_access">
         <div class="weui-panel__hd weui-flex">
             <div class="weui-flex__item" style="color: #000;">
                    <span style="overflow: hidden;
@@ -66,7 +62,7 @@
             </div>
         </div>
 
-        <div class="weui-panel__bd">
+        <div class="weui-panel__bd"  onclick="go_to('/order/orderdetail/<~= item.order_no~>')">
             <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
 
                 <~ if(item.items.length<=1){ ~>
@@ -100,7 +96,7 @@
                 <div class="weui-cell__bd" style="color: #000">实付款:¥<~= item.pay_amount ~></div>
                 <div class="weui-cell__ft">
                     <~ if(item.order_state==0){ ~>
-                    <a href="javascript:;"
+                    <a href="/dopay/<~= item.order_no~>"
                        class="weui-btn weui-btn_mini weui-btn_plain-primary "
                        style="border: 1px solid #f15353;color: #f15353;">
                         去支付
@@ -129,24 +125,73 @@
 
 <% include ../footer.ejs %>
 <script>
-    //加载订单
-    function loadOrder(status, pos) {
-        ApiInvokeAdmin("order", "GetOrderList", {status: status, pos: pos, size: 10}, function (err, result) {
-            if (err) {
+    var loading=false;
+    var fun_id="<%= fun_id %>";
 
+    $(function () {
+        $(".li_orderlist").click(function () {
+            $(".li_orderlist").removeClass('curr');
+            $(this).addClass("curr");
+            fun_id=$(this).attr("func-id");
+            getOrderListByFun_ID(fun_id,0,function () {
+                loading=false;
+            });
+        });
+        getOrderListByFun_ID(fun_id,0,function () {
+            loading=false;
+        });
+
+        $(document.body).infinite(0).on("infinite",function () {
+            if (loading)return;
+            loading=true;
+            var allLength=$("#allOrders").children().length;
+            if (allLength<10) return;
+            if (allLength%10==0){
+                getOrderListByFun_ID(fun_id,allLength,function () {
+                    loading=false;
+                });
+            }
+        });
+    });
+
+    function getOrderListByFun_ID(func_id,pos,callback) {
+        if (func_id=="newUserAllOrderList"){
+            loadOrder("",pos,callback);//全部
+        }else if (func_id=="wait4Payment"){
+            loadOrder(0,pos,callback);//待付款
+        }else if (func_id=="wait4Delivery"){
+            loadOrder(2,pos,callback);//待收货
+        }else if (func_id=="userCompletedOrderList"){
+            loadOrder("3,31",pos,callback);//已完成
+        }
+    }
+    //加载订单
+    function loadOrder(status, pos,callback) {
+        ApiInvoke("order", "GetOrderList", {status: status, pos: pos, size: 10}, function (err, result) {
+            if (err) {
+                $("#noOrder").show();
+                $("#allOrders").hide();
             } else {
-                var render_tpl_orderlistview = _.template($("#tpl_orderList").html().replace(/\~/igm, "%"));
-                var render_tpl_orderlistviewHtml=render_tpl_orderlistview({orderlist: result});
-                $("#allOrders").append(render_tpl_orderlistviewHtml);
+                if (!result || result.length==0){
+                    $("#noOrder").show();
+                    $("#allOrders").hide();
+                    if (callback)callback();
+                    return;
+                }else {
+                    $("#noOrder").hide();
+                    $("#allOrders").show();
+                    var render_tpl_orderlistview = _.template($("#tpl_orderList").html().replace(/\~/igm, "%"));
+                    var render_tpl_orderlistviewHtml=render_tpl_orderlistview({orderlist: result});
+
+                    if (pos==0){
+                        $("#allOrders").html(render_tpl_orderlistviewHtml);
+                    }else {
+                        $("#allOrders").append(render_tpl_orderlistviewHtml);
+                    }
+                    if (callback)callback();
+                }
             }
         });
     }
-
-    $(function () {
-        loadOrder('',0);
-    });
-
-
-
 </script>
 </html>

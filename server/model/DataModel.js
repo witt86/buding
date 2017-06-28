@@ -93,19 +93,6 @@ let RegUser = sequelize.define('reguser', {
         'defaultValue': ''
     }
 }, {
-    indexes: [{
-        name: 'idx_uid_unique',
-        fields: ['uid'],
-        unique: true
-    }, {
-        name: 'idx_wx_openID_unique',
-        fields: ['wx_openID', 'userType'],
-        unique: true
-    }, {
-        name: 'idx_unionid_unique',
-        fields: ['unionid'],
-        unique: true
-    }],
     hooks: {},
     classMethods: {},
     instanceMethods: {}
@@ -118,173 +105,167 @@ let Supplier = sequelize.define('supplier', {
     name: Sequelize.STRING(32),
     address: Sequelize.STRING(32),
     primary_contact: Sequelize.STRING(255),
-    offerimage: Sequelize.STRING(1024),
+    offerimage: Sequelize.TEXT,
     supId: Sequelize.INTEGER,  //TMS自增ID,
     notices: {
-        'type': Sequelize.STRING(900),
+        'type': Sequelize.STRING(512),
         'defaultValue': '[]'
     },
     is_active: Sequelize.BOOLEAN,
     shipfee_desc: {
-        'type': Sequelize.STRING(1024),
+        'type': Sequelize.STRING(512),
         'defaultValue': '[]'
     }
-}, {
-    indexes: [{
-        name: 'idx_code_unique_supplier',
-        fields: ['code'],
-        unique: true
-    }]
 });
 
 //住友集团发展的都是业主，业主有权限新建店铺，发展店主，店主可发展店员
-
-let ShopkeeperInfo = sequelize.define('shopkeeperinfo', {  //店主信息表
-    uid: {
-        'type': Sequelize.STRING(64),
-        'allowNull': false,
-        'unique': true,
-        'comment': "土猴帐号系统的用户ID"
-    },
-    wx_openID: {
-        'type': Sequelize.STRING(64),
-        'allowNull': false,
-        'unique': true,
-        'comment': "微信公众号ID"
-    },
-    TrueName: {
-        'type': Sequelize.STRING(64),
-        'allowNull': false,
-        'unique': true,
-        'comment': "个人是真实名称"
-    },
-    mobile: Sequelize.STRING(15),
-    City: {
-        'type': Sequelize.INTEGER,
-        'allowNull': true,
-        'defaultValue': 0,
-        'comment': "所在城市"
-    },
-    IDs: { //身份证件号码
-        'type': Sequelize.STRING(32),
-        'allowNull': false,
-        'defaultValue': '',
-        'comment': "身份证号码"
-    },
-    photo: { //身份证正面
-        'type': Sequelize.STRING(255),
-        'allowNull': false,
-        'defaultValue': '',
-        'comment': "身份证正面"
-    },
-    photoReverse: { //身份证反面
-        'type': Sequelize.STRING(255),
-        'allowNull': false,
-        'defaultValue': '',
-        'comment': "身份证反面"
-    },
-    rejectMessage: {
-        'type': Sequelize.STRING(45),
-        'allowNull': false,
-        'defaultValue': '',
-        'comment': "拒绝信息"
-    },
-    status: {
-        'type': Sequelize.INTEGER,
-        'allowNull': true,
-        'defaultValue': 0,
-        'comment': "业主审核状态"//0:未审核，1：审核通过,2:审核不通过
-    }
-}, {
-    'deletedAt': 'dtime',
-    'paranoid': true,
-    indexes: [{
-        name: 'idx_uid_unique_shopkeeperinfo',
-        fields: ['uid'],
-        unique: true
-    }, {
-        name: 'idx_wx_openID_unique_shopkeeperinfo',
-        fields: ['wx_openID', 'uid'],
-        unique: true
-    }],
-    classMethods: {},
-    instanceMethods: {}
-});
-ShopkeeperInfo.hook('afterCreate', function (shopkeeperinfo, options) {
-    //BusinessTool.onGuiderCreate(guider);
-});
-ShopkeeperInfo.hook('beforeDestroy', function (shopkeeperinfo, options) {
-    // BusinessTool.synWeiXinUserGroup_moveOut(guider.wx_openID, false, function (err, result) {
-    //     console.info("synWeiXinUserGroup_ForGuide out:" + err);
-    // });
-});
-
-let SaleShop = sequelize.define('saleshop', {  //店铺信息表
-    code: Sequelize.STRING(32),
-    name: Sequelize.STRING(32), //店铺名称
-    comment: Sequelize.STRING(255), //
-    qrcode: Sequelize.STRING(255), // 店铺二维码
-    keeperqrcode: Sequelize.STRING(255),//店主邀请二维码
-    shopIcon: Sequelize.STRING(255), // 店铺头像
-    cover: Sequelize.STRING(255), //封面
-    watchCount: { //关注人数
-        'type': Sequelize.INTEGER,
-        'allowNull': false,
-        'defaultValue': 0
-    },
-    status: { //状态:0:审核中, 1:开张中,2:休息中
-        'type': Sequelize.INTEGER,
-        'allowNull': false,
-        'defaultValue': 0
-    }
-}, {
-    indexes: [{
-        name: 'idx_code_unique_saleshop',
-        fields: ['code'],
-        unique: true
-    }]
-});
-SaleShop.hook('afterCreate', function (SaleShop, options) {
-
-});
-
-let ShopManagerInfo = sequelize.define('shopmanagerinfo', {  //店长、店员信息表
-    uid: {
-        'type': Sequelize.STRING(64),
-        'allowNull': false,
-        'unique': true,
-        'comment': "土猴帐号系统的用户ID"
-    },
-    wx_openID: {
-        'type': Sequelize.STRING(64),
-        'allowNull': false,
-        'unique': true,
-        'comment': "微信公众号ID"
-    },
-    TrueName: {
-        'type': Sequelize.STRING(64),
-        'allowNull': false,
-        'unique': true,
-        'comment': "个人是真实名称"
-    },
-    mobile: Sequelize.STRING(15),
-    shopcode: {
-        'type': Sequelize.STRING(64),
-        'allowNull': false,
-        'defaultValue': ''
-    },
-    role: {
-        'type': Sequelize.ENUM(
-            types.ShopManage,
-            types.ShopStaff
-        ),
-        'defaultValue': types.ShopStaff
-    },
-    pid: {
-        'type': Sequelize.INTEGER,
-        'allowNull': true
-    }
-});
+//
+// let ShopkeeperInfo = sequelize.define('shopkeeperinfo', {  //店主信息表
+//     uid: {
+//         'type': Sequelize.STRING(64),
+//         'allowNull': false,
+//         'unique': true,
+//         'comment': "土猴帐号系统的用户ID"
+//     },
+//     wx_openID: {
+//         'type': Sequelize.STRING(64),
+//         'allowNull': false,
+//         'unique': true,
+//         'comment': "微信公众号ID"
+//     },
+//     TrueName: {
+//         'type': Sequelize.STRING(64),
+//         'allowNull': false,
+//         'unique': true,
+//         'comment': "个人是真实名称"
+//     },
+//     mobile: Sequelize.STRING(15),
+//     City: {
+//         'type': Sequelize.INTEGER,
+//         'allowNull': true,
+//         'defaultValue': 0,
+//         'comment': "所在城市"
+//     },
+//     IDs: { //身份证件号码
+//         'type': Sequelize.STRING(32),
+//         'allowNull': false,
+//         'defaultValue': '',
+//         'comment': "身份证号码"
+//     },
+//     photo: { //身份证正面
+//         'type': Sequelize.STRING(255),
+//         'allowNull': false,
+//         'defaultValue': '',
+//         'comment': "身份证正面"
+//     },
+//     photoReverse: { //身份证反面
+//         'type': Sequelize.STRING(255),
+//         'allowNull': false,
+//         'defaultValue': '',
+//         'comment': "身份证反面"
+//     },
+//     rejectMessage: {
+//         'type': Sequelize.STRING(45),
+//         'allowNull': false,
+//         'defaultValue': '',
+//         'comment': "拒绝信息"
+//     },
+//     status: {
+//         'type': Sequelize.INTEGER,
+//         'allowNull': true,
+//         'defaultValue': 0,
+//         'comment': "业主审核状态"//0:未审核，1：审核通过,2:审核不通过
+//     }
+// }, {
+//     'deletedAt': 'dtime',
+//     'paranoid': true,
+//     indexes: [{
+//         name: 'idx_uid_unique_shopkeeperinfo',
+//         fields: ['uid'],
+//         unique: true
+//     }, {
+//         name: 'idx_wx_openID_unique_shopkeeperinfo',
+//         fields: ['wx_openID', 'uid'],
+//         unique: true
+//     }],
+//     classMethods: {},
+//     instanceMethods: {}
+// });
+// ShopkeeperInfo.hook('afterCreate', function (shopkeeperinfo, options) {
+//     //BusinessTool.onGuiderCreate(guider);
+// });
+// ShopkeeperInfo.hook('beforeDestroy', function (shopkeeperinfo, options) {
+//     // BusinessTool.synWeiXinUserGroup_moveOut(guider.wx_openID, false, function (err, result) {
+//     //     console.info("synWeiXinUserGroup_ForGuide out:" + err);
+//     // });
+// });
+//
+// let SaleShop = sequelize.define('saleshop', {  //店铺信息表
+//     code: Sequelize.STRING(32),
+//     name: Sequelize.STRING(32), //店铺名称
+//     comment: Sequelize.STRING(255), //
+//     qrcode: Sequelize.STRING(255), // 店铺二维码
+//     keeperqrcode: Sequelize.STRING(255),//店主邀请二维码
+//     shopIcon: Sequelize.STRING(255), // 店铺头像
+//     cover: Sequelize.STRING(255), //封面
+//     watchCount: { //关注人数
+//         'type': Sequelize.INTEGER,
+//         'allowNull': false,
+//         'defaultValue': 0
+//     },
+//     status: { //状态:0:审核中, 1:开张中,2:休息中
+//         'type': Sequelize.INTEGER,
+//         'allowNull': false,
+//         'defaultValue': 0
+//     }
+// }, {
+//     indexes: [{
+//         name: 'idx_code_unique_saleshop',
+//         fields: ['code'],
+//         unique: true
+//     }]
+// });
+// SaleShop.hook('afterCreate', function (SaleShop, options) {
+//
+// });
+//
+// let ShopManagerInfo = sequelize.define('shopmanagerinfo', {  //店长、店员信息表
+//     uid: {
+//         'type': Sequelize.STRING(64),
+//         'allowNull': false,
+//         'unique': true,
+//         'comment': "土猴帐号系统的用户ID"
+//     },
+//     wx_openID: {
+//         'type': Sequelize.STRING(64),
+//         'allowNull': false,
+//         'unique': true,
+//         'comment': "微信公众号ID"
+//     },
+//     TrueName: {
+//         'type': Sequelize.STRING(64),
+//         'allowNull': false,
+//         'unique': true,
+//         'comment': "个人是真实名称"
+//     },
+//     mobile: Sequelize.STRING(15),
+//     shopcode: {
+//         'type': Sequelize.STRING(64),
+//         'allowNull': false,
+//         'defaultValue': ''
+//     },
+//     role: {
+//         'type': Sequelize.ENUM(
+//             types.ShopManage,
+//             types.ShopStaff
+//         ),
+//         'defaultValue': types.ShopStaff
+//     },
+//     pid: {
+//         'type': Sequelize.INTEGER,
+//         'allowNull': true
+//     }
+// });
 
 let ProductCategory = sequelize.define('productcategory', {
     list_order: Sequelize.INTEGER,
@@ -293,12 +274,7 @@ let ProductCategory = sequelize.define('productcategory', {
     p_code_id: Sequelize.STRING
 }, {
     'deletedAt': 'dtime',
-    'paranoid': true,
-    indexes: [{
-        name: 'idx_productcategory_name',
-        fields: ['name', 'list_order'],
-        unique: false
-    }]
+    'paranoid': true
 });
 
 let ProductSource = sequelize.define('productsource', {
@@ -369,7 +345,7 @@ let ProductSource = sequelize.define('productsource', {
     status_txt: Sequelize.STRING(32),
     allow_free_ship: Sequelize.BOOLEAN,
     shipfee_desc: {
-        'type': Sequelize.STRING(1024),
+        'type': Sequelize.STRING(512),
         'allowNull': false,
         'defaultValue': '[]'
     },
@@ -385,11 +361,6 @@ let ProductSource = sequelize.define('productsource', {
 }, {
     'deletedAt': 'dtime',
     'paranoid': true,
-    indexes: [{
-        name: 'idx_sourceCode',
-        fields: ['sourceCode'],
-        unique: true
-    }],
     scopes: {
         SummaryView: {
             attributes: [
@@ -510,19 +481,6 @@ let ProductSource = sequelize.define('productsource', {
     }
 });
 
-let SaleShop_ProductSource = sequelize.define('saleshop_productsource', {
-    sort: {
-        'type': Sequelize.INTEGER,
-        'allowNull': false,
-        'defaultValue': 0
-    }
-}, {
-    hooks: {
-        afterCreate: function (obj, options) {
-
-        },
-    }
-});
 
 //支付记录:
 //分三类: 单笔订单支付, 复合多笔支付, 退款记录
@@ -560,20 +518,6 @@ let Paynotify_weixin = sequelize.define('paynotify_weixin',
         transaction_id: {'type': Sequelize.STRING, 'allowNull': false, 'defaultValue': ""},
         businessdone: Sequelize.BOOLEAN,
     }
-    , {
-        indexes: [
-            {
-                name: 'idx_paynotify_transaction_id',
-                fields: ['transaction_id', 'time_end'],
-                unique: true
-            },
-            {
-                name: 'idx_out_trade_no',
-                fields: ['out_trade_no'],
-                unique: false
-            }
-        ]
-    }
 );
 
 //热搜
@@ -589,12 +533,6 @@ let UserKeyProp = sequelize.define('userkeyprop', {
     propKey: Sequelize.STRING(128),
     propValue: Sequelize.STRING(512),
     random: Sequelize.INTEGER,
-}, {
-    indexes: [{
-        name: 'idx_UserKeyProp',
-        fields: ['uid', 'propKey'],
-        unique: true
-    }]
 });
 
 //退款log
@@ -624,7 +562,7 @@ let RefundLog_Weixin = sequelize.define('refundlog_weixin', {
 
 let SMSMessage = sequelize.define('smsmessage', {
     targetPhones: Sequelize.STRING(512),
-    content: Sequelize.STRING(1024),
+    content: Sequelize.TEXT,
     sendNum: {
         type: Sequelize.INTEGER,
         defaultValue: 0
@@ -646,12 +584,6 @@ Supplier.hasMany(ProductSource);
 //货源类别 1:N 货源商品
 ProductCategory.hasMany(ProductSource);
 ProductSource.belongsTo(ProductCategory);
-//用户 1:1 店主
-ShopkeeperInfo.belongsTo(RegUser);
-RegUser.hasOne(ShopkeeperInfo);
-//店主 1:N 店
-ShopkeeperInfo.hasMany(SaleShop);
-SaleShop.belongsTo(ShopkeeperInfo);
 //订单与用户\微店\订单商品\支付
 //订单 N:1 用户
 //支付记录1:1支付者(用户)
@@ -661,17 +593,11 @@ PayRecord.belongsTo(RegUser, {as: 'Payer', foreignKey: "payerID"});
 PayRecord.hasMany(Paynotify_weixin);
 Paynotify_weixin.belongsTo(PayRecord);
 
-//关注:
-//店主关注供应商
-SaleShop.belongsToMany(ProductSource, {through: SaleShop_ProductSource, as: 'FavProductSource'});
-ProductSource.belongsToMany(SaleShop, {through: SaleShop_ProductSource, as: 'FollowerSaleShop'});
+
 
 module.exports.RegUser = RegUser;
 module.exports.Supplier = Supplier;
-module.exports.ShopkeeperInfo = ShopkeeperInfo;
 module.exports.ProductSource = ProductSource;
-module.exports.SaleShop = SaleShop;
-module.exports.ShopManagerInfo = ShopManagerInfo;
 module.exports.PayRecord = PayRecord;
 module.exports.ProductCategory = ProductCategory;
 module.exports.UserKeyProp = UserKeyProp;
@@ -680,7 +606,6 @@ module.exports.Paynotify_weixin = Paynotify_weixin;
 module.exports.HotSearch = HotSearch;
 module.exports.SMSMessage = SMSMessage;
 
-module.exports.SaleShop_ProductSource = SaleShop_ProductSource;
 
 
 //由sql组成的函数方法,注意:需要对传入的所有参数做防SQL注入过滤(字符串替换或数值转换操作)

@@ -45,16 +45,15 @@
     
     function addShopCart() {
         var code = '<%= productInfo.code %>';
-        ApiInvoke('shop','AddToCart',{prd_code:code},function (err,res) {
+        ApiInvokeNoloading('shop','AddToCart',{prd_code:code},function (err,res) {
             if(err){
                 $.alert({
                     title:'出错！',
                     text:err
                 })
             }else{
-                $.toptip('成功加入购物车', 'success');
-                $.toast("成功加入购物车");
-                $.toast("纯文本", "text");
+                console.log(res);
+                $.toast("加入购物车成功");
             }
         });
     }

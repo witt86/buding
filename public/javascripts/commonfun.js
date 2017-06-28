@@ -44,7 +44,7 @@ function ApiInvoke(apiRoot,method,data,callback) {
         }
     });
 }
-function ApiInvokeAdminNoloading(apiRoot,method,data,callback) {
+function ApiInvokeNoloading(apiRoot,method,data,callback) {
     if(arguments.length<4) {
         callback('缺少基本参数', null);
         return;
@@ -126,4 +126,26 @@ function showchunk(chunkName,callback) {
         currentchunk.removeClass("disnone");
     };
     if (callback)callback();
+}
+
+function wechatPay(paysignResult,callback) {
+    var UA = window.navigator.userAgent;
+    window.inWeixin = (UA.indexOf("MicroMessenger") != -1);
+    if(window.inWeixin) {
+        try {
+            const wxpayargs = {
+                appId: paysignResult.appId, //公众号名称，由商户传入
+                timeStamp: paysignResult.timeStamp, //时间戳，自1970年以来的秒数
+                nonceStr: paysignResult.nonceStr, //随机串
+                package: paysignResult.package,
+                signType: paysignResult.signType, //微信签名方式:
+                paySign: paysignResult.paySign //微信签名
+            };
+            window.WeixinJSBridge.invoke('getBrandWCPayRequest', wxpayargs, callback);
+        } catch (err) {
+            alert(JSON.stringify(err));
+        }
+    }else {
+        $.alert('非微信环境，无法完成支付');
+    }
 }

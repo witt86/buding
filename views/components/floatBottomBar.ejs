@@ -1,16 +1,45 @@
 <div class="floatBottomBar">
-    <a class="floatBottomItem routeItem <%= type == 'shopHome' ? 'routeActive' : '' %>" href="/shop/090703">
+    <a class="floatBottomItem routeItem <%= type == 'shopHome' ? 'routeActive' : '' %>" href="/shop/05987386">
+        <% if(type=='shopHome'){ %>
         <img src="/images/sc1.png" alt="">
-    <a class="floatBottomItem routeItem  <%= type == 'shopCategory' ? 'routeActive' : '' %>" href="/shop/090703/category">
+       <% } else { %>
+        <img src="/images/sc0.png" alt="">
+        <% }%>
+        <p>商城</p>
+    </a>
+    <a class="floatBottomItem routeItem  <%= type == 'shopCategory' ? 'routeActive' : '' %>"
+       href="/shop/05987386/productCategory">
+        <% if ( type == 'shopCategory') { %>
+        <img src="/images/fl1.png" alt="">
+        <% }else { %>
         <img src="/images/fl0.png" alt="">
-    <a class="floatBottomBigItem routeItem" href="/shop/090703/qrcode">
+        <% } %>
+        <p>分类</p>
+    </a>
+    <a class="floatBottomBigItem routeItem" onclick="smqrcode()">
         <div>
             <img src="/images/sm.png" alt="">
         </div>
         <p>扫码购</p>
     </a>
-    <a class="floatBottomItem routeItem <%= type == 'shopCar' ? 'routeActive' : '' %>" href="/shop/090703/shopcar">
+    <a class="floatBottomItem routeItem <%= type == 'shopCar' ? 'routeActive' : '' %>" href="/shop/05987386/shopcar">
         <img src="/images/gwc0.png" alt="">
-    <a class="floatBottomItem routeItem" href="/shop/090703/mine">
+        <p>购物车</p>
+    </a>
+    <a class="floatBottomItem routeItem" href="/user/mine">
         <img src="/images/wo0.png" alt="">
+        <p>我的</p>
+    </a>
 </div>
+
+<script>
+    function smqrcode() {
+        window.wx.scanQRCode({
+            needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+            success: (res)=>{
+                const result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                go_to('/shop/05987386/productDetail/'+result.split(',')[1]);
+            }
+        });
+    }
+</script>

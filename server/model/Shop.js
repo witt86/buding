@@ -72,9 +72,13 @@ export const ClearCarItem = async({uid})=> {
 };
 
 //获得购物车信息
-export const GetShopCart = async({uid})=> {
-      const ShopCartInfo=await TMSProductAPI("get_shopcart",{ uid });
-      return ShopCartInfo;
+export const GetShopCart = async({uid, select,shopcode})=> {
+    let query = {uid,agent_code:shopcode};
+    if (select != undefined) {
+        query.is_selected = select;
+    }
+    const ShopCartInfo = await TMSProductAPI("get_shopcart",query);
+    return ShopCartInfo;
 };
 
 //下单并支付
@@ -85,7 +89,7 @@ export const makeOrder = async({uid, shopcode, buyInfo})=> {
 
     let guider_uid = uid;
     //获得选中的购物车项
-    const allSelectCartItem = await GetShopCart({uid});
+    const allSelectCartItem = await GetShopCart({uid,shopcode,select:1});
     let carItems = [];
     if (allSelectCartItem && allSelectCartItem.items && allSelectCartItem.items.length > 0) {
         carItems = allSelectCartItem.items;
@@ -125,16 +129,18 @@ export const makeOrder = async({uid, shopcode, buyInfo})=> {
     try {
         let createdOrderInfo = await TMSProductAPI("make_order", orderInfo);
         orderId = createdOrderInfo.order_no;
+        console.log(orderId);
     } catch (e) {
         throw global.errobj("makeOrderErr", `下单失败，请稍后重试`, e);
     }
-    //生成支付密匙
-    try {
-        const requestSign = await payOrder({uid, orderId});
-        return {requestSign, orderId};
-    } catch (e) {
-        throw global.errobj("paySignErr", `生成支付密钥失败`, e);
-    }
+    return { orderId };
+    // //生成支付密匙
+    // try {
+    //     const requestSign = await payOrder({uid, orderId});
+    //     return {requestSign, orderId};
+    // } catch (e) {
+    //     throw global.errobj("paySignErr", `生成支付密钥失败`, e);
+    // }
 };
 
 //支付订单
@@ -146,7 +152,7 @@ export const payOrder = async({uid, orderId})=> {
     const orderInfo = await TMSProductAPI("get_order", {order_no: orderId});
     if (!orderInfo) throw global.errobj('指定订单不存在');
     //检查订单状态
-    if (orderInfo.status != 0) throw global.errobj('订单非待支付状态!');
+    if (orderInfo.order_state != 0) throw global.errobj('订单非待支付状态!');
     //检查支付记录是否存在，不存在则创建一条
     const query = {
         where: {
@@ -175,9 +181,17 @@ export const payOrder = async({uid, orderId})=> {
         payAmount = 0.01;
         console.dir('调整为测试支付金额!');
     }
+    let openID=reguser.wx_openID;
+    if (process.env.PAY_DEBUG == '1') {
+        const openIDsMap = JSON.parse(await global.redisClient.getAsync("openid-map"));
+        const matchUsers = filter(openIDsMap, m=>m.dev == openID);
+        const newOpenID = (matchUsers.length > 0) ? matchUsers[0].product : openID;
+        console.log(`测试公众号下支付用户openID的转换映射:${openID}->${newOpenID}, data= ${openIDsMap}`);
+        openID = newOpenID;
+    }
     //生成支付密匙
     const requestParams = {
-        openid: reguser.wx_openID,
+        openid: openID,
         body: `布丁酒店订单支付(${orderId})`,
         detail: '布丁酒店订单',
         out_trade_no: PayRecord.out_trade_no,
@@ -188,7 +202,7 @@ export const payOrder = async({uid, orderId})=> {
     console.log('---签名obj---');
     console.log(requestParams);
     const requestSign = await global.wxpay.getBrandWCPayRequestParamsAsync(requestParams);
-    return requestSign;
+    return {requestSign};
 };
 
 export const loadProducts = async ({shopcode,code})=> {

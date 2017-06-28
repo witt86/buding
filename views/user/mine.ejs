@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<% include ./../header.ejs %>
+<body class="mine">
+<header>
+    <div class="bd-index-header">
+        <div class="bd-index-header-icon-back" id="reset_btn_back">
+            <span></span>
+        </div>
+        <div class="bd-index-header-title">
+            <%= title %>
+        </div>
+    </div>
+</header>
+
+<div class="common-wrapper">
+    <div class="head-img">
+        <!--我的布丁-个人区域-->
+        <div class="my-id-pic"><img
+                    src="//m.360buyimg.com/img/jfs/t3859/326/1376350581/4871/1f7cb1b3/5876f785N83a31aa3.jpg"></div>
+        <a id="userimage"
+           href="javascript:">
+            <div class="my-info cf">
+                <div class="my-img-wrap">
+                    <img class="my-img-border"
+                         src="//m.360buyimg.com/img/jfs/t3928/27/482890805/22652/d95af356/5850e0edN1dca846b.png">
+                    <span class="my-img"><img
+                                src="<%= reguser.headimgurl %>"></span>
+                </div>
+                <div class="my-person-info">
+                    <p class="my-jd-head-name"><%= reguser.userName %></p>
+                    <div class="my-jd-head-member">
+                        <span class="my-jd-head-type">普通会员</span>
+                        <div class="my-jd-head-plus">
+													<span class="plus-icon-wrap">
+														<img class="plus-icon"
+                                                             src="//m.360buyimg.com/mobilecms/jfs/t3835/278/642907156/1552/a6f2d3b2/58173a43Nc71052cf.png">
+										 			</span>
+                            <span class="plus-icon-text">PLUS会员</span>
+                            <span class="info-hint"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="head-meassage">
+                    <span class="head-meassage-name">账户管理</span>
+                    <span class="info-hint"></span>
+                </div>
+            </div>
+        </a>
+        <ul class="my-watch cf">
+            <!--关注的商品-->
+            <!--关注的店铺-->
+            <!--浏览记录-->
+            <!--关注的商品-->
+            <a id="guanzhudeshangpin"
+               href="javascript:">
+                <li>
+                            				<span class="watch-goods">
+                    							<em class="watch-re">
+                                                    8
+                    							</em>
+                    						</span>
+                    <span class="watch-shop">关注的商品</span>
+                </li>
+            </a>
+            <!--关注的店铺-->
+            <!--浏览记录-->
+            <!--关注的商品-->
+            <!--关注的店铺-->
+            <a id="guanzhudedianpu"
+               href="javascript:">
+                <li class="mar bdr-l bdr-r">
+                                				<span class="watch-goods ">
+                									<em class="watch-re">0
+                										                									</em>
+                									</span>
+                    <span class="watch-shop">关注的店铺</span>
+                </li>
+            </a>
+            <!--浏览记录-->
+            <!--关注的商品-->
+            <!--关注的店铺-->
+            <!--浏览记录-->
+            <a id="liulanjilu"
+               href="javascript:">
+                <li>
+                            				<span class="watch-goods">
+            									<em class="watch-re">6
+            										            									</em>
+            								</span>
+                    <span class="watch-shop">浏览记录</span>
+                </li>
+            </a>
+        </ul>
+        <!--我的关注结束-->
+    </div>
+    <!--我的布丁-个人区域结束-->
+    <!--我的布丁-我的订单-->
+    <div class="myJD-content">
+        <ul class="bdbr-1px bdbt-1px">
+            <li class="myJD-banner bdbr-1px">
+                <a id="wodedingdan" class="myJD-link"
+                   href="/order/orderlist">
+                    <div class="my-item cf">
+                        <div class="fl">
+                            <span class="couponIn-icon w-15"><img
+                                        src="//m.360buyimg.com/mobilecms/jfs/t2782/329/448284447/1176/f4bdcb20/57147ba3Ne2fccde3.png"></span>
+                            <span class="myJD-Order">我的订单</span>
+                        </div>
+                        <div class="fr">
+                            <span class="myJD-AllOrder">全部订单</span>
+                            <span class="myJD-arrow"></span>
+                        </div>
+                    </div>
+                </a>
+            </li>
+
+            <li class="myJD-item cf">
+                <a id="daifukuan"
+                   href="/order/orderlist?fun_id=wait4Payment">
+                    <div class="myID-part w-3">
+                            						<span class="myID-img">
+                    									<img src="//m.360buyimg.com/mobilecms/jfs/t2734/339/468866355/3035/82b4343b/57147baaNf2463e54.png">
+                    								    <span name="daifukuan" class="my-count re-count">5</span>
+                                                    </span>
+                        <span class="myID-text">待付款</span>
+                    </div>
+                </a>
+                <a id="daishouhuo"
+                   href="/order/orderlist?fun_id=wait4Delivery">
+                    <div class="myID-part w-3">
+                            						<span class="myID-img">
+                    									<img src="//m.360buyimg.com/mobilecms/jfs/t2839/223/441881839/3204/8236908d/57147bb0N365a03ef.png">
+                    								    <span name="daishouhuo"></span>
+                                                    </span>
+                        <span class="myID-text">待收货</span>
+                    </div>
+                </a>
+                <a id="fanxiutuihuo"
+                   href="#">
+                    <div class="myID-part w-3">
+                            						<span class="myID-img">
+                    									<img src="//m.360buyimg.com/mobilecms/jfs/t1957/64/2623944992/3495/454865ab/57147bbbN2cf7ffd7.png">
+                    								    <span name="fanxiutuihuo"></span>
+                                                    </span>
+                        <span class="myID-text">退换/售后</span>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!--我的布丁-我的订单结束-->
+</div>
+
+<% include ./../footer.ejs %>
+
+</html>
