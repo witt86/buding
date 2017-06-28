@@ -1,21 +1,69 @@
 import * as DataModel from './DataModel';
 import TMSProductAPI from '../lib/TMSProductAPI';
 import _config from './../../config.js' ;
+import {filter} from 'lodash';
+
 //添加购物车
-export const AddToCart = async({uid, prd_code, prd_pcs = 1,shopcode})=> {
-    let o = {uid,agent_code:shopcode,prd_code,prd_pcs};
-    const ShopCartInfo = await TMSProductAPI("add_to_cart", o);
-    return ShopCartInfo;
+export const AddToCart = async({uid, prd_code, prd_pcs = 1})=> {
+    try{
+        if(!prd_code) throw '缺少参数';
+
+        const query = {
+            uid:uid,
+            prd_code:prd_code,
+            prd_pcs:prd_pcs,
+            agent_code:'05987386'
+        };
+
+        const res = await TMSProductAPI('add_to_cart',query);
+
+        return res;
+    }catch (e) {
+        console.log("--------AddToCart:e--------");
+        console.log(e);
+        throw e;
+    }
 };
 
 //修改购物车商品
 export const UpdateCartItem = async({uid, item_id, pcs})=> {
+    try{
+        if(!item_id || !pcs) throw '缺少参数';
+        const res = await TMSProductAPI('update_cartitem',{
+            uid:uid,
+            item_id:item_id,
+            pcs:pcs,
+            agent_code:'05987386'
+        });
 
+        res.isAll = await checkAll({shopCar:res});
+
+        return res;
+    }catch (e) {
+        console.log("--------UpdateCartItem:e--------");
+        console.log(e);
+        throw e;
+    }
 };
 
 //移除购物车项
 export const RemoveCartItem = async({uid, item_id})=> {
+    try{
+        if(!item_id) throw '缺少参数';
+        const res = await TMSProductAPI('remove_cartitem',{
+            uid:uid,
+            item_id:item_id,
+            agent_code:'05987386'
+        });
 
+        res.isAll = await checkAll({shopCar:res});
+
+        return res;
+    }catch (e) {
+        console.log("--------RemoveCartItem:e--------");
+        console.log(e);
+        throw e;
+    }
 };
 
 //清空购物车
@@ -149,3 +197,70 @@ export const payOrder = async({uid, orderId})=> {
     return {requestSign};
 };
 
+export const loadProducts = async ({shopcode,code})=> {
+    try{
+        if(!shopcode || !code) return {err:'缺少参数'};
+
+        let result = {};
+        if(code == 'hot'){
+            result = await DataModel.ProductSource.findAll({
+                where:{
+                    tags:{
+                        like:'%布丁首页%'
+                    }
+                }
+            });
+        }else{
+            const cate = await DataModel.ProductCategory.findOne({
+                where:{
+                    code:code
+                }
+            });
+
+            result = await DataModel.ProductSource.findAll({
+                where:{
+                    productcategoryId:cate.id
+                }
+            });
+        }
+
+        return result;
+    }catch (e) {
+        console.log("--------loadProducts:e--------");
+        console.log(e);
+        throw e;
+    }
+};
+
+export const checkAll = async ({shopCar})=> {
+    try{
+        if(!shopCar) return {err:'缺少参数'};
+
+        const res = filter(shopCar.items, {is_selected:false});
+
+        return (res.length == 0 && shopCar.items.length > 0);
+    }catch (e) {
+        console.log("--------checkAll:e--------");
+        console.log(e);
+        throw e;
+    }
+};
+
+export const statusToggle = async ({uid,status,item_id})=> {
+    try{
+        if(!status || !item_id) return {err:'缺少参数'};
+
+        const res = await TMSProductAPI('mark_selected_cartitem',{
+            uid:uid,
+            item_id:item_id,
+            agent_code:'05987386',
+            is_selected:status
+        });
+
+        return res;
+    }catch (e) {
+        console.log("--------statusToggle:e--------");
+        console.log(e);
+        throw e;
+    }
+};

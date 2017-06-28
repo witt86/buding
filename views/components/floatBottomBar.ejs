@@ -1,9 +1,9 @@
 <div class="floatBottomBar">
-    <a class="floatBottomItem routeItem routeActive" href="/shop/05987386">
+    <a class="floatBottomItem routeItem <%= type == 'shopHome' ? 'routeActive' : '' %>" href="/shop/05987386">
         <img src="/images/sc1.png" alt="">
         <p>商城</p>
     </a>
-    <a class="floatBottomItem routeItem" href="/shop/05987386/category">
+    <a class="floatBottomItem routeItem  <%= type == 'shopCategory' ? 'routeActive' : '' %>" href="/shop/05987386/category">
         <img src="/images/fl0.png" alt="">
         <p>分类</p>
     </a>
@@ -13,7 +13,7 @@
         </div>
         <p>扫码购</p>
     </a>
-    <a class="floatBottomItem routeItem" href="/shop/05987386/shopcar">
+    <a class="floatBottomItem routeItem <%= type == 'shopCar' ? 'routeActive' : '' %>" href="/shop/05987386/shopcar">
         <img src="/images/gwc0.png" alt="">
         <p>购物车</p>
     </a>

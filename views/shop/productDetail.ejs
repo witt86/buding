@@ -42,5 +42,21 @@
                     autoplay: 4000
                 });
     });
+    
+    function addShopCart() {
+        var code = '<%= productInfo.code %>';
+        ApiInvoke('shop','AddToCart',{prd_code:code},function (err,res) {
+            if(err){
+                $.alert({
+                    title:'出错！',
+                    text:err
+                })
+            }else{
+                console.log(res);
+                $.toast("成功加入购物车");
+                $.toast("纯文本", "text");
+            }
+        });
+    }
 </script>
 </html>

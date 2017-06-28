@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<% include ./../header.ejs %>
+<body class="shopCar">
+
+<div class="pageContainer">
+    <div class="shopCarBody">
+        <% if(shopCar.items.length == 0){ %>
+        <div class="shopCarEmpty">
+            <i class="fa fa-shopping-cart"></i>
+            购物车空空如也
+        </div>
+        <% }else{ %>
+        <% shopCar.items.map(function (item) { %>
+        <div class="shopCarItem">
+            <div class="shopCarSelect">
+                <div>
+                    <input class="productCheck" type="checkbox" id="<%= item.product.code %>Check" <%= item.is_selected ? 'checked' : '' %>>
+                    <label for="<%= item.product.code %>Check"></label>
+                </div>
+            </div>
+            <div class="shopCarImg">
+                <img src="<%- item.product.image %>" alt="">
+            </div>
+            <div class="shopCarItemInfo">
+                <p><%= item.product.name %></p>
+                <span><%= item.product.retail_price %></span>
+                <div class="shopCarBtns">
+                    <div style="border-left: 1px solid #ccc" onclick="changeQuantity(this,'add')">+</div>
+                    <input class="shopCarPcs" type="number" value="<%= item.pcs %>">
+                    <div style="border-right: 1px solid #ccc" onclick="changeQuantity(this,'minus')">-</div>
+                </div>
+            </div>
+            <div class="shopCarOpt">
+                <div class="shopCarOptBtn" onclick="switchOption(this,true)">操作</div>
+                <div style="display: none" onclick="switchOption(this,false)">取消</div>
+                <div style="display: none" onclick="showDeleteDialog(this)">删除</div>
+            </div>
+            <input class="productId" type="hidden" value="<%= item.id %>">
+        </div>
+        <% }) %>
+        <% } %>
+        <input type="hidden" id="del_id"/>
+    </div>
+
+    <div class="shopCarBar">
+        <div class="shopCarSelectAll">
+            <div>
+                <input type="checkbox" id="allCheck" <%= isAll ? 'checked' : '' %>>
+                <label for="allCheck"></label>
+            </div>
+            <label for="allCheck">全选</label>
+        </div>
+        <div class="shopCarCount">
+            合计:￥<span id="shopAmount"><%= shopCar.shop_amount %></span>
+        </div>
+        <div class="shopCarAccount">
+            去结算(<span id="shopPcs"><%= shopCar.shop_pcs %></span>)
+        </div>
+    </div>
+</div>
+
+<% include ./../footer.ejs %>
+
+<script type="text/javascript">
+    
+    $(document).ready(function () {
+        $('.shopCarPcs').on('change',function () {
+            var item_id1 = $(this).parent().parent().parent().children('.productId').val();
+            var quantity1 = $(this).val();
+            ApiInvoke('shop','UpdateCartItem',{item_id:item_id1,pcs:quantity1},function (err,res) {
+                if(err) $.alert({
+                    title:'出错！',
+                    text:err
+                });
+            });
+        })
+
+        $('.productCheck').on('change',function () {
+            var currentStatus = $(this).prop('checked');
+            var item_id2 = $(this).parent().parent().parent().children('.productId').val();
+            console.log(item_id2);
+            ApiInvoke('shop','statusToggle',{status:!currentStatus,item_id:item_id2},function (err,res) {
+                if(err) $.alert({
+                    title:'出错！',
+                    text:err
+                });
+
+                console.log(res);
+                isAll(res);
+            });
+        })
+    })
+    
+    function switchOption(obj,status) {
+        if(status){
+            $(obj).parent().children('div').fadeIn(100);
+            $(obj).fadeOut(0);
+        }else{
+            $(obj).parent().children('div').fadeOut(0);
+            $(obj).parent().children('.shopCarOptBtn').fadeIn(100);
+        }
+    }
+    
+    function showDeleteDialog(obj) {
+        var item_id = $(obj).parent().parent().children('.productId').val();
+        $('#del_id').val(item_id);
+        $.confirm({title:'确认删除此商品？',
+            onOK:function () {
+                ApiInvoke('shop','RemoveCartItem',{item_id:item_id},function (err,res) {
+                    if(err){
+                        $.alert({
+                            title:'出错！',
+                            text:err
+                        })
+                    }else {
+                        $('#shopAmount').text(res.shop_amount);
+                        $('#shopPcs').text(res.shop_pcs);
+                        $(obj).parent().parent().fadeOut(100);
+                        isAll(res.isAll);
+                    }
+                });
+            },
+            onCancel:function () {
+                switchOption(obj,false)
+            }
+        })
+    }
+    
+    function changeQuantity(obj,type) {
+        var item_id0 = $(obj).parent().parent().parent().children('.productId').val();
+        var quantity0 = $(obj).parent().children('.shopCarPcs').val();
+        if(type == 'add') quantity0++;
+        else if(type == 'minus') quantity0--;
+
+        ApiInvoke('shop','UpdateCartItem',{item_id:item_id0,pcs:quantity0},function (err,res) {
+            if(err){
+                $.alert({
+                    title:'出错！',
+                    text:err
+                });
+            }else{
+                $(obj).parent().children('.shopCarPcs').val(quantity0);
+                $('#shopAmount').text(res.pay_amount);
+                $('#shopPcs').text(res.shop_pcs);
+            }
+        });
+    }
+
+    function isAll(status) {
+        if(status) $('#allCheck').attr('checked',true);
+        else $('#allCheck').attr('checked',false);
+    }
+    
+</script>
+
+</html>

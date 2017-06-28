@@ -45,7 +45,8 @@ router.get('/:shopcode', async (req, res, next) => {
             });
         }
         rs.sections = categorys;
-        rs.shopcode=shopcode;
+        rs.shopcode = shopcode;
+        rs.type = 'shopHome';
         res.render('shop/shopHome', rs);
     }catch (e){
         console.error('-----e:/shopHome-----');
@@ -85,6 +86,48 @@ router.get('/:shopcode/ordersettle', async (req, res, next) => {
         res.render('shop/orderSettle', rs);
     }catch (e){
         console.error('-----e:/ordersettle-----');
+        console.error(e);
+    }
+});
+
+router.get('/:shopcode/productCategory', async (req, res, next) => {
+    try{
+        let [rs,shopcode] = [{},req.params.shopcode];
+
+        // rs.productList = await DataModel.ProductSource.findAll({where:{}});
+
+        rs.categorys = await DataModel.ProductCategory.findAll();
+
+        rs.title = '分类';
+        rs.shopcode = shopcode;
+        rs.type = 'shopCategory';
+
+        res.render('shop/shopCategory', rs);
+    }catch (e){
+        console.error('-----e:/productCategory-----');
+        console.error(e);
+    }
+});
+
+router.get('/:shopcode/shopCar', async (req, res, next) => {
+    try{
+        let [rs,shopcode] = [{},req.params.shopcode];
+        const uid = req.session.user.uid;
+
+        rs.shopCar = await TMSProductAPI('get_shopcart',{
+            uid:uid,
+            agent_code:'05987386'
+        });
+
+        rs.title = '购物车';
+        rs.shopcode = shopcode;
+        rs.type = 'shopCar';
+        rs.isAll = await Shop.checkAll({shopCar:rs.shopCar});
+
+        console.log(rs);
+        res.render('shop/shopCar', rs);
+    }catch (e){
+        console.error('-----e:/shopCar-----');
         console.error(e);
     }
 });
