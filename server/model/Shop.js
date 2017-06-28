@@ -181,9 +181,17 @@ export const payOrder = async({uid, orderId})=> {
         payAmount = 0.01;
         console.dir('调整为测试支付金额!');
     }
+    let openID=reguser.wx_openID;
+    if (process.env.PAY_DEBUG == '1') {
+        const openIDsMap = JSON.parse(await global.redisClient.getAsync("openid-map"));
+        const matchUsers = filter(openIDsMap, m=>m.dev == openID);
+        const newOpenID = (matchUsers.length > 0) ? matchUsers[0].product : openID;
+        console.log(`测试公众号下支付用户openID的转换映射:${openID}->${newOpenID}, data= ${openIDsMap}`);
+        openID = newOpenID;
+    }
     //生成支付密匙
     const requestParams = {
-        openid: reguser.wx_openID,
+        openid: openID,
         body: `布丁酒店订单支付(${orderId})`,
         detail: '布丁酒店订单',
         out_trade_no: PayRecord.out_trade_no,

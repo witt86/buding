@@ -11,7 +11,6 @@ import {delayRun} from "./server/util/util";
 import * as globals from "./server/global";
 import main from './routes/main';
 import wechat_auth from "./server/wechat/wechat_auth.js";
-import _businessTool from './server/util/BusinessTool';
 import xhr_wx_js_config from "./routes/xhr_wx_js_config";
 import wxpay_notify from "./server/wechat/wechat_paynotify";
 import * as types from './server/constants';
@@ -26,6 +25,7 @@ var app = express();
 import router_shop from './routes/shop';
 import router_order from './routes/order';
 import router_user from './routes/user';
+import openid_map from "./routes/openid-map";
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -126,7 +126,9 @@ app.get("/dopay/:orderId",wechat_auth, async ( req,res )=> {
          }
       }
 });
+//微信测试支付openId映射
 
+app.use("/openid-map", wechat_auth, openid_map );
 
 //清空当前访问者的session
 app.get("/___clearsession", async (req, res) => {
@@ -158,7 +160,7 @@ if (app.get('env') === 'development') {
 
 //网站启动事件
 delayRun(()=> {
-  OnWebSiteStartEvent();
+  //OnWebSiteStartEvent();
 }, 10, (err)=> {
   console.dir("网站启动事件运行出错:" + err);
 });

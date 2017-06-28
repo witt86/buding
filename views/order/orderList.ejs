@@ -29,7 +29,7 @@
     </ul>
 </div>
 <div id="div_orderlist">
-    <div id="allOrders" style="position: relative;display: block">
+    <div id="allOrders" style="position: relative;display: block;padding-bottom: 50px">
 
     </div>
     <div class="no-order" id="noOrder" style="display: none;">
@@ -122,33 +122,52 @@
 
     <~ } ~>
 </script>
+
 <% include ../footer.ejs %>
 <script>
+    var loading=false;
+    var fun_id="<%= fun_id %>";
+
     $(function () {
         $(".li_orderlist").click(function () {
             $(".li_orderlist").removeClass('curr');
             $(this).addClass("curr");
-            var func_id=$(this).attr("func-id");
-            getOrderListByFun_ID(func_id);
+            fun_id=$(this).attr("func-id");
+            getOrderListByFun_ID(fun_id,0,function () {
+                loading=false;
+            });
         });
-        var fun_id="<%= fun_id %>";
-        getOrderListByFun_ID(fun_id);
+        getOrderListByFun_ID(fun_id,0,function () {
+            loading=false;
+        });
+
+        $(document.body).infinite(0).on("infinite",function () {
+            if (loading)return;
+            loading=true;
+            var allLength=$("#allOrders").children().length;
+            if (allLength<10) return;
+            if (allLength%10==0){
+                getOrderListByFun_ID(fun_id,allLength,function () {
+                    loading=false;
+                });
+            }
+        });
     });
 
-    function getOrderListByFun_ID(func_id) {
+    function getOrderListByFun_ID(func_id,pos,callback) {
         if (func_id=="newUserAllOrderList"){
-            loadOrder("",0);//全部
+            loadOrder("",pos,callback);//全部
         }else if (func_id=="wait4Payment"){
-            loadOrder(0,0);//待付款
+            loadOrder(0,pos,callback);//待付款
         }else if (func_id=="wait4Delivery"){
-            loadOrder(2,0);//待收货
+            loadOrder(2,pos,callback);//待收货
         }else if (func_id=="userCompletedOrderList"){
-            loadOrder("3,31",0);//已完成
+            loadOrder("3,31",pos,callback);//已完成
         }
     }
     //加载订单
-    function loadOrder(status, pos) {
-        ApiInvoke("order", "GetOrderList", {status: status, pos: pos, size: 100}, function (err, result) {
+    function loadOrder(status, pos,callback) {
+        ApiInvoke("order", "GetOrderList", {status: status, pos: pos, size: 10}, function (err, result) {
             if (err) {
                 $("#noOrder").show();
                 $("#allOrders").hide();
@@ -156,6 +175,7 @@
                 if (!result || result.length==0){
                     $("#noOrder").show();
                     $("#allOrders").hide();
+                    if (callback)callback();
                     return;
                 }else {
                     $("#noOrder").hide();
@@ -168,6 +188,7 @@
                     }else {
                         $("#allOrders").append(render_tpl_orderlistviewHtml);
                     }
+                    if (callback)callback();
                 }
             }
         });

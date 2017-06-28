@@ -16,7 +16,7 @@
         <% } %>
         <p>分类</p>
     </a>
-    <a class="floatBottomBigItem routeItem" href="/shop/05987386/qrcode">
+    <a class="floatBottomBigItem routeItem" onclick="smqrcode()">
         <div>
             <img src="/images/sm.png" alt="">
         </div>
@@ -31,3 +31,15 @@
         <p>我的</p>
     </a>
 </div>
+
+<script>
+    function smqrcode() {
+        window.wx.scanQRCode({
+            needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+            success: (res)=>{
+                const result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                go_to('/shop/05987386/productDetail/'+result.split(',')[1]);
+            }
+        });
+    }
+</script>

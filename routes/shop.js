@@ -59,7 +59,7 @@ router.get('/:shopcode/productDetail/:code', async (req, res, next) => {
     try{
         let [rs,code,shopcode] = [{},req.params.code,req.params.shopcode];
 
-        rs.productInfo = await TMSProductAPI('get_product',{code:code});
+        rs.productInfo = await TMSProductAPI('get_product',{code:code,});
 
         rs.title = rs.productInfo.name;
 

@@ -44,7 +44,7 @@ function ApiInvoke(apiRoot,method,data,callback) {
         }
     });
 }
-function ApiInvokeAdminNoloading(apiRoot,method,data,callback) {
+function ApiInvokeNoloading(apiRoot,method,data,callback) {
     if(arguments.length<4) {
         callback('缺少基本参数', null);
         return;
