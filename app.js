@@ -19,6 +19,8 @@ import moment from "moment";
 
 import TMSProductAPI from './server/lib/TMSProductAPI';
 
+import { OnWebSiteStartEvent } from './server/model/BusinessEvent';
+
 var app = express();
 
 import router_shop from './routes/shop';
@@ -156,7 +158,7 @@ if (app.get('env') === 'development') {
 
 //网站启动事件
 delayRun(()=> {
-  //OnWebSiteStartEvent(app);
+  OnWebSiteStartEvent();
 }, 10, (err)=> {
   console.dir("网站启动事件运行出错:" + err);
 });

@@ -21,9 +21,13 @@ router.all("*",async (req, res, next)=>{
 router.get('/mine', async (req, res, next) => {
     try{
         let rs={};
+        const user=req.session.user;
         const { shopcode }=req.query;
+        const reguser=await DataModel.RegUser.findOne({ where:{ uid:user.uid } });
         rs.title = '我的布丁';
         rs.shopcode=shopcode;
+        rs.reguser=reguser;
+
         res.render('user/mine', rs);
     }catch (e){
         console.error('-----e:/shopHome-----');

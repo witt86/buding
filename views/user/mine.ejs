@@ -25,13 +25,13 @@
                     <img class="my-img-border"
                          src="//m.360buyimg.com/img/jfs/t3928/27/482890805/22652/d95af356/5850e0edN1dca846b.png">
                     <span class="my-img"><img
-                                src="//storage.jd.com/i.imageUpload/7774706c617931343831323834343637303239_big.jpg"></span>
+                                src="<%= reguser.headimgurl %>"></span>
                 </div>
                 <div class="my-person-info">
-                    <p class="my-jd-head-name">wtplay</p>
+                    <p class="my-jd-head-name"><%= reguser.userName %></p>
                     <div class="my-jd-head-member">
-                        <span class="my-jd-head-type">钻石会员</span>
-                        <div class="my-jd-head-plus" pingparam="MMyJD_MemberPlus,2," functionid="huiyuanplus">
+                        <span class="my-jd-head-type">普通会员</span>
+                        <div class="my-jd-head-plus">
 													<span class="plus-icon-wrap">
 														<img class="plus-icon"
                                                              src="//m.360buyimg.com/mobilecms/jfs/t3835/278/642907156/1552/a6f2d3b2/58173a43Nc71052cf.png">
@@ -56,8 +56,9 @@
                href="javascript:">
                 <li>
                             				<span class="watch-goods">
-                    							<em class="watch-re">8
-                    								                    							</em>
+                    							<em class="watch-re">
+                                                    8
+                    							</em>
                     						</span>
                     <span class="watch-shop">关注的商品</span>
                 </li>
@@ -99,7 +100,7 @@
         <ul class="bdbr-1px bdbt-1px">
             <li class="myJD-banner bdbr-1px">
                 <a id="wodedingdan" class="myJD-link"
-                   href="javascript:maidian('https://home.m.jd.com/newAllOrders/newAllOrders.action?sid=9f4b7e56b0957f99c83556be65f455b8','MMyJD_AllOrders','2','');">
+                   href="/order/orderlist">
                     <div class="my-item cf">
                         <div class="fl">
                             <span class="couponIn-icon w-15"><img
@@ -116,7 +117,7 @@
 
             <li class="myJD-item cf">
                 <a id="daifukuan"
-                   href="javascript:maidian('https://home.m.jd.com/newAllOrders/newAllOrders.action?functionId=wait4Payment&amp;sid=9f4b7e56b0957f99c83556be65f455b8','MMyJD_Ordersnotpay','2','');">
+                   href="/order/orderlist?fun_id=wait4Payment">
                     <div class="myID-part w-3">
                             						<span class="myID-img">
                     									<img src="//m.360buyimg.com/mobilecms/jfs/t2734/339/468866355/3035/82b4343b/57147baaNf2463e54.png">
@@ -126,7 +127,7 @@
                     </div>
                 </a>
                 <a id="daishouhuo"
-                   href="javascript:maidian('https://home.m.jd.com/newAllOrders/newAllOrders.action?functionId=wait4Delivery&amp;sid=9f4b7e56b0957f99c83556be65f455b8','MMyJD_Ordersnotreceiving','2','');">
+                   href="/order/orderlist?fun_id=wait4Delivery">
                     <div class="myID-part w-3">
                             						<span class="myID-img">
                     									<img src="//m.360buyimg.com/mobilecms/jfs/t2839/223/441881839/3204/8236908d/57147bb0N365a03ef.png">
@@ -136,7 +137,7 @@
                     </div>
                 </a>
                 <a id="fanxiutuihuo"
-                   href="javascript:maidian('https://tuihuan.jd.com/afs/orders?sid=9f4b7e56b0957f99c83556be65f455b8','MMyJD_RePairReplacement','','');">
+                   href="#">
                     <div class="myID-part w-3">
                             						<span class="myID-img">
                     									<img src="//m.360buyimg.com/mobilecms/jfs/t1957/64/2623944992/3495/454865ab/57147bbbN2cf7ffd7.png">

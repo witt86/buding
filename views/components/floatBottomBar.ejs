@@ -1,10 +1,19 @@
 <div class="floatBottomBar">
     <a class="floatBottomItem routeItem <%= type == 'shopHome' ? 'routeActive' : '' %>" href="/shop/05987386">
+        <% if(type=='shopHome'){ %>
         <img src="/images/sc1.png" alt="">
+       <% } else { %>
+        <img src="/images/sc0.png" alt="">
+        <% }%>
         <p>商城</p>
     </a>
-    <a class="floatBottomItem routeItem  <%= type == 'shopCategory' ? 'routeActive' : '' %>" href="/shop/05987386/category">
+    <a class="floatBottomItem routeItem  <%= type == 'shopCategory' ? 'routeActive' : '' %>"
+       href="/shop/05987386/productCategory">
+        <% if ( type == 'shopCategory') { %>
+        <img src="/images/fl1.png" alt="">
+        <% }else { %>
         <img src="/images/fl0.png" alt="">
+        <% } %>
         <p>分类</p>
     </a>
     <a class="floatBottomBigItem routeItem" href="/shop/05987386/qrcode">

@@ -24,7 +24,7 @@ export const findAndCreateUserFromWeixinAuthor=async (accessTokenInfo)=>{
             let newUser= await DataModel.RegUser.create({
                 uid: regResult.uid,
                 wx_openID: weixin.openid,
-                nickname: weixin.nickname||"",
+                userName:weixin.nickname||"",
                 headimgurl: weixin.headimgurl||"",
                 unionid: weixin.openid||""
             });
@@ -43,7 +43,7 @@ export const findAndCreateUserFromWeixinAuthor=async (accessTokenInfo)=>{
                 olduser= await olduser.update({
                     uid: regResult.uid,
                     wx_openID: weixin.openid,
-                    nickname: weixin.nickname||"",
+                    userName:weixin.nickname||"",
                     headimgurl: weixin.headimgurl||"",
                     unionid: weixin.unionid||""
                 });
@@ -51,7 +51,7 @@ export const findAndCreateUserFromWeixinAuthor=async (accessTokenInfo)=>{
             else if (olduser.uid && olduser.userName==""){//补全昵称为空的用户信息
                 olduser= await olduser.update({
                     wx_openID: weixin.openid,
-                    nickname: weixin.nickname||"",
+                    userName:weixin.nickname||"",
                     headimgurl: weixin.headimgurl||""
                 });
             }

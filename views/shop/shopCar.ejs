@@ -54,7 +54,7 @@
         <div class="shopCarCount">
             合计:￥<span id="shopAmount"><%= shopCar.shop_amount %></span>
         </div>
-        <div class="shopCarAccount">
+        <div class="shopCarAccount" onclick="go_to('/shop/<%= shopcode%>/ordersettle')">
             去结算(<span id="shopPcs"><%= shopCar.shop_pcs %></span>)
         </div>
     </div>

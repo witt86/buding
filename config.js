@@ -14,8 +14,8 @@ const config = {
             charset: "utf8m64_general_ci",
             database: "buding"
         },
-        siteIP: "127.0.0.1",
-        sitehost: "http://127.0.0.1:4000",
+        siteIP: "114.55.87.183",
+        sitehost: "http://test2.itravelbuy.twohou.com",
         thmall: {
             apiURL: "http://test.tmonkey.cn:8001/tms-api/",
             secret: "......",

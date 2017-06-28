@@ -2,8 +2,13 @@
   "button": [
     {
       "type": "view",
-      "name": "好礼商城",
-      "url": "{hostname}/shop/shopHome"
+      "name": "布丁商城",
+      "url": "{hostname}/shop/05987386"
+    },
+    {
+      "type": "view",
+      "name": "我的",
+      "url":"{hostname}/user/mine"
     }
   ]
 }
