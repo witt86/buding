@@ -1,7 +1,7 @@
 <div id="halfPopup" class="weui-popup__container popup-bottom">
     <div class="weui-popup__overlay" style="opacity: 1;"></div>
     <div class="weui-popup__modal" style="bottom: 50px !important;">
-        <div class="toolbar">
+        <div id="halfPopupToolbar" class="toolbar">
             <div class="toolbar-inner">
                 <a href="javascript:;" class="picker-button close-popup" style="color: #D8013C;">关闭</a>
                 <h1 class="title" id="halfPopupTitle"></h1>
@@ -17,10 +17,12 @@
 </div>
 
 <script type="text/javascript">
-    function showHalfPopup({title = '', content, height = 0}) {
+    function showHalfPopup({title = '', titleColor, titleBgColor, content, height = 0}) {
         $('#halfPopupTitle').text(title);
         $('#halfPopupContent').html($('#' + content).html());
         $('#halfPopupMarginBottom').css('height',height);
+        $('#halfPopupTitle').css('color',titleColor ? titleColor : '');
+        $('#halfPopupToolbar').css('background',titleBgColor ? titleBgColor : '');
         $('#halfPopup').popup();
     }
 </script>
