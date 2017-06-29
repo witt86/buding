@@ -23,14 +23,20 @@
                 <img src="<%- item.product.image %>" alt="" onclick="window.location.href='/shop/<%= shopcode %>/productDetail/<%= item.product.code  %>'">
             </div>
             <div class="shopCarItemInfo">
-                <p onclick="window.location.href='/shop/<%= shopcode %>/productDetail/<%= item.product.code  %>'"><%= item.product.name %></p>
+                <p onclick="window.location.href='/shop/<%= shopcode %>/productDetail/<%= item.product.code %>'"><%= item.product.name %></p>
                 <span><%= item.product.retail_price %></span>
                 <div class="shopCarBtns">
                     <div style="border-left: 1px solid #ccc" onclick="changeQuantity(this,'add')">+</div>
                     <input class="shopCarPcs" type="number" value="<%= item.pcs %>">
-                    <div class="shopCarBtnMinus" style="border-right: 1px solid #ccc;color:<%= item.pcs == 1 ? '#ddd' : '' %>;" onclick="changeQuantity(this,'minus')">-</div>
+                    <div class="shopCarBtnMinus" style="border-right: 1px solid #ccc;color:<%= item.pcs == item.product.lower_limit ? '#ddd' : '' %>;" onclick="changeQuantity(this,'minus')">-</div>
+                    <input type="hidden" class="limitLow" value="<%= item.product.lower_limit %>">
                 </div>
             </div>
+            <% if(item.product.lower_limit > 1){ %>
+            <div class="shopCarCaution">
+                该商品<%= item.product.lower_limit %>件起售
+            </div>
+            <% } %>
             <div class="shopCarOpt">
                 <div class="shopCarOptBtn" onclick="switchOption(this,true)">操作</div>
                 <div style="display: none" onclick="switchOption(this,false)">取消</div>
@@ -67,20 +73,21 @@
         $('.shopCarPcs').on('change',function () {
             var item_id1 = $(this).parent().parent().parent().children('.productId').val();
             var quantity1 = $(this).val();
+            var limitLow = $(this).parent().children('.limitLow').val();
             var that = this;
-            if(quantity1 > 0){
+            if(quantity1 >= limitLow){
                 ApiInvoke('shop','UpdateCartItem',{item_id:item_id1,pcs:quantity1},function (err,res) {
                     if(err) $.alert({title:'出错！', text:err});
 
-                    changeMinusColor(that,quantity1);
+                    changeMinusColor(that,quantity1,limitLow);
                 });
             }else{
                 $.alert({
                     title:'出错！',
-                    text:'修改数量出错，请重新输入'
+                    text:'低于购买下限，请重新输入'
                 });
-                $(this).val(1);
-                changeMinusColor(that,1);
+                $(this).val(limitLow);
+                changeMinusColor(that,limitLow,limitLow);
             }
         })
 
@@ -157,10 +164,11 @@
     function changeQuantity(obj,type) {
         var item_id0 = $(obj).parent().parent().parent().children('.productId').val();
         var quantity0 = $(obj).parent().children('.shopCarPcs').val();
+        var limitLow = $(obj).parent().children('.limitLow').val();
         if(type == 'add') quantity0++;
         else if(type == 'minus') quantity0--;
 
-        if(quantity0 > 0){
+        if(quantity0 >= limitLow){
             ApiInvoke('shop','UpdateCartItem',{item_id:item_id0,pcs:quantity0},function (err,res) {
                 if(err){
                     $.alert({
@@ -168,7 +176,7 @@
                         text:err
                     });
                 }else{
-                    changeMinusColor(obj,quantity0);
+                    changeMinusColor(obj, quantity0, limitLow);
                     $(obj).parent().children('.shopCarPcs').val(quantity0);
                     $('#shopAmount').text(res.shop_amount);
                     $('#shopPcs').text(res.shop_pcs);
@@ -182,8 +190,8 @@
         else $('#allCheck').prop('checked',false);
     }
 
-    function changeMinusColor(obj,quantity) {
-        if(quantity > 1) $(obj).parent().children('.shopCarBtnMinus').css('color','#000');
+    function changeMinusColor(obj, quantity, limitLow) {
+        if(quantity > limitLow) $(obj).parent().children('.shopCarBtnMinus').css('color','#000');
         else $(obj).parent().children('.shopCarBtnMinus').css('color','#ddd');
     }
     
