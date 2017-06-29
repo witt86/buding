@@ -128,7 +128,7 @@ router.get('/:shopcode/shopCar', async (req, res, next) => {
         rs.type = 'shopCar';
         rs.isAll = await Shop.checkAll({shopCar:rs.shopCar});
 
-        console.log(rs);
+        // console.log(rs);
         res.render('shop/shopCar', rs);
     }catch (e){
         console.error('-----e:/shopCar-----');

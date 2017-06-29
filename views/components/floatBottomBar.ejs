@@ -1,5 +1,6 @@
 <div class="floatBottomBar">
-    <a class="floatBottomItem routeItem <%= type == 'shopHome' ? 'routeActive' : '' %>" href="/shop/05987386">
+    <a class="floatBottomItem routeItem <%= type == 'shopHome' ? 'routeActive' : '' %>" href="/shop/05987386"
+       style="width: <%= type == 'shopCar' ? '25%' : '19%' %>">
         <% if(type=='shopHome'){ %>
         <img src="/images/sc1.png" alt="">
        <% } else { %>
@@ -8,7 +9,7 @@
         <p>商城</p>
     </a>
     <a class="floatBottomItem routeItem  <%= type == 'shopCategory' ? 'routeActive' : '' %>"
-       href="/shop/05987386/productCategory">
+       href="/shop/05987386/productCategory" style="width: <%= type == 'shopCar' ? '25%' : '19%' %>">
         <% if ( type == 'shopCategory') { %>
         <img src="/images/fl1.png" alt="">
         <% }else { %>
@@ -16,18 +17,21 @@
         <% } %>
         <p>分类</p>
     </a>
-    <a class="floatBottomBigItem routeItem" onclick="smqrcode()">
+    <a class="<%= type == 'shopCar' ? 'floatBottomItem' : 'floatBottomBigItem' %> routeItem" onclick="smqrcode()" style="width: <%= type == 'shopCar' ? '25%' : '24%' %>">
         <div>
             <img src="/images/sm.png" alt="">
         </div>
         <p>扫码购</p>
     </a>
-    <a class="floatBottomItem routeItem <%= type == 'shopCar' ? 'routeActive' : '' %>" href="/shop/05987386/shopcar">
+    <% if ( type !== 'shopCar') { %>
+    <a class="floatBottomItem routeItem <%= type == 'shopCar' ? 'routeActive' : '' %>" href="/shop/05987386/shopcar"
+       style="width:19%;">
         <img src="/images/gwc0.png" alt="">
         <div class="shopcarDot"></div>
         <p>购物车</p>
     </a>
-    <a class="floatBottomItem routeItem" href="/user/mine">
+    <% } %>
+    <a class="floatBottomItem routeItem" href="/user/mine" style="width: <%= type == 'shopCar' ? '25%' : '19%' %>">
         <img src="/images/wo0.png" alt="">
         <p>我的</p>
     </a>
