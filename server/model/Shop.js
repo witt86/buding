@@ -373,17 +373,19 @@ export const selectAll = async ({uid,status = 1})=> {
             for(const item of shopCar.items){
                 idList += (idList.length > 0 ? ',' : '') + item.id
             }
+
+            const query = {
+                uid:uid,
+                item_id:idList,
+                agent_code:'05987386',
+                is_selected:status
+            };
+            const res = await TMSProductAPI('mark_selected_cartitem',query);
+
+            return res;
+        }else{
+            return shopCar;
         }
-
-        const query = {
-            uid:uid,
-            item_id:idList,
-            agent_code:'05987386',
-            is_selected:status
-        };
-        const res = await TMSProductAPI('mark_selected_cartitem',query);
-
-        return res;
     }catch (e) {
         console.log("--------selectAll:e--------");
         console.log(e);
