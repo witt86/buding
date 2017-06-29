@@ -28,7 +28,7 @@
                 <div class="shopCarBtns">
                     <div style="border-left: 1px solid #ccc" onclick="changeQuantity(this,'add')">+</div>
                     <input class="shopCarPcs" type="number" value="<%= item.pcs %>">
-                    <div style="border-right: 1px solid #ccc" onclick="changeQuantity(this,'minus')">-</div>
+                    <div class="shopCarBtnMinus" style="border-right: 1px solid #ccc;color:<%= item.pcs == 1 ? '#ddd' : '' %>;" onclick="changeQuantity(this,'minus')">-</div>
                 </div>
             </div>
             <div class="shopCarOpt">
@@ -63,17 +63,25 @@
 <% include ./../footer.ejs %>
 
 <script type="text/javascript">
-    
     $(document).ready(function () {
         $('.shopCarPcs').on('change',function () {
             var item_id1 = $(this).parent().parent().parent().children('.productId').val();
             var quantity1 = $(this).val();
-            ApiInvoke('shop','UpdateCartItem',{item_id:item_id1,pcs:quantity1},function (err,res) {
-                if(err) $.alert({
-                    title:'出错！',
-                    text:err
+            var that = this;
+            if(quantity1 > 0){
+                ApiInvoke('shop','UpdateCartItem',{item_id:item_id1,pcs:quantity1},function (err,res) {
+                    if(err) $.alert({title:'出错！', text:err});
+
+                    changeMinusColor(that,quantity1);
                 });
-            });
+            }else{
+                $.alert({
+                    title:'出错！',
+                    text:'修改数量出错，请重新输入'
+                });
+                $(this).val(1);
+                changeMinusColor(that,1);
+            }
         })
 
         $('.productCheck').on('change',function () {
@@ -152,23 +160,31 @@
         if(type == 'add') quantity0++;
         else if(type == 'minus') quantity0--;
 
-        ApiInvoke('shop','UpdateCartItem',{item_id:item_id0,pcs:quantity0},function (err,res) {
-            if(err){
-                $.alert({
-                    title:'出错！',
-                    text:err
-                });
-            }else{
-                $(obj).parent().children('.shopCarPcs').val(quantity0);
-                $('#shopAmount').text(res.shop_amount);
-                $('#shopPcs').text(res.shop_pcs);
-            }
-        });
+        if(quantity0 > 0){
+            ApiInvoke('shop','UpdateCartItem',{item_id:item_id0,pcs:quantity0},function (err,res) {
+                if(err){
+                    $.alert({
+                        title:'出错！',
+                        text:err
+                    });
+                }else{
+                    changeMinusColor(obj,quantity0);
+                    $(obj).parent().children('.shopCarPcs').val(quantity0);
+                    $('#shopAmount').text(res.shop_amount);
+                    $('#shopPcs').text(res.shop_pcs);
+                }
+            });
+        }
     }
 
     function isAll(status) {
         if(status) $('#allCheck').prop('checked',true);
         else $('#allCheck').prop('checked',false);
+    }
+
+    function changeMinusColor(obj,quantity) {
+        if(quantity > 1) $(obj).parent().children('.shopCarBtnMinus').css('color','#000');
+        else $(obj).parent().children('.shopCarBtnMinus').css('color','#ddd');
     }
     
 </script>
