@@ -1401,13 +1401,14 @@ html, body {
     top: 0;
     width: 100%;
     height: 50px;
+    z-index: 9;
   }
   .shopCategoryNav {
     position: fixed;
     top: 50px;
     left: 0;
     bottom:@padding-bottom;
-    width: 100px;
+    width: 70px;
     height: calc(~"100% - 50px - 50px");
     z-index: 100;
     background: #fff;
@@ -1430,13 +1431,41 @@ html, body {
         border-right: 1px solid #eee;
         color:#696969;
         text-align: center;
-        font-size: 14px;
+        font-size: 12px;
         background: #F0F0F5;
       }
       .shopCategoryNavActive {
         color:#E4393C !important;
         background: #fff !important;
         border-right:none !important;
+      }
+    }
+  }
+  .shopCategoryContent {
+    margin-left: 70px;
+    width: calc(~'100% - 70px');
+    height: 100%;
+    overflow-y: scroll;
+    overflow-scrolling: touch;
+    -webkit-overflow-scrolling: touch;
+    padding: 50px 0;
+    position: relative;
+    .shopCategoryProduct {
+      width: 50%;
+      float: left;
+      padding: 5px;
+      text-align: center;
+      overflow: hidden;
+      border-radius: 1px;
+      img {
+        width: 110px;
+        height: 110px;
+      }
+      div {
+        font-size: 12px;
+        line-height: 14px;
+        height: 28px;
+        overflow: hidden;
       }
     }
   }
@@ -1550,7 +1579,6 @@ html, body {
     .productDetail {
       margin-top: 20px;
       padding: 0 15px;
-      text-align: center;
       img {
         width: 100%;
         height: auto;

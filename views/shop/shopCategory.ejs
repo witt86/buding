@@ -33,8 +33,8 @@
         </div>
     </div>
 
+    <div class="shopCategoryContent"></div>
 </div>
-
 
 <% include ../components/floatBottomBar.ejs %>
 <% include ./../footer.ejs %>
@@ -98,8 +98,22 @@
                 return false;
             }
 
-            console.log(result);
+            $('.shopCategoryContent').empty();
+            if(result.length > 0){
+                result.map(function (item) {
+                    var func = "goProductDetail('" + item.code + "')";
+                    var grid = '<div class="shopCategoryProduct" onclick="' + func.trim() + '">'+
+                            '<img src="' + item.image + '" alt="">'+
+                            '<div>' + item.name + '</div>'+
+                            '</div>';
+                    $('.shopCategoryContent').append(grid);
+                })
+            }
         });
+    }
+    
+    function goProductDetail(code) {
+        window.location.href='/shop/<%= shopcode %>/productDetail/' + code;
     }
 </script>
 
