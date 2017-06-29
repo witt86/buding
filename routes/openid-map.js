@@ -35,7 +35,10 @@ router.all('*',async (req,res)=>{
                 openid: req.query.releaseopenid
             };
             await addNewOpenIDMap(queryInfo);
-            res.alert(types.ALERT_SUCCESS, "支付环境准备OK", "");
+            let buttons = [
+                {url: '/shop/05987386', title: '开始测试'}
+            ];
+            res.alert(types.ALERT_SUCCESS, "支付环境准备OK", "",buttons);
         }
     }else {
         if (req.query.backurl) {

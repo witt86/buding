@@ -1,38 +1,33 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title> 提示 </title>
-    <% include header.ejs %>
-</head>
+<% include ./header.ejs %>
 <body onselect="return false;" onselectstart="return false;" >
 
-<div class="container js_container">
-    <div class="weui_msg">
-        <div class="weui_icon_area">
-            <% if( actionType == types.ALERT_SUCCESS ){ %>
-            <i class="weui_icon_success weui_icon_msg"></i>
-            <% }else if( actionType == types.ALERT_WARN ){ %>
-            <i class="weui_icon_safe weui_icon_safe_warn"></i>
-            <% }else if( actionType == types.ALERT_ERROR ){ %>
-            <i class="weui_icon_msg weui_icon_warn"></i>
-            <% } %>
-        </div>
-        <div class="weui_text_area">
-            <h2 class="weui_msg_title"><%= title %></h2>
-            <p class="weui_msg_desc"><%= message %></p>
-        </div>
-        <% if( typeof buttons!="undefined" && buttons.length>0){ %>
-        <div class="weui_opr_area">
-            <p class="weui_btn_area">
-                <% buttons.forEach(function(item, index){%>
-                <a href="<%= item.url %>" class="weui_btn <%= (index==0)?"weui_btn_primary":"weui_btn_default" %>"><%= item.title %></a>
-                <% }); %>
-            </p>
-        </div>
+<div class="weui-msg">
+    <div class="weui-msg__icon-area">
+        <% if( actionType == types.ALERT_SUCCESS ){ %>
+        <i class="weui-icon-success weui-icon_msg"></i>
+        <% }else if( actionType == types.ALERT_WARN ){ %>
+        <i class="weui-icon-safe weui-icon-safe-warn"></i>
+        <% }else if( actionType == types.ALERT_ERROR ){ %>
+        <i class="weui-icon-msg weui-icon-warn"></i>
         <% } %>
     </div>
+
+    <div class="weui-msg__text-area">
+        <h2 class="weui-msg__title"><%= title %></h2>
+        <p class="weui-msg__desc"><%= message %></p>
+    </div>
+    <% if( typeof buttons!="undefined" && buttons.length>0){ %>
+    <div class="weui-msg__opr-area">
+        <p class="weui-btn-area">
+            <% buttons.forEach(function(item, index){%>
+            <a href="<%= item.url %>" class="weui-btn <%= (index==0)?"weui-btn_primary":"weui-btn_default" %>"><%= item.title %></a>
+            <% }); %>
+        </p>
+    </div>
+    <% } %>
 </div>
 
-</body>
-<% include footer.ejs %>
+<% include ./footer.ejs %>
 </html>

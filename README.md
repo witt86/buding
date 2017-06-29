@@ -19,3 +19,4 @@ node ./test/run-addCompanyProducts.js
 
 服务器进程启动
 NODE_ENV=development CDN=0 PORT=5000 PAY_DEBUG=1 pm2 start ./bin/www -n buding
+NODE_ENV=development  pm2 start ./server/task-run.js -n bdtask

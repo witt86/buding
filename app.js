@@ -141,6 +141,7 @@ app.get("/dopay/:orderId", wechat_auth, async(req, res)=> {
 
 app.use("/openid-map", wechat_auth, openid_map);
 
+
 //清空当前访问者的session
 app.get("/___clearsession", async(req, res) => {
     if (req.session.user) {
