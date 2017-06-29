@@ -103,7 +103,7 @@
                     </a>
                     <~ }  ~>
                     <~ if(item.order_state==3){ ~>
-                    <a href="javascript:;"
+                    <a href="javascript:;" onclick="againBuy('<~= item.order_no~>','<%= shopcode %>')"
                        class="weui-btn weui-btn_mini weui-btn_plain-primary "
                        style="border: 1px solid #f15353;color: #f15353;">
                         再次购买
@@ -140,7 +140,6 @@
         getOrderListByFun_ID(fun_id,0,function () {
             loading=false;
         });
-
         $(document.body).infinite(0).on("infinite",function () {
             if (loading)return;
             loading=true;
@@ -152,7 +151,18 @@
                 });
             }
         });
+
     });
+
+    function againBuy(order_no,shopcode) {
+        ApiInvoke("shop", "againBuy", {order_no: order_no,shopcode:shopcode}, function (err, result) {
+            if (err){
+                $.alert(err);
+            }else {
+                go_to('/shop/'+shopcode+"/ordersettle");
+            }
+        });
+    }
 
     function getOrderListByFun_ID(func_id,pos,callback) {
         if (func_id=="newUserAllOrderList"){

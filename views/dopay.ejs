@@ -78,17 +78,19 @@
         $("#payorder").click(function () {
             var orderId="<%= orderInfo.order_no %>";
             ApiInvoke('shop','payOrder',{ orderId:orderId },function (err,result) {
-                console.log(err);
-                console.log(result);
-                var requestSign=result.requestSign;
-                console.log(requestSign);
-                wechatPay(requestSign,function (res) {
-                    if (res.errMsg == "chooseWXPay:ok" || res.err_msg == "get_brand_wcpay_request:ok") {
-                        document.location.href="/dopay/"+orderId+"?status=1";
-                    } else {
-                        document.location.href="/dopay/"+orderId+"?status=0";
-                    }
-                });
+                if (err){
+                    $.alert(err);
+                }else {
+                    var requestSign=result.requestSign;
+                    console.log(requestSign);
+                    wechatPay(requestSign,function (res) {
+                        if (res.errMsg == "chooseWXPay:ok" || res.err_msg == "get_brand_wcpay_request:ok") {
+                            document.location.href="/dopay/"+orderId+"?status=1";
+                        } else {
+                            document.location.href="/dopay/"+orderId+"?status=0";
+                        }
+                    });
+                }
             });
         });
     })

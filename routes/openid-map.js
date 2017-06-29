@@ -26,7 +26,8 @@ router.all('*',async (req,res)=>{
     if(process.env.NODE_ENV == 'development') {
         if(!req.query.releaseopenid){
             console.log(`跳转到正式环境去获取openid。。。。。`);
-            let backurl = req.protocol + "://" + req.hostname+":"+global.port + req.originalUrl;
+            let backurl = req.protocol + "://" + req.hostname+":"+process.env.PORT + req.originalUrl;
+            console.log(`--backurl:${backurl}--`);
             res.redirect(`http://itravelbuy.twohou.com/openid-map?action=tellme&backurl=${backurl}`);
         }else {
             const queryInfo = {

@@ -554,7 +554,8 @@ let RefundLog_Weixin = sequelize.define('refundlog_weixin', {
     total_fee: Sequelize.STRING,
     cash_fee: Sequelize.STRING,
     coupon_refund_count: Sequelize.STRING,
-    cash_refund_fee: Sequelize.STRING
+    cash_refund_fee: Sequelize.STRING,
+    reseanMsg:Sequelize.STRING
 }, {
     'deletedAt': 'dtime',
     'paranoid': true

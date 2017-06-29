@@ -43,9 +43,9 @@ export const resetWeixinMenu=async ()=> {
 export const onOrderPaySuccess= async (orderID)=>{
     try{
         //1.给供应商发送付款成功通知
-        const templateId1 =weixin_templateId.RemindShiping;
+        //const templateId1 =weixin_templateId.RemindShiping;
         // URL置空，则在发送后,点击模板消息会进入一个空白页面（ios）, 或无法点击（android）
-        const templateurl = _config.sitehost + "/suppliermanage/ordersummary/" + buyment.orderID ;
+       // const templateurl = _config.sitehost + "/suppliermanage/ordersummary/" + buyment.orderID ;
         // {{first.DATA}}
         // 订单金额：{{keyword1.DATA}}
         // 商品详情：{{keyword2.DATA}}

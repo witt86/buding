@@ -2,6 +2,8 @@ import * as DataModel from './DataModel';
 import TMSProductAPI from '../lib/TMSProductAPI';
 import _config from './../../config.js' ;
 import {filter} from 'lodash';
+import { delayRun } from '../util/util';
+import * as Payment from './../model_inner/Payment';
 
 //添加购物车
 export const AddToCart = async({uid, prd_code, prd_pcs = 1})=> {
@@ -70,7 +72,6 @@ export const RemoveCartItem = async({uid, item_id})=> {
 export const ClearCarItem = async({uid})=> {
 
 };
-
 //获得购物车信息
 export const GetShopCart = async({uid, select,shopcode})=> {
     let query = {uid,agent_code:shopcode};
@@ -80,7 +81,6 @@ export const GetShopCart = async({uid, select,shopcode})=> {
     const ShopCartInfo = await TMSProductAPI("get_shopcart",query);
     return ShopCartInfo;
 };
-
 //下单并支付
 export const makeOrder = async({uid, shopcode, buyInfo})=> {
     //检查用户是否存在
@@ -142,7 +142,6 @@ export const makeOrder = async({uid, shopcode, buyInfo})=> {
     //     throw global.errobj("paySignErr", `生成支付密钥失败`, e);
     // }
 };
-
 //支付订单
 export const payOrder = async({uid, orderId})=> {
     //检查用户是否存在
@@ -204,7 +203,53 @@ export const payOrder = async({uid, orderId})=> {
     const requestSign = await global.wxpay.getBrandWCPayRequestParamsAsync(requestParams);
     return {requestSign};
 };
+//取消订单
+export const cancelOrder = async ({ uid, order_no, reason })=> {
+    console.dir("cancelOrder...."+order_no);
+    const orderInfo = await TMSProductAPI("get_order", {uid, order_no});
+    if (!orderInfo) throw '指定订单不存在!';
+    if (orderInfo.order_state == 0) {
+        await TMSProductAPI("revoke_order", {order_no, uid});
+    } else if (orderInfo.order_state == 1 || orderInfo.order_state == 11 || orderInfo.order_state == 12) {
+        //订单是待发货的, 则检查是否有成功的支付记录, 应该有!
+        //处理流程:request_refund  -》 退款操作 -》标记已退款
+        await TMSProductAPI("request_refund", {uid, order_no, reason});
 
+        //只会有一条成功支付记录
+        const payrecords_success=await DataModel.PayRecord.findOne({ where:{ orderID:order_no,trantype:'pay',success:1 } });
+        if (!payrecords_success){
+            throw '没有此订单的支付成功记录';
+        }
+        const query = {
+            payrecord:payrecords_success,
+            rAmount: 0,//实际推荐金额, 部分退款时使用。如是全额退款,则传0值
+            reseanMsg: reason
+        }
+
+        //提交微信退款
+        const refund_weixin_result = await Payment.Refund_Weixn(query);
+        if (refund_weixin_result){
+            //微信退款一成功,就通知导游和供货商 退款通知
+            delayRun(async ()=> {
+                //BusinessEvent.onUserCancelPayedOrder(buyment);
+            }, 10, (err)=> {
+               // console.error(`onUserCancelPayedOrder时间内部错误:${buyment}`);
+                console.error(err);
+            });
+            await TMSProductAPI("mark_refunded", {uid, order_no,fee:(orderInfo.pay_amount-orderInfo.settle).toFixed(2)});
+        }
+    } else if(orderInfo.order_state ==2 || orderInfo.order_state == 3 || orderInfo.order_state == 31) {
+        //订单是已发货或已收货的,
+        //处理流程:request_refund登记  -》 tms后台客服处理  -》后续流程,可能有人工退款
+        await TMSProductAPI("request_refund", {uid, order_no, reason});
+
+    } else {
+        const msg = `当前${order_no}订单状态不支持本操作!`;
+        console.error(msg);
+        throw msg;
+    }
+    console.dir("cancelOrder....done");
+}
 export const loadProducts = async ({shopcode,code})=> {
     try{
         if(!shopcode || !code) return {err:'缺少参数'};
@@ -239,7 +284,6 @@ export const loadProducts = async ({shopcode,code})=> {
         throw e;
     }
 };
-
 export const checkAll = async ({shopCar})=> {
     try{
         if(!shopCar) return {err:'缺少参数'};
@@ -253,7 +297,6 @@ export const checkAll = async ({shopCar})=> {
         throw e;
     }
 };
-
 export const statusToggle = async ({uid,status,item_id})=> {
     try{
         if(!status || !item_id) return {err:'缺少参数'};
@@ -271,4 +314,27 @@ export const statusToggle = async ({uid,status,item_id})=> {
         console.log(e);
         throw e;
     }
+};
+//再次购买
+export const againBuy=async ({ uid,order_no,shopcode })=>{
+    const orderInfo = await TMSProductAPI("get_order", {uid, order_no});
+    if (!orderInfo) throw '指定订单不存在!';
+    const shopcarInfo=await GetShopCart({ uid,shopcode });
+
+    const items=shopcarInfo.items;
+
+    const item_id=items.map(o=>{ return o.id }).join(',');
+    await TMSProductAPI("mark_selected_cartitem", {uid, item_id,agent_code:shopcode,is_selected:0});
+
+    for (let o of orderInfo.items){
+        let code=o.product.code;
+        for (let x of items){
+            if (code==x.product.code){
+                await RemoveCartItem({  uid,item_id:x.id });
+                break;
+            }
+        }
+        await AddToCart({ uid,prd_code:code });
+    }
+    return true;
 };

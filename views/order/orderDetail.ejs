@@ -13,7 +13,6 @@
     </div>
 </header>
 <div class="common-wrapper pad55">
-
     <div class="weui-cells" style="margin-top: 0">
         <div class="weui-cell">
             <div class="weui-cell__bd">
@@ -26,11 +25,13 @@
     <div class="step2 bdr-new">
         <div class="m step2-in ">
             <div class="mt">
-                <div class="s2-name"><i></i><%= orderInfo.receiver?orderInfo.receiver:"[姓名未填写]" %></div>
-                <div class="s2-phone"><i></i><%= orderInfo.receiver_mobile?orderInfo.receiver_mobile.substring(0,3)+"****"+orderInfo.receiver_mobile.substring(7):"[手机号未填写]" %></div>
+                <div class="s2-name"><i></i><%= orderInfo.receiver ? orderInfo.receiver : "[姓名未填写]" %></div>
+                <div class="s2-phone">
+                    <i></i><%= orderInfo.receiver_mobile ? orderInfo.receiver_mobile.substring(0, 3) + "****" + orderInfo.receiver_mobile.substring(7) : "[手机号未填写]" %>
+                </div>
             </div>
             <div class="mc step2-in-con">
-             <%= (orderInfo.ship_province || "") + (orderInfo.ship_city || "") + (orderInfo.ship_district || "") + (orderInfo.ship_address || "[地址未填写]")%>
+                <%= (orderInfo.ship_province || "") + (orderInfo.ship_city || "") + (orderInfo.ship_district || "") + (orderInfo.ship_address || "[地址未填写]") %>
             </div>
         </div>
         <b class="s2-borderT"></b>
@@ -52,8 +53,8 @@
             </div>
         </div>
         <div class="weui-panel__bd">
-            <% if(orderInfo.items.length>0){ %>
-               <% orderInfo.items.forEach(function (item) { %>
+            <% if(orderInfo.items.length > 0){ %>
+            <% orderInfo.items.forEach(function (item) { %>
 
             <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
                 <div class="weui-media-box__hd">
@@ -67,10 +68,10 @@
                     <p class="weui-media-box__desc">x<%= item.pcs %></p>
                 </div>
                 <div class="weui-cell__ft">
-                    <span class="price mini nocolor"> <%= item.product.retail_price%> </span>
+                    <span class="price mini nocolor"> <%= item.product.retail_price %> </span>
                 </div>
             </a>
-               <% }) %>
+            <% }) %>
             <% } %>
 
         </div>
@@ -97,7 +98,7 @@
                     配送信息
                 </div>
                 <span class="weui-cell__ft" style="color:#262629">
-                <%= orderInfo.ship_vendor_name?orderInfo.ship_vendor_name:"" %>
+                <%= orderInfo.ship_vendor_name ? orderInfo.ship_vendor_name : "" %>
             </span>
             </a>
         </div>
@@ -143,9 +144,9 @@
                 <span class="price">
                     <%= orderInfo.pay_amount %>
                 </span>
-                <% if ( orderInfo.refunded_fee && parseFloat(orderInfo.refunded_fee)>0) { %>
-                <p style="font-size: 12px">退款金额: <span class="price mini"><%= orderInfo.refunded_fee %></span> </p>
-                <%} %>
+                <% if ( orderInfo.refunded_fee && parseFloat(orderInfo.refunded_fee) > 0) { %>
+                <p style="font-size: 12px">退款金额: <span class="price mini"><%= orderInfo.refunded_fee %></span></p>
+                <% } %>
                 <p style="font-size: 12px">下单时间:<%= orderInfo.order_date %></p>
             </div>
         </div>
@@ -153,43 +154,78 @@
 
     <div class="btn-bar" id="btnBar">
         <div class="bb-info" id="bbInfo">
-
-            <% if ( orderInfo.order_state==0 ) { %>
+            <% if ( orderInfo.order_state == 0 ) { %>
             <div class="bottom-but">
                 <a href="/dopay/<%= orderInfo.order_no %>" class="bb-btn1-red">
                     去支付
                 </a>
             </div>
             <div class="bottom-but">
-                <a href="#" class="bb-btn1-box">
+                <a href="#" class="bb-btn1-box cancelOrder">
                     <div class="bb-btn1">取消订单</div>
                 </a>
             </div>
-            <% } else if (orderInfo.order_state==3 || orderInfo.order_state == 31) { %>
+            <% } else if (orderInfo.order_state == 3 || orderInfo.order_state == 31) { %>
             <div class="bottom-but">
-                <a href="#" class="bb-btn1-red">
+                <a href="#" class="bb-btn1-red againBuy">
                     再次购买
                 </a>
             </div>
-            <div class="bottom-but">
-                <a href="#" class="bb-btn1-box">
-                    <div class="bb-btn1">申请售后</div>
-                </a>
-            </div>
-            <% } else if ( orderInfo.order_state==2 ) { %>
-
+            <% } else if ( orderInfo.order_state == 2 ) { %>
             <div class="bottom-but">
                 <a href="#" class="bb-btn1-red">
                     确认收货
                 </a>
             </div>
-            <% } %>
+            <% } else if (orderInfo.order_state == 1) { %>
+            <div class="bottom-but">
+                <a href="#" class="bb-btn1-box cancelOrder">
+                    <div class="bb-btn1">取消订单</div>
+                </a>
+            </div>
+            <% } else { %>
+            <div class="bottom-but">
+                <a href="#" class="bb-btn1-red againBuy">
+                    再次购买
+                </a>
+            </div>
+            <% }%>
         </div>
     </div>
 </div>
 
 <% include ../footer.ejs %>
 <script>
+    var order_no = "<%= orderInfo.order_no %>";
+    var status = "<%= orderInfo.order %>";
+    var shopcode="<%= shopcode %>";
+    $(function () {
+        $(".cancelOrder").click(function () {
+            $.confirm("确定要取消该订单吗?", function () {
+                cancelOrder();
+            }, function () {
 
+            });
+        });
+        $(".againBuy").click(function () {
+            ApiInvoke("shop", "againBuy", {order_no: order_no,shopcode:shopcode}, function (err, result) {
+                if (err){
+                    $.alert(err);
+                }else {
+                    go_to('/shop/'+shopcode+"/ordersettle");
+                }
+            });
+        });
+    })
+
+    function cancelOrder() {
+        ApiInvoke("shop", "cancelOrder", {order_no: order_no,}, function (err, result) {
+              if (err){
+                  $.alert(err);
+              }else {
+                  window.location.reload();
+              }
+        });
+    }
 </script>
 </html>

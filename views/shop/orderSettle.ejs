@@ -19,11 +19,11 @@
                 <a href="#" class="s-href" onclick="openwechatAddress()">
                     <div class="mt_new">
                         <div class="s1-name">
-                            <span id="receiver_text">王涛</span>
+                            <span id="receiver_text"><%= user.userName %></span>
                             <input type="hidden" id="receiver_value" />
                         </div>
                         <div class="s1-phone">
-                            <span id="receiver_mobile_text">134****4768</span>
+                            <span id="receiver_mobile_text"><%= user.mobile?user.mobile.substring(0,3)+"****"+user.mobile.substring(7):"" %></span>
                             <input type="hidden" id="receiver_mobile_value" />
                         </div>
                         <div class="s1-default-new" id="address-default" style="display: block">
@@ -33,7 +33,7 @@
                     <div class="mc step1-in-con">
                         <i class="location-pic"></i>
                         <span id="address-where" class="ship_address_text">
-                            上海徐汇区城区上海市徐汇区城区南丹东路238新东亚大厦6-14层
+                            请填写收货地址
                         </span>
                         <input type="hidden" id="ship_address_value" />
                         <input type="hidden" id="ship_city_value" />
@@ -125,6 +125,10 @@
 <script type="text/javascript">
      $(function () {
          $("#makeorder").click(function () {
+             if($("#ship_address_value").val()==""){
+                 $.alert("请填写收货地址");
+                 return;
+             }
              var buyInfo={
                  buyer_note:"",
                  note_to_receiver:"",

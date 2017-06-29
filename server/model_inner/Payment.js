@@ -29,7 +29,7 @@ const Paying_paySuccess_business = async(paynotify_weixin, message)=> {
         const user_payer = await payrecord.getPayer();
 
         //标记TMS订单已支付
-        await Paying_paySuccess_synTMS(payrecord.orderID, payrecord.payerID, payrecord.transaction_id,payrecord.payAmount);
+        await Paying_paySuccess_synTMS(payrecord.orderID, user_payer.uid, payrecord.transaction_id,payrecord.payAmount);
         //异步的事件通知
         delayRun(()=> {
              BusinessEvent.onOrderPaySuccess(payrecord.orderID);
@@ -125,34 +125,18 @@ export const Paying_onNotify_weixin = async(message, callback, businessDone)=> {
 //这里传入的payrecord都是独立订单的对应支付记录,需要判断其是否属于某个合并支付中的
 export const Refund_Weixn = async({payrecord, rAmount, reseanMsg})=> {
     try {
-        const buyment = await payrecord.getBuyment();
-        if (!buyment)
-            throw `支付记录(id=${payrecord.id})关联的订单记录不存在`;
+        const refundAmount=rAmount==0?payrecord.payAmount:rAmount;
+        if (refundAmount>payrecord.payAmount){
+            throw `退款金额:${refundAmount}超过付款金额:${ payrecord.payAmount }`;
+        }
 
-        let Mergepayrecord;
-        if (rAmount > payrecord.payAmount) {
-            throw `退款金额(${rAmount})超过付款金额${payrecord.get()}!`;
-        }
-        if (payrecord.MergepayId) {
-            Mergepayrecord = await DataModel.PayRecord.findOne({
-                where: {
-                    id: payrecord.MergepayId,
-                    isMerged: true
-                }
-            });
-        }
-        //还原当初的支付总金额
-        let total_fee = (Mergepayrecord && Mergepayrecord.transaction_id && Mergepayrecord.transaction_id.length > 0) ? Mergepayrecord.payAmount : payrecord.payAmount;
-        //
-        const refundAmount = (rAmount == 0) ? payrecord.payAmount : rAmount;
-        //order_no, paycode_weixintransaction_id, payAmount, refundAmount, admin_uid, reseanMsg, callback
-        const out_refund_no = buyment.orderID + "-CNY-" + refundAmount;
+        const out_refund_no = payrecord.orderID + "-CNY-" + refundAmount;
         const params = {
             appid: _config.wxconfig.pay.appid,
             mch_id: _config.wxconfig.pay.mch_id,
             op_user_id: _config.wxconfig.pay.mch_id,
             out_refund_no: out_refund_no,
-            total_fee: (total_fee).toFixed(2) * 10000 * 100 / 10000, //原支付金额   这里乘以10000是为了解决js浮点数运算bug
+            total_fee: (payrecord.payAmount).toFixed(2) * 10000 * 100 / 10000, //原支付金额   这里乘以10000是为了解决js浮点数运算bug
             refund_fee: (refundAmount).toFixed(2) * 10000 * 100 / 10000, //退款金额
             transaction_id: payrecord.transaction_id
         };
@@ -164,12 +148,12 @@ export const Refund_Weixn = async({payrecord, rAmount, reseanMsg})=> {
             throw `微信退款接口调用异常params:${JSON.stringify(params)}, ${JSON.stringify(refund_result)}`;
         }
 
-        console.dir(`订单${buyment.orderID}微信(${payrecord.transaction_id})退款${refundAmount}元成功(${JSON.stringify(refund_result)})`);
+        console.dir(`订单${payrecord.orderID}微信(${payrecord.transaction_id})退款${refundAmount}元成功(${JSON.stringify(refund_result)})`);
 
         refund_result.reseanMsg = reseanMsg;
         const logResult = await DataModel.RefundLog_Weixin.create(refund_result);
         if (!logResult)
-            console.error(`退款${buyment.orderID}成功,但退款日志记录失败!`);
+            console.error(`退款${payrecord.orderID}成功,但退款日志记录失败!`);
 
         const query_payrecord_refund = {
             out_trade_no: out_refund_no, //外部跟踪编号
@@ -180,11 +164,13 @@ export const Refund_Weixn = async({payrecord, rAmount, reseanMsg})=> {
             success: true, //是否支付成功
             transaction_id: refund_result.transaction_id,   //第三方支付记录编号, 只有成功支付的才会有, 包括退款
             ori_out_trade_no: payrecord.transaction_id, //退款记录时,记录原付款记录的交易跟踪号
+            orderID:payrecord.orderID,
+            payerID:payrecord.payerID
         }
-        const payrecord_refund = await payrecord.createRefundpay(query_payrecord_refund);
+        const payrecord_refund = await DataModel.PayRecord.create(query_payrecord_refund);
         if (!payrecord_refund)
-            console.error(+`退款${buyment.orderID}成功,退款记录(payrecord)创建失败!`);
-        //
+            console.error(`退款${payrecord.orderID}成功,退款记录(payrecord)创建失败!`);
+
         return true;
     } catch (err) {
         console.error(`Refund_Weixn内部错误:${err}`);

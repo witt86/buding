@@ -82,7 +82,7 @@ router.get('/:shopcode/ordersettle', async (req, res, next) => {
         let shopCartItems=await Shop.GetShopCart({ uid:user.uid,select:1,shopcode });
 
         rs.shopCartItems=shopCartItems;
-
+        rs.user=user;
         res.render('shop/orderSettle', rs);
     }catch (e){
         console.error('-----e:/ordersettle-----');
