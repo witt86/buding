@@ -78,6 +78,16 @@
         }else{
             loadProducts('hot')
         }
+
+        //获取购物车数量
+        ApiInvokeNoloading('shop','GetShopCart',{shopcode:'<%= shopcode %>'},function (err,res) {
+            var count = 0;
+            res.items.map(function (item) {
+                count += item.pcs;
+            })
+            if(count > 0) $('.shopcarDot').html(count);
+            else $('.shopcarDot').fadeOut(1);
+        });
     });
     
     function loadProducts(code) {

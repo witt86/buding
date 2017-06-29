@@ -222,7 +222,7 @@ html, body {
   bottom: 0;
   width: 100%;
   height: 50px;
-  z-index: 100;
+  z-index: 50;
   background: #fff;
 }
 .floatBottomBar .floatBottomItem,
@@ -1786,7 +1786,7 @@ html, body {
     left: 0;
     width: 100%;
     height: 76px;
-    z-index: 100;
+    z-index: 9;
     background: #fff;
     overflow: hidden;
     .shopHomeSearch {
@@ -1858,7 +1858,6 @@ html, body {
   .shopHomeBody {
     @padding-bottom:53px;
     @padding-top:50px;
-    @shopHomeActivityContentWidth:20px;
     background: #EFEFEF;
     padding-top: 80px;
     padding-bottom: @padding-bottom;
@@ -1923,7 +1922,7 @@ html, body {
       }
       .shopHomeActivityContent {
         height: 110px;
-        width: calc(~"100% - @{shopHomeActivityContentWidth}");
+        width: 100%;
         padding: 0 10px;
         div {
           width: 25%;
