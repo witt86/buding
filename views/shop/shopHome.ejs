@@ -134,8 +134,6 @@
         </div>
         <% } %>
         <% }) %>
-
-        <div style="width:100%;height: 40px;"></div>
     </div>
 </div>
 <% include ../components/floatBottomBar.ejs %>
@@ -180,29 +178,15 @@
             $('.shopHomeBody').scrollTo(scrollHeight,500);
         });
 
-        //监听滚动
-//        $('.shopHomeBody').on('scroll',function () {
-//            var scrollTop = $('.shopHomeBody').scrollTop();
-//            var sections = $('.shopHomeBody').children('.shopHomeSection');
-//            for(var i = 0;i < sections.length ;i++){
-//                console.log($('#' + sections[sections.length - 1].id).position().top + scrollTop);
-//                if(scrollTop < ($('#' + sections[0].id).position().top + 190)){
-//                    $('.shopHomeCate').removeClass('shopHomeCateActive');
-//                    $('#homeNav').addClass('shopHomeCateActive');
-//                }else if(scrollTop > ($('#' + sections[sections.length - 1].id).position().top + 190)){
-////                    console.log(sections[sections.length - 1].id);
-////                    console.log('s:' + scrollTop);
-////                    console.log($('#' + sections[sections.length - 1].id).position().top);
-//                } else{
-//                    if(scrollTop < ($('#' + sections[i].id).position().top + 190)){
-////                        console.log(i);
-//                        $('.shopHomeCateItem').removeClass('shopHomeCateActive');
-//                        $('#' + sections[i].id + 'Nav').addClass('shopHomeCateActive');
-//                        break;
-//                    }
-//                }
-//            }
-//        })
+        //获取购物车数量
+        ApiInvokeNoloading('shop','GetShopCart',{shopcode:'<%= shopcode %>'},function (err,res) {
+            var count = 0;
+            res.items.map(function (item) {
+                count += item.pcs;
+            })
+            if(count > 0) $('.shopcarDot').html(count);
+            else $('.shopcarDot').fadeOut(1);
+        });
     });
 </script>
 

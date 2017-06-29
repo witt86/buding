@@ -41,6 +41,16 @@
                     loop: true,
                     autoplay: 4000
                 });
+
+        //获取购物车数量
+        ApiInvokeNoloading('shop','GetShopCart',{shopcode:'<%= shopcode %>'},function (err,res) {
+            var count = 0;
+            res.items.map(function (item) {
+                count += item.pcs;
+            })
+            if(count > 0) $('.shopcarDot').html(count);
+            else $('.shopcarDot').fadeOut(1);
+        });
     });
     
     function addShopCart() {
@@ -52,8 +62,26 @@
                     text:err
                 })
             }else{
-                console.log(res);
+                var count = 0;
+                res.items.map(function (item) {
+                    count += item.pcs;
+                })
+                $('.shopcarDot').html(count);
                 $.toast("加入购物车成功");
+            }
+        });
+    }
+
+    function fastBuy() {
+        var code = '<%= productInfo.code %>';
+        ApiInvokeNoloading('shop','fastBuy',{prd_code:code},function (err,res) {
+            if(err){
+                $.alert({
+                    title:'出错！',
+                    text:err
+                })
+            }else{
+                window.location.href = '/shop/<%= shopcode %>/ordersettle';
             }
         });
     }

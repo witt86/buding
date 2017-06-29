@@ -290,23 +290,29 @@ export const checkAll = async ({shopCar})=> {
 
         const res = filter(shopCar.items, {is_selected:false});
 
-        return (res.length == 0 && shopCar.items.length > 0);
+        if(res.length == 0 && shopCar.items.length > 0) return true;
+        else return false;
     }catch (e) {
         console.log("--------checkAll:e--------");
         console.log(e);
         throw e;
     }
 };
-export const statusToggle = async ({uid,status,item_id})=> {
-    try{
-        if(!status || !item_id) return {err:'缺少参数'};
 
-        const res = await TMSProductAPI('mark_selected_cartitem',{
+export const statusToggle = async ({uid,status = 1,item_id})=> {
+    try{
+        if(!item_id) return {err:'缺少参数'};
+
+        const query = {
             uid:uid,
             item_id:item_id,
             agent_code:'05987386',
             is_selected:status
-        });
+        };
+
+        const res = await TMSProductAPI('mark_selected_cartitem',query);
+
+        res.isAll = await checkAll({shopCar:res});
 
         return res;
     }catch (e) {
@@ -337,4 +343,57 @@ export const againBuy=async ({ uid,order_no,shopcode })=>{
         await AddToCart({ uid,prd_code:code });
     }
     return true;
+};
+
+export const selectAll = async ({uid,status = 1})=> {
+    try{
+        const shopCar = await TMSProductAPI('get_shopcart',{
+            uid:uid,
+            agent_code:'05987386'
+        });
+
+        let idList = '';
+        if(shopCar.items.length > 0){
+            for(const item of shopCar.items){
+                idList += (idList.length > 0 ? ',' : '') + item.id
+            }
+        }
+
+        const query = {
+            uid:uid,
+            item_id:idList,
+            agent_code:'05987386',
+            is_selected:status
+        };
+        const res = await TMSProductAPI('mark_selected_cartitem',query);
+
+        return res;
+    }catch (e) {
+        console.log("--------selectAll:e--------");
+        console.log(e);
+        throw e;
+    }
+};
+
+export const fastBuy = async ({uid,prd_code})=> {
+    try{
+        if(!prd_code) throw '缺少参数';
+
+        const shopCar = await selectAll({uid:uid,status:0});
+
+        const list = filter(shopCar.items, function (item) {
+            return item.product.code == prd_code;
+        });
+
+        if(list.length > 0){
+            await UpdateCartItem({uid:uid,item_id:list[0].id,pcs:1});
+            await statusToggle({uid:uid,item_id:list[0].id,status:1});
+        }else await AddToCart({uid:uid,prd_code:prd_code});
+
+        return true;
+    }catch (e) {
+        console.log("--------fastBuy:e--------");
+        console.log(e);
+        throw e;
+    }
 };
