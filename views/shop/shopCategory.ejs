@@ -104,6 +104,7 @@
                     var func = "goProductDetail('" + item.code + "')";
                     var grid = '<div class="shopCategoryProduct" onclick="' + func.trim() + '">'+
                             '<img src="' + item.image + '" alt="">'+
+                            '<div>' + item.name + '</div>'+
                             '</div>';
                     $('.shopCategoryContent').append(grid);
                 })
