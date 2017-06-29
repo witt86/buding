@@ -51,6 +51,7 @@ router.get('/:shopcode', async (req, res, next) => {
     }catch (e){
         console.error('-----e:/shopHome-----');
         console.error(e);
+        res.alert(types.ALERT_WARN, e, " ");
     }
 });
 
@@ -69,6 +70,7 @@ router.get('/:shopcode/productDetail/:code', async (req, res, next) => {
     }catch (e){
         console.error('-----e:/productDetail-----');
         console.error(e);
+        res.alert(types.ALERT_WARN, e, " ");
     }
 });
 
@@ -87,6 +89,7 @@ router.get('/:shopcode/ordersettle', async (req, res, next) => {
     }catch (e){
         console.error('-----e:/ordersettle-----');
         console.error(e);
+        res.alert(types.ALERT_WARN, e, " ");
     }
 });
 
@@ -106,6 +109,7 @@ router.get('/:shopcode/productCategory', async (req, res, next) => {
     }catch (e){
         console.error('-----e:/productCategory-----');
         console.error(e);
+        res.alert(types.ALERT_WARN, e, " ");
     }
 });
 
@@ -129,6 +133,7 @@ router.get('/:shopcode/shopCar', async (req, res, next) => {
     }catch (e){
         console.error('-----e:/shopCar-----');
         console.error(e);
+        res.alert(types.ALERT_WARN, e, " ");
     }
 });
 
@@ -142,6 +147,7 @@ router.get('/:shopcode/orderpayresult', async (req, res, next) => {
     }catch (e){
         console.error('-----e:/ordersettle-----');
         console.error(e);
+        res.alert(types.ALERT_WARN, e, " ");
     }
 });
 
