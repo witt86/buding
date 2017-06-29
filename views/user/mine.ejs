@@ -121,7 +121,11 @@
                     <div class="myID-part w-3">
                             						<span class="myID-img">
                     									<img src="//m.360buyimg.com/mobilecms/jfs/t2734/339/468866355/3035/82b4343b/57147baaNf2463e54.png">
-                    								    <span name="daifukuan" class="my-count re-count">5</span>
+                    								     <% if ( orderListWaitPay && orderListWaitPay.length>0 ) { %>
+                                                        <span name="daifukuan" class="my-count re-count">
+                                                            <%= orderListWaitPay.length %>
+                                                        </span>
+                                                         <% } %>
                                                     </span>
                         <span class="myID-text">待付款</span>
                     </div>
@@ -153,5 +157,9 @@
 </div>
 
 <% include ./../footer.ejs %>
+<script>
 
+
+
+</script>
 </html>

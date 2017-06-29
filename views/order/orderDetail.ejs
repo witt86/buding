@@ -173,7 +173,7 @@
             </div>
             <% } else if ( orderInfo.order_state == 2 ) { %>
             <div class="bottom-but">
-                <a href="#" class="bb-btn1-red">
+                <a href="#" class="bb-btn1-red shipSignoff">
                     确认收货
                 </a>
             </div>
@@ -216,8 +216,14 @@
                 }
             });
         });
-    })
+        $(".shipSignoff").click(function () {
+            $.confirm("确定宝贝收到了吗?", function () {
+                shipSignoffOrder();
+            }, function () {
 
+            });
+        });
+    })
     function cancelOrder() {
         ApiInvoke("shop", "cancelOrder", {order_no: order_no,}, function (err, result) {
               if (err){
@@ -225,6 +231,15 @@
               }else {
                   window.location.reload();
               }
+        });
+    }
+    function shipSignoffOrder() {
+        ApiInvoke("shop", "conformOrder", {order_no: order_no,}, function (err, result) {
+            if (err){
+                $.alert(err);
+            }else {
+                window.location.reload();
+            }
         });
     }
 </script>

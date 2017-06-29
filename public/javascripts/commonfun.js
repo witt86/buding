@@ -28,6 +28,9 @@ function ApiInvoke(apiRoot,method,data,callback) {
         data: JSON.stringify({  "queryObj": data}),
         contentType:'application/json',
         success: function (result, status, xhr) {
+            if ($.hideLoading) {
+                $.hideLoading();
+            }
             callback(result.err, result.result);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -35,6 +38,9 @@ function ApiInvoke(apiRoot,method,data,callback) {
             console.error(XMLHttpRequest);
             console.error(textStatus);
             console.error(errorThrown);
+            if ($.hideLoading) {
+                $.hideLoading();
+            }
             callback(errorThrown, null);
         },
         complete: function (XMLHttpRequest, textStatus) {

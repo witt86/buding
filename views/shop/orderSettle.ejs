@@ -171,7 +171,7 @@
              },
              success: function (res) {
                  $("#receiver_value").val(res.userName);
-                 $("#receiver-text").text(res.userName);
+                 $("#receiver_text").text(res.userName);
 
                  $("#receiver_mobile_value").val(res.telNumber);
                  $("#receiver_mobile_text").text(res.telNumber?res.telNumber.substring(0,3)+"****"+res.telNumber.substring(7):"");

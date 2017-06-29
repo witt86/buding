@@ -24,9 +24,12 @@ router.get('/mine', async (req, res, next) => {
         const user=req.session.user;
         const { shopcode }=req.query;
         const reguser=await DataModel.RegUser.findOne({ where:{ uid:user.uid } });
+        const orderListWaitPay=await TMSProductAPI("query_orders",{ uid:user.uid,status:0 });
+
         rs.title = '我的布丁';
         rs.shopcode=shopcode;
         rs.reguser=reguser;
+        rs.orderListWaitPay=orderListWaitPay;
 
         res.render('user/mine', rs);
     }catch (e){

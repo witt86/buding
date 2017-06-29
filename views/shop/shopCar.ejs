@@ -2,7 +2,16 @@
 <html>
 <% include ./../header.ejs %>
 <body class="shopCar">
-
+<header>
+    <div class="bd-index-header">
+        <div class="bd-index-header-icon-back" id="reset_btn_back">
+            <span></span>
+        </div>
+        <div class="bd-index-header-title">
+            <%= title%>
+        </div>
+    </div>
+</header>
 <div class="pageContainer">
     <div class="shopCarBody">
         <% if(shopCar.items.length == 0){ %>
@@ -47,14 +56,14 @@
         <div class="shopCarSelectAll">
             <div>
                 <input type="checkbox" id="allCheck" <%= isAll ? 'checked=checked' : '' %>>
-                <label for="allCheck"></label>
+                <label for="allCheck" style="position: relative;top: 2px;"></label>
             </div>
-            <label for="allCheck">全选</label>
+            <label for="allCheck" style="font-size: 13px;">全选</label>
         </div>
-        <div class="shopCarCount">
+        <div class="shopCarCount" style="font-size: 15px">
             合计:￥<span id="shopAmount"><%= shopCar.shop_amount %></span>
         </div>
-        <div class="shopCarAccount" onclick="go_to('/shop/<%= shopcode%>/ordersettle')">
+        <div class="shopCarAccount" onclick=" go_to('/shop/<%= shopcode%>/ordersettle')">
             去结算(<span id="shopPcs"><%= shopCar.shop_pcs %></span>)
         </div>
     </div>

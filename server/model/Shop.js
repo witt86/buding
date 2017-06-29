@@ -204,7 +204,7 @@ export const payOrder = async({uid, orderId})=> {
     return {requestSign};
 };
 //取消订单
-export const cancelOrder = async ({ uid, order_no, reason })=> {
+export const cancelOrder = async ({ uid, order_no, reason="XXX" })=> {
     console.dir("cancelOrder...."+order_no);
     const orderInfo = await TMSProductAPI("get_order", {uid, order_no});
     if (!orderInfo) throw '指定订单不存在!';
@@ -236,7 +236,7 @@ export const cancelOrder = async ({ uid, order_no, reason })=> {
                // console.error(`onUserCancelPayedOrder时间内部错误:${buyment}`);
                 console.error(err);
             });
-            await TMSProductAPI("mark_refunded", {uid, order_no,fee:(orderInfo.pay_amount-orderInfo.settle).toFixed(2)});
+            await TMSProductAPI("mark_refunded", {uid, order_no,fee: parseFloat(orderInfo.pay_amount).toFixed(2)});
         }
     } else if(orderInfo.order_state ==2 || orderInfo.order_state == 3 || orderInfo.order_state == 31) {
         //订单是已发货或已收货的,
@@ -249,7 +249,19 @@ export const cancelOrder = async ({ uid, order_no, reason })=> {
         throw msg;
     }
     console.dir("cancelOrder....done");
-}
+};
+
+export const conformOrder=async ({ uid,order_no })=>{
+    console.dir("cancelOrder...."+order_no);
+    const orderInfo = await TMSProductAPI("get_order", {uid, order_no});
+    if (!orderInfo) throw '指定订单不存在!';
+    if (orderInfo.order_state!=2){
+        throw '订单非发货状态!';
+    }
+    const conformResult=await TMSProductAPI("ship_signoff",{ order_no,uid });
+    return conformResult;
+};
+
 export const loadProducts = async ({shopcode,code})=> {
     try{
         if(!shopcode || !code) return {err:'缺少参数'};
@@ -329,15 +341,19 @@ export const againBuy=async ({ uid,order_no,shopcode })=>{
 
     const items=shopcarInfo.items;
 
-    const item_id=items.map(o=>{ return o.id }).join(',');
-    await TMSProductAPI("mark_selected_cartitem", {uid, item_id,agent_code:shopcode,is_selected:0});
+    if (items.length>0){
+        const item_id=items.map(o=>{ return o.id }).join(',');
+        await TMSProductAPI("mark_selected_cartitem", {uid, item_id,agent_code:shopcode,is_selected:0});
+    }
 
     for (let o of orderInfo.items){
         let code=o.product.code;
-        for (let x of items){
-            if (code==x.product.code){
-                await RemoveCartItem({  uid,item_id:x.id });
-                break;
+        if (items.length>0){
+            for (let x of items){
+                if (code==x.product.code){
+                    await RemoveCartItem({  uid,item_id:x.id });
+                    break;
+                }
             }
         }
         await AddToCart({ uid,prd_code:code });

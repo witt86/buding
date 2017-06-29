@@ -131,13 +131,25 @@ export const Refund_Weixn = async({payrecord, rAmount, reseanMsg})=> {
         }
 
         const out_refund_no = payrecord.orderID + "-CNY-" + refundAmount;
+
+        let total_fee=payrecord.payAmount;
+        let refund_fee=refundAmount;
+
+        //如果是开发或测试环境
+        if (process.env.NODE_ENV == 'development' ||
+            process.env.NODE_ENV == 'test'
+        ) {
+            total_fee=0.01;
+            refund_fee = 0.01;
+            console.dir('调整为测试支付金额!');
+        }
         const params = {
             appid: _config.wxconfig.pay.appid,
             mch_id: _config.wxconfig.pay.mch_id,
             op_user_id: _config.wxconfig.pay.mch_id,
             out_refund_no: out_refund_no,
-            total_fee: (payrecord.payAmount).toFixed(2) * 10000 * 100 / 10000, //原支付金额   这里乘以10000是为了解决js浮点数运算bug
-            refund_fee: (refundAmount).toFixed(2) * 10000 * 100 / 10000, //退款金额
+            total_fee: (total_fee).toFixed(2) * 10000 * 100 / 10000, //原支付金额   这里乘以10000是为了解决js浮点数运算bug
+            refund_fee: (refund_fee).toFixed(2) * 10000 * 100 / 10000, //退款金额
             transaction_id: payrecord.transaction_id
         };
         let refund_result = await global.wxpay.refundAsync(params);
@@ -154,6 +166,7 @@ export const Refund_Weixn = async({payrecord, rAmount, reseanMsg})=> {
         const logResult = await DataModel.RefundLog_Weixin.create(refund_result);
         if (!logResult)
             console.error(`退款${payrecord.orderID}成功,但退款日志记录失败!`);
+
 
         const query_payrecord_refund = {
             out_trade_no: out_refund_no, //外部跟踪编号
