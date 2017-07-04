@@ -32,7 +32,7 @@
                 <img src="<%- item.product.image %>" alt="" onclick="window.location.href='/shop/<%= shopcode %>/productDetail/<%= item.product.code  %>'">
             </div>
             <div class="shopCarItemInfo">
-                <p onclick="window.location.href='/shop/<%= shopcode %>/productDetail/<%= item.product.code %>'"><%= item.product.name %></p>
+                <p onclick="window.location.href='/shop/<%= shopcode %>/productDetail/<%= item.product.code %>'"><%= item.product.name+" "+(item.product.spec_tag1?item.product.spec_tag1:"") %></p>
                 <span><%= item.product.retail_price %></span>
                 <div class="shopCarBtns">
                     <div style="border-left: 1px solid #ccc" onclick="changeQuantity(this,'add')">+</div>
@@ -75,7 +75,6 @@
     </div>
 </div>
 
-<% include ../components/floatBottomBar.ejs %>
 <% include ./../footer.ejs %>
 
 <script type="text/javascript">
@@ -206,5 +205,5 @@
     }
     
 </script>
-
+</body>
 </html>

@@ -1,4 +1,62 @@
 .productDetail {
+  ul, li {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
+  ol, ul {
+    list-style: none;
+  }
+  div, span, a, header {
+    -webkit-tap-highlight-color: rgba(255,255,255,0);
+  }
+  a, button, input {
+    outline: 0 none;
+    text-decoration: none;
+  }
+  header {
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font-family: PingFangSC-Regular, Helvetica, "Droid Sans", Arial, sans-serif;
+    vertical-align: baseline;
+    font: inherit;
+  }
+  .bd-index-header {
+    position: relative;
+    background: #efefef url(/images/header-bg.png) repeat-x 0 0;
+    background-size: 100% 44px;
+    min-height: 44px;
+    border-bottom: 1px solid #bfbfbf;
+    border-width: 0 0 1px 0;
+  }
+  .bd-index-header-icon-back {
+    position: absolute;
+    width: 40px;
+    height: 44px;
+    span {
+      width: 20px;
+      height: 20px;
+      background-position: -20px 0;
+      margin: 12px 0 0 10px;
+      text-indent: -100px;
+      overflow: hidden;
+      display: block;
+      background: url(/images/jd-sprites.png) no-repeat -20px top;
+      background-size: 200px 200px;
+    }
+  }
+  .bd-index-header-title {
+    margin: 0 50px;
+    text-align: center;
+    height: 44px;
+    line-height: 44px;
+    font-size: 16px;
+    color: #252525;
+  }
+  background: #f0f2f5;
   .productDetailBody {
     @padding-bottom: 53px;
     padding-bottom: @padding-bottom;
@@ -7,6 +65,7 @@
     overflow-scrolling: touch;
     -webkit-overflow-scrolling: touch;
     .swiper-container {
+      background: #fff;
       overflow: hidden;
       width: 100%;
       &:after{
@@ -23,6 +82,7 @@
       }
     }
     .productName {
+      background: #fff;
       padding: 15px 10px;
       overflow: hidden;
       p.productNameText{
@@ -44,6 +104,7 @@
       }
     }
     .productPrice{
+      background: #fff;
       .price_wrap{
         padding: 0 10px 10px 10px;
         line-height: 20px;
@@ -105,8 +166,9 @@
       }
     }
     .productDetail {
-      margin-top: 20px;
+      margin-top: 10px;
       padding: 0 15px;
+      background: #fff;
       img {
         width: 100%;
         height: auto;
@@ -170,5 +232,40 @@
       background: #e4393c;
     }
   }
-
+  .sku_list{
+    overflow: hidden;
+    .option{
+      float: left;
+      position: relative;
+      padding: 5px 10px 4px;
+      margin: 5px 10px 5px 0;
+      min-width: 30px;
+      border-radius: 2px;
+      text-align: center;
+      word-break: break-all;
+      font-size: 14px;
+      color: #333;
+      background-color: #fff;
+      &:after{
+        border-radius: 4px;
+        border-color: #999;
+        bottom: -100%;
+        right: -100%;
+      }
+    }
+  }
+  .btn-red-plan{
+    border: 1px solid #f23030;
+    color: #f23030;
+  }
+  .btn-red{
+    background-color: #f23030;
+    color: #fff;
+  }
+  .minus,.plus{
+    float: left;width: 30%;text-align: center;font-size: 18px;
+  }
+  .num{
+    width: 100%;border: 1px solid #ccc;padding: 3px;text-align: center;
+  }
 }

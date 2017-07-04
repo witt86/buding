@@ -38,9 +38,10 @@
 
 <% include ../components/floatBottomBar.ejs %>
 <% include ./../footer.ejs %>
-
+<script type="text/javascript" src="/javascripts/jquery.scrollLoading-min.js"  charset='utf-8'></script>
 <script type="text/javascript">
     $(document).ready(function () {
+
         //搜索框
         $('#searchText').on('click',function () {
             $('#searchBar').addClass('weui-search-bar_focusing');
@@ -103,11 +104,17 @@
                 result.map(function (item) {
                     var func = "goProductDetail('" + item.code + "')";
                     var grid = '<div class="shopCategoryProduct" onclick="' + func.trim() + '">'+
-                            '<img src="' + item.image + '" alt="">'+
+                            '<img data-url="' + item.image + '" class="lazy-load"  alt="">'+
                             '<div>' + item.name + '</div>'+
                             '</div>';
                     $('.shopCategoryContent').append(grid);
-                })
+                });
+                $("img.lazy-load").scrollLoading({
+                    container: $(".shopCategoryContent"),
+                    callback: function() {
+                        //this.style.border = "3px solid #a0b3d6";
+                    }
+                });
             }
         });
     }
@@ -116,5 +123,5 @@
         window.location.href='/shop/<%= shopcode %>/productDetail/' + code;
     }
 </script>
-
+</body>
 </html>

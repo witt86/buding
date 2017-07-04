@@ -2,6 +2,16 @@
 <html>
 <% include ./../header.ejs %>
 <body class="productDetail">
+<header>
+    <div class="bd-index-header">
+        <div class="bd-index-header-icon-back" id="reset_btn_back">
+            <span></span>
+        </div>
+        <div class="bd-index-header-title">
+            <%= title %>
+        </div>
+    </div>
+</header>
 <div class="productDetailBody">
     <div class="swiper-container" data-space-between='10' data-pagination='.swiper-pagination' data-autoplay="1000"
          id="home">
@@ -15,7 +25,7 @@
     </div>
     <div class="productName">
         <p class="productNameText">
-            <%= productInfo.name %>
+            <%= productInfo.name + " " + (productInfo.spec_tag1 ? productInfo.spec_tag1 : "") %>
         </p>
         <p class="productDesc">
             <%= productInfo.brief %>
@@ -23,16 +33,78 @@
     </div>
     <div class="productPrice">
         <div class="price_wrap">
-            <span class="price" id="priceSale"><%= productInfo.retail_price%></span>
+            <span class="price" id="priceSale"><%= productInfo.retail_price %></span>
         </div>
     </div>
+
+
+    <div class="weui-cells" style="margin-top: 10px" id="selectspec">
+        <% if (productInfo.is_multispec){ %>
+
+        <% multispec.forEach(function (item) { %>
+
+        <div class="weui-cell">
+            <div class="weui-cell__hd" style="color: #848383;font-size: 12px;">
+                <%= item.title %>
+            </div>
+            <div class="weui-cell__bd">
+                <div class="weui-row" style="margin-left: 10px">
+                    <% item.spec_list.forEach(function (o) { %>
+
+                    <div class="weui-col-50" style="margin-top: 5px">
+                        <a href="/shop/<%= shopcode %>/productDetail/<%= o.value %>"
+                           style="width: 100%; position: relative;top: 3px;"
+                           class="weui-btn
+                                weui-btn_plain-default
+                                weui-btn_mini
+                                btn-red-plan
+                                <%= productInfo.spec.trim().split('/').indexOf(o.text.trim()) >= 0 ? 'btn-red' : '' %>">
+                            <%= o.text %>
+                        </a>
+                    </div>
+
+                    <% }) %>
+
+                </div>
+            </div>
+        </div>
+
+        <% }) %>
+
+        <% } %>
+
+        <div class="weui-cell">
+            <div class="weui-cell__hd" style="color: #848383;font-size: 12px;">
+                数量
+            </div>
+            <div class="weui-cell__bd">
+                <div class="weui-row" style="margin-left: 10px">
+                    <div class="weui-col-60">
+                         <div class="minus" id="minus_zz">
+                             -
+                         </div>
+                         <div style="float: left;width: 30%;text-align: center">
+                             <input type="tel" class="weui-input num" id="num_zz" value="1"   />
+                         </div>
+                         <div class="plus" id="plus_zz">
+                             +
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div class="productDetail">
         <%- productInfo.intro %>
     </div>
 </div>
 <% include ./../components/productFloatBottomBar.ejs %>
 <% include ./../footer.ejs %>
+
 <script type='text/javascript' src="/libs/jq-weui/js/swiper.min.js" charset='utf-8'></script>
+
 <script type="text/javascript">
     $(document).ready(function () {
         //轮播
@@ -43,48 +115,87 @@
                 });
 
         //获取购物车数量
-        ApiInvokeNoloading('shop','GetShopCart',{shopcode:'<%= shopcode %>'},function (err,res) {
+        ApiInvokeNoloading('shop', 'GetShopCart', {shopcode: '<%= shopcode %>'}, function (err, res) {
             var count = 0;
             res.items.map(function (item) {
                 count += item.pcs;
             })
-            if(count > 0) $('.shopcarDot').html(count);
+            if (count > 0) $('.shopcarDot').html(count);
             else $('.shopcarDot').fadeOut(1);
         });
+
+        var lower_limit=<%= productInfo.lower_limit?productInfo.lower_limit:1 %>;
+        $("#minus_zz").click(function () {
+            var pcs=$("#num_zz").val();
+            if (pcs==1)return;
+            if (lower_limit>1&&pcs==lower_limit){
+                $.alert('该商品'+lower_limit+'件起售');
+                return;
+            }
+            $("#num_zz").val(parseInt(pcs)-1);
+        });
+        $("#plus_zz").click(function () {
+            var pcs=$("#num_zz").val();
+            $("#num_zz").val(parseInt(pcs)+1);
+
+        });
+
+        var pcsfocus=1;
+
+        $("#num_zz").blur(function () {
+            var pcs=$("#num_zz").val();
+            if (pcs<=0){
+                $.alert('至少购买一件商品');
+                $("#num_zz").val(pcsfocus);
+                return
+            }
+            if (lower_limit>1&&pcs<lower_limit){
+                $.alert('该商品'+lower_limit+'件起售');
+                $("#num_zz").val(lower_limit);
+                return;
+            }
+        }).focus(function () {
+             pcsfocus=$("#num_zz").val();
+
+        });
+
+
     });
-    
+
     function addShopCart() {
         var code = '<%= productInfo.code %>';
-        ApiInvokeNoloading('shop','AddToCart',{prd_code:code},function (err,res) {
-            if(err){
+
+        ApiInvokeNoloading('shop', 'AddToCart', {prd_code: code,prd_pcs:$("#num_zz").val()}, function (err, res) {
+            if (err) {
                 $.alert({
-                    title:'出错！',
-                    text:err
+                    title: '出错！',
+                    text: err
                 })
-            }else{
+            } else {
                 var count = 0;
                 res.items.map(function (item) {
                     count += item.pcs;
                 })
                 $('.shopcarDot').fadeIn(1);
                 $('.shopcarDot').html(count);
-                $.toast("加入购物车成功",500);
+                $.toast("加入购物车成功", 500);
             }
         });
     }
 
     function fastBuy() {
         var code = '<%= productInfo.code %>';
-        ApiInvokeNoloading('shop','fastBuy',{prd_code:code},function (err,res) {
-            if(err){
+        ApiInvokeNoloading('shop', 'fastBuy', {prd_code: code,prd_pcs: parseInt($("#num_zz").val())}, function (err, res) {
+            if (err) {
                 $.alert({
-                    title:'出错！',
-                    text:err
+                    title: '出错！',
+                    text: err
                 })
-            }else{
+            } else {
                 window.location.href = '/shop/<%= shopcode %>/ordersettle';
             }
         });
     }
 </script>
+</body>
 </html>

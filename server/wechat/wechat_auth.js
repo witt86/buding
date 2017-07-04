@@ -3,7 +3,6 @@ import Promise from 'bluebird';
 import OAuth from 'wechat-oauth';
 import  _config from './../../config.js';
 import  * as User from './../model/User.js';
-import  fs from 'fs';
 
 const router = new Router();
 
@@ -109,7 +108,6 @@ router.all('*', async function(req, res, next) {
             //获取微信用户身份，绑定土猴身份信息
             const userInfo = await User.findAndCreateUserFromWeixinAuthor(weixinUserInfo);
             req.session.user =userInfo.get();
-
 
             req.session.user.wxauth_state = state;
             req.session.user.wxauth_code = code;

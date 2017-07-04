@@ -220,6 +220,7 @@
     text-align: center;
     color: #D70238;
     font-size: 16px;
+    background-image: url("/images/floor-tit.png");
 }
 .shopHomeBody .shopHomeSection .shopHomeSectionImg {
     height: 160px;

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <% include ../header.ejs %>
-<body class="orderList">
+<body class="orderList" ontouchstart>
 <header>
     <div class="bd-index-header">
         <div class="bd-index-header-icon-back" id="reset_btn_back">
@@ -183,10 +183,14 @@
                 $("#allOrders").hide();
             } else {
                 if (!result || result.length==0){
-                    $("#noOrder").show();
-                    $("#allOrders").hide();
+                    if (pos==0){
+                        $("#noOrder").show();
+                        $("#allOrders").hide();
+                    }
+                    if (pos%10==0){
+                        return;
+                    }
                     if (callback)callback();
-                    return;
                 }else {
                     $("#noOrder").hide();
                     $("#allOrders").show();
@@ -204,4 +208,5 @@
         });
     }
 </script>
+</body>
 </html>

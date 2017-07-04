@@ -393,7 +393,7 @@ export const selectAll = async ({uid,status = 1})=> {
     }
 };
 
-export const fastBuy = async ({uid,prd_code})=> {
+export const fastBuy = async ({uid,prd_code,prd_pcs=1})=> {
     try{
         if(!prd_code) throw '缺少参数';
 
@@ -404,9 +404,9 @@ export const fastBuy = async ({uid,prd_code})=> {
         });
 
         if(list.length > 0){
-            await UpdateCartItem({uid:uid,item_id:list[0].id,pcs:1});
+            await UpdateCartItem({uid:uid,item_id:list[0].id,pcs:prd_pcs});
             await statusToggle({uid:uid,item_id:list[0].id,status:1});
-        }else await AddToCart({uid:uid,prd_code:prd_code});
+        }else await AddToCart({uid:uid,prd_code:prd_code,pcs:prd_pcs});
 
         return true;
     }catch (e) {

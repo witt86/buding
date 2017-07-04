@@ -13,6 +13,9 @@
   transform: scaleY(0.5);
   z-index: 2;
 }
+div{
+  -webkit-overflow-scrolling:touch;
+}
 
 .px0_5_top {
   content: " ";
@@ -1469,6 +1472,64 @@ html, body {
   }
 }
 .productDetail {
+  ul, li {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
+  ol, ul {
+    list-style: none;
+  }
+  div, span, a, header {
+    -webkit-tap-highlight-color: rgba(255,255,255,0);
+  }
+  a, button, input {
+    outline: 0 none;
+    text-decoration: none;
+  }
+  header {
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font-family: PingFangSC-Regular, Helvetica, "Droid Sans", Arial, sans-serif;
+    vertical-align: baseline;
+    font: inherit;
+  }
+  .bd-index-header {
+    position: relative;
+    background: #efefef url(/images/header-bg.png) repeat-x 0 0;
+    background-size: 100% 44px;
+    min-height: 44px;
+    border-bottom: 1px solid #bfbfbf;
+    border-width: 0 0 1px 0;
+  }
+  .bd-index-header-icon-back {
+    position: absolute;
+    width: 40px;
+    height: 44px;
+    span {
+      width: 20px;
+      height: 20px;
+      background-position: -20px 0;
+      margin: 12px 0 0 10px;
+      text-indent: -100px;
+      overflow: hidden;
+      display: block;
+      background: url(/images/jd-sprites.png) no-repeat -20px top;
+      background-size: 200px 200px;
+    }
+  }
+  .bd-index-header-title {
+    margin: 0 50px;
+    text-align: center;
+    height: 44px;
+    line-height: 44px;
+    font-size: 16px;
+    color: #252525;
+  }
+  background: #f0f2f5;
   .productDetailBody {
     @padding-bottom: 53px;
     padding-bottom: @padding-bottom;
@@ -1477,6 +1538,7 @@ html, body {
     overflow-scrolling: touch;
     -webkit-overflow-scrolling: touch;
     .swiper-container {
+      background: #fff;
       overflow: hidden;
       width: 100%;
       &:after{
@@ -1493,6 +1555,7 @@ html, body {
       }
     }
     .productName {
+      background: #fff;
       padding: 15px 10px;
       overflow: hidden;
       p.productNameText{
@@ -1514,6 +1577,7 @@ html, body {
       }
     }
     .productPrice{
+      background: #fff;
       .price_wrap{
         padding: 0 10px 10px 10px;
         line-height: 20px;
@@ -1575,8 +1639,9 @@ html, body {
       }
     }
     .productDetail {
-      margin-top: 20px;
+      margin-top: 10px;
       padding: 0 15px;
+      background: #fff;
       img {
         width: 100%;
         height: auto;
@@ -1640,7 +1705,42 @@ html, body {
       background: #e4393c;
     }
   }
-
+  .sku_list{
+    overflow: hidden;
+    .option{
+      float: left;
+      position: relative;
+      padding: 5px 10px 4px;
+      margin: 5px 10px 5px 0;
+      min-width: 30px;
+      border-radius: 2px;
+      text-align: center;
+      word-break: break-all;
+      font-size: 14px;
+      color: #333;
+      background-color: #fff;
+      &:after{
+        border-radius: 4px;
+        border-color: #999;
+        bottom: -100%;
+        right: -100%;
+      }
+    }
+  }
+  .btn-red-plan{
+    border: 1px solid #f23030;
+    color: #f23030;
+  }
+  .btn-red{
+    background-color: #f23030;
+    color: #fff;
+  }
+  .minus,.plus{
+    float: left;width: 30%;text-align: center;font-size: 18px;
+  }
+  .num{
+    width: 100%;border: 1px solid #ccc;padding: 3px;text-align: center;
+  }
 }
 .shopCar {
   header {
@@ -1685,6 +1785,7 @@ html, body {
     font-size: 16px;
     color: #252525;
   }
+
   .pageContainer {
     background: #f0f2f5;
     width: 100%;
@@ -1719,7 +1820,7 @@ html, body {
     .shopCarBody {
       width: 100%;
       height: 100%;
-      padding-bottom: 55px;
+      padding-bottom: 70px;
       overflow-y: scroll;
       .shopCarItem {
         margin: 10px 5px 0 5px;
@@ -1731,13 +1832,29 @@ html, body {
           .select(5px,53px)
         }
         .shopCarImg {
-          padding-top: 10px;
+          top: 10px;
           margin-left: 35px;
-          height: 100px;
-          width: 90px;
+          height: 88px;
+          width: 88px;
           img {
             width: 100%;
             height: 100%;
+          }
+          position: relative;
+          &:after {
+            position: absolute;
+            top: -0.5px;
+            left: -0.5px;
+            width: 200%;
+            height: 200%;
+            content: '';
+            border: 1px solid #e3e5e9;
+            border-radius: 6px;
+            -webkit-border-radius: 6px;
+            transform: scale(0.5);
+            -webkit-transform: scale(0.5);
+            transform-origin: top left;
+            -webkit-transform-origin: top left;
           }
         }
         .shopCarItemInfo {
@@ -1818,7 +1935,7 @@ html, body {
     .shopCarBar {
       position: fixed;
       left: 0;
-      bottom: 50px;
+      bottom: 0;
       width: 100%;
       height: 50px;
       background: #fff;
@@ -2081,6 +2198,9 @@ html, body {
         text-align: center;
         color: #D70238;
         font-size: 16px;
+        background-size: 100% 100%;
+        background-image: url(~"/images/floor-tit.png");
+        text-shadow: 1px 1px 1px #f58282;
       }
       .shopHomeSectionImg {
         height: 160px;

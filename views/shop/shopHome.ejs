@@ -13,7 +13,8 @@
                 <div class="weui-search-bar__form">
                     <div class="weui-search-bar__box">
                         <i class="weui-icon-search"></i>
-                        <input type="search" class="weui-search-bar__input searchInput" id="searchInput" placeholder="搜索商品" required="">
+                        <input type="search" class="weui-search-bar__input searchInput" id="searchInput"
+                               placeholder="搜索商品" required="">
                         <a href="javascript:" class="weui-icon-clear"></a>
                     </div>
                     <label class="weui-search-bar__label" id="searchText">
@@ -41,12 +42,16 @@
             </div>
         </div>
     </div>
-    <div class="shopHomeBody">
-        <div class="swiper-container" data-space-between='10' data-pagination='.swiper-pagination' data-autoplay="1000" id="home">
+    <div class="shopHomeBody" id="shopHomeBody">
+        <div class="swiper-container" data-space-between='10' data-pagination='.swiper-pagination' data-autoplay="1000"
+             id="home">
             <div class="swiper-wrapper">
-                <div class="swiper-slide" onclick=""><img src="http://tmpwx.yichihui.com/haoli/86241495684337259.jpg" alt=""></div>
-                <div class="swiper-slide" onclick=""><img src="http://tmpwx.yichihui.com/haoli/86241495684337259.jpg" alt=""></div>
-                <div class="swiper-slide" onclick=""><img src="http://tmpwx.yichihui.com/haoli/86241495684337259.jpg" alt=""></div>
+                <div class="swiper-slide" onclick=""><img src="http://tmpwx.yichihui.com/haoli/86241495684337259.jpg"
+                                                          alt=""></div>
+                <div class="swiper-slide" onclick=""><img src="http://tmpwx.yichihui.com/haoli/86241495684337259.jpg"
+                                                          alt=""></div>
+                <div class="swiper-slide" onclick=""><img src="http://tmpwx.yichihui.com/haoli/86241495684337259.jpg"
+                                                          alt=""></div>
             </div>
         </div>
 
@@ -82,8 +87,8 @@
             </div>
             <div class="shopHomeActivityContent">
                 <% activityProducts.length > 0 && activityProducts.map(function (item) { %>
-                <div  onclick="go_to('/shop/<%= shopcode %>/productDetail/<%= item.code  %>')">
-                    <img src="<%- item.image %>" alt="">
+                <div onclick="go_to('/shop/<%= shopcode %>/productDetail/<%= item.code %>')">
+                    <img  class="lazy-load" data-url="<%- item.image %>" alt="">
                     <p><%= item.retail_price %></p>
                 </div>
                 <% }) %>
@@ -117,14 +122,15 @@
             <div class="shopHomeSectionTitle">
                 ----<%= section.name %>----
             </div>
-            <div class="shopHomeSectionImg" onclick="go_to('/shop/<%= shopcode %>/productDetail/<%= section.products[0].code  %>')" >
-                <img src="<%= section.products[0].image+'-cover2' %>" alt="">
+            <div class="shopHomeSectionImg"
+                 onclick="go_to('/shop/<%= shopcode %>/productDetail/<%= section.products[0].code %>')">
+                <img class="lazy-load"  data-url="<%= section.products[0].image + '-cover2' %>"  alt="">
             </div>
             <div class="shopHomeSectionProducts">
                 <div style="width: <%= 110 * section.products.length %>px">
                     <% section.products.length > 0 && section.products.map(function (product) { %>
-                    <div onclick="go_to('/shop/<%= shopcode %>/productDetail/<%= product.code  %>')">
-                        <img src="<%- product.image %>" alt="">
+                    <div onclick="go_to('/shop/<%= shopcode %>/productDetail/<%= product.code %>')">
+                        <img class="lazy-load" data-url="<%- product.image %>"  alt="">
                         <p><%= product.name %></p>
                         <p><%= product.retail_price %></p>
                     </div>
@@ -141,24 +147,31 @@
 
 <script type='text/javascript' src="/libs/jq-weui/js/swiper.min.js" charset='utf-8'></script>
 <script type='text/javascript' src="/libs/jQuery/jquery.scrollTo.min.js" charset='utf-8'></script>
-<!--<script type='text/javascript' src="/javascripts/history.js" charset='utf-8'></script>-->
+<script type="text/javascript" src="/javascripts/jquery.scrollLoading-min.js"  charset='utf-8'></script>
 <script type="text/javascript">
     $(document).ready(function () {
+        $("img.lazy-load").scrollLoading({
+            container: $("#shopHomeBody"),
+            callback: function() {
+                //this.style.border = "3px solid #a0b3d6";
+            }
+        });
+       // $("img.lazy-load")
         //搜索框
-        $('#searchText').on('click',function () {
+        $('#searchText').on('click', function () {
             $('#searchBar').addClass('weui-search-bar_focusing');
             $('#searchInput').focus();
         });
-        $('#searchInput').on('blur',function () {
+        $('#searchInput').on('blur', function () {
             $('#searchBar').removeClass('weui-search-bar_focusing');
             $('#searchText').show();
-        }).on('keydown',function () {
-            if(event.keyCode == "13"){
+        }).on('keydown', function () {
+            if (event.keyCode == "13") {
                 $('.searchBar').removeClass('weui-search-bar_focusing');
                 $('.searchText').show();
             }
         });
-        $('.confirmSearch').on('click',function () {
+        $('.confirmSearch').on('click', function () {
             $('.searchBar').removeClass('weui-search-bar_focusing');
             $('.searchText').show();
         });
@@ -170,24 +183,24 @@
         });
 
         //导航滚动
-        $('.shopHomeCateItem').on('click',function () {
+        $('.shopHomeCateItem').on('click', function () {
             var target = $(this).children('input').val().trim();
             var scrollHeight = $('#' + target).position().top - 83 + $('.shopHomeBody').scrollTop();
             $('.shopHomeCateItem').removeClass('shopHomeCateActive');
             $(this).addClass('shopHomeCateActive');
-            $('.shopHomeBody').scrollTo(scrollHeight,500);
+            $('.shopHomeBody').scrollTo(scrollHeight, 500);
         });
 
         //获取购物车数量
-        ApiInvokeNoloading('shop','GetShopCart',{shopcode:'<%= shopcode %>'},function (err,res) {
+        ApiInvokeNoloading('shop', 'GetShopCart', {shopcode: '<%= shopcode %>'}, function (err, res) {
             var count = 0;
             res.items.map(function (item) {
                 count += item.pcs;
             })
-            if(count > 0) $('.shopcarDot').html(count);
+            if (count > 0) $('.shopcarDot').html(count);
             else $('.shopcarDot').fadeOut(1);
         });
     });
 </script>
-
+</body>
 </html>

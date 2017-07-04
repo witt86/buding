@@ -20,7 +20,7 @@ function ApiInvoke(apiRoot,method,data,callback) {
         return;
     }
     if($.showLoading){
-        $.showLoading("处理中...");
+        $.showLoading('处理中');
     }
     $.ajax({
         url: "/api/"+apiRoot+"/"+method,
