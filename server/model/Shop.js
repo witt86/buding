@@ -271,8 +271,9 @@ export const loadProducts = async ({shopcode,code})=> {
             result = await DataModel.ProductSource.findAll({
                 where:{
                     tags:{
-                        like:'%布丁首页%'
-                    }
+                        like:'%首页%'
+                    },
+                    status:1
                 }
             });
         }else{
@@ -284,7 +285,8 @@ export const loadProducts = async ({shopcode,code})=> {
 
             result = await DataModel.ProductSource.findAll({
                 where:{
-                    productcategoryId:cate.id
+                    productcategoryId:cate.id,
+                    status:1
                 }
             });
         }

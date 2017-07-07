@@ -84,7 +84,6 @@ async function System_synProducts(Info) {
         twohou_prod.shipfee_desc = JSON.stringify(twohou_prod.shipfee_desc||[]);
         twohou_prod.sourceCode = twohou_prod.code;
         twohou_prod.monthly_sales = parseInt(twohou_prod.monthly_sales) + 100;
-        twohou_prod.name =twohou_prod.brand?(twohou_prod.brand+'.'+twohou_prod.name):twohou_prod.name;
         if(twohou_prod.spec_group) {
             let speclist = [twohou_prod.spec_tag1, twohou_prod.spec_tag2, twohou_prod.spec_tag3];
             twohou_prod.spec = filter(uniq(speclist), m=>m || "").join("/")

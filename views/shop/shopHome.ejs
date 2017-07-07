@@ -43,55 +43,60 @@
         </div>
     </div>
     <div class="shopHomeBody" id="shopHomeBody">
+        <% if (banner && banner.length > 0 ){ %>
+
         <div class="swiper-container" data-space-between='10' data-pagination='.swiper-pagination' data-autoplay="1000"
              id="home">
             <div class="swiper-wrapper">
-                <div class="swiper-slide" onclick=""><img src="http://tmpwx.yichihui.com/haoli/86241495684337259.jpg"
-                                                          alt=""></div>
-                <div class="swiper-slide" onclick=""><img src="http://tmpwx.yichihui.com/haoli/86241495684337259.jpg"
-                                                          alt=""></div>
-                <div class="swiper-slide" onclick=""><img src="http://tmpwx.yichihui.com/haoli/86241495684337259.jpg"
-                                                          alt=""></div>
+
+                <% banner.forEach(function (item) { %>
+
+                <div class="swiper-slide" onclick="navilink('<%= item.link_to %>','<%= shopcode %>')">
+                    <img src="<%= item.image %>" alt=""/>
+                </div>
+
+                <% }) %>
+
             </div>
         </div>
 
-        <!--<div class="shopHomeTab">-->
-        <!--<div>-->
-        <!--<img src="/images/icon_tabbar.png" alt="">-->
-        <!--<p>签到有奖</p>-->
-        <!--</div>-->
-        <!--<div>-->
-        <!--<img src="/images/icon_tabbar.png" alt="">-->
-        <!--<p>新客礼包</p>-->
-        <!--</div>-->
-        <!--<div>-->
-        <!--<img src="/images/icon_tabbar.png" alt="">-->
-        <!--<p>会员中心</p>-->
-        <!--</div>-->
-        <!--<div>-->
-        <!--<img src="/images/icon_tabbar.png" alt="">-->
-        <!--<p>身边门店</p>-->
-        <!--</div>-->
-        <!--<div>-->
-        <!--<img src="/images/icon_tabbar.png" alt="">-->
-        <!--<p>积分商城</p>-->
-        <!--</div>-->
-        <!--</div>-->
+        <% } %>
+
+        <% if (nav && nav.length > 0 ){ %>
+
+        <div class="weui-row quick-entry-nav">
+
+            <% nav.forEach(function (item) { %>
+
+            <div class="weui-col-20">
+                <img src="<%= item.image %>" alt="">
+                <p><%= item.subject %></p>
+            </div>
+
+            <% }) %>
+
+        </div>
+
+        <% } %>
 
         <div class="shopHomeActivity">
             <div class="shopHomeActivityTitle">
                 <p>
-                    每日秒杀
-                    <span>距离结束&nbsp;&nbsp;&nbsp;01:03:55</span>
+                    今日秒杀
+                    <span id="todayMS">距离结束&nbsp;&nbsp;&nbsp;00:00:00</span>
                 </p>
             </div>
+
             <div class="shopHomeActivityContent">
-                <% activityProducts.length > 0 && activityProducts.map(function (item) { %>
-                <div onclick="go_to('/shop/<%= shopcode %>/productDetail/<%= item.code %>')">
-                    <img  class="lazy-load" data-url="<%- item.image %>" alt="">
-                    <p><%= item.retail_price %></p>
+                <div style="width:<%= 90 * activityProducts.length %>px ">
+                    <% activityProducts.length > 0 && activityProducts.map(function (item) { %>
+
+                    <div onclick="go_to('/shop/<%= shopcode %>/productDetail/<%= item.code %>')">
+                        <img class="lazy-load" data-url="<%- item.image %>" alt="">
+                        <p><%= item.retail_price %></p>
+                    </div>
+                    <% }) %>
                 </div>
-                <% }) %>
             </div>
         </div>
 
@@ -124,13 +129,13 @@
             </div>
             <div class="shopHomeSectionImg"
                  onclick="go_to('/shop/<%= shopcode %>/productDetail/<%= section.products[0].code %>')">
-                <img class="lazy-load"  data-url="<%= section.products[0].image + '-cover2' %>"  alt="">
+                <img class="lazy-load" data-url="<%= section.products[0].image + '-cover2' %>" alt="">
             </div>
             <div class="shopHomeSectionProducts">
                 <div style="width: <%= 110 * section.products.length %>px">
                     <% section.products.length > 0 && section.products.map(function (product) { %>
                     <div onclick="go_to('/shop/<%= shopcode %>/productDetail/<%= product.code %>')">
-                        <img class="lazy-load" data-url="<%- product.image %>"  alt="">
+                        <img class="lazy-load" data-url="<%- product.image %>" alt="">
                         <p><%= product.name %></p>
                         <p><%= product.retail_price %></p>
                     </div>
@@ -147,16 +152,16 @@
 
 <script type='text/javascript' src="/libs/jq-weui/js/swiper.min.js" charset='utf-8'></script>
 <script type='text/javascript' src="/libs/jQuery/jquery.scrollTo.min.js" charset='utf-8'></script>
-<script type="text/javascript" src="/javascripts/jquery.scrollLoading-min.js"  charset='utf-8'></script>
+<script type="text/javascript" src="/javascripts/jquery.scrollLoading-min.js" charset='utf-8'></script>
 <script type="text/javascript">
     $(document).ready(function () {
         $("img.lazy-load").scrollLoading({
             container: $("#shopHomeBody"),
-            callback: function() {
+            callback: function () {
                 //this.style.border = "3px solid #a0b3d6";
             }
         });
-       // $("img.lazy-load")
+        // $("img.lazy-load")
         //搜索框
         $('#searchText').on('click', function () {
             $('#searchBar').addClass('weui-search-bar_focusing');
@@ -185,7 +190,7 @@
         //导航滚动
         $('.shopHomeCateItem').on('click', function () {
             var target = $(this).children('input').val().trim();
-            var scrollHeight = $('#' + target).position().top - 83 + $('.shopHomeBody').scrollTop();
+            var scrollHeight = $('#' + target).position().top - 80 + $('.shopHomeBody').scrollTop();
             $('.shopHomeCateItem').removeClass('shopHomeCateActive');
             $(this).addClass('shopHomeCateActive');
             $('.shopHomeBody').scrollTo(scrollHeight, 500);
@@ -200,7 +205,22 @@
             if (count > 0) $('.shopcarDot').html(count);
             else $('.shopcarDot').fadeOut(1);
         });
+        setInterval(getRTime,1000);
     });
+
+    var todayMS=$("#todayMS");
+
+    function getRTime(){
+        var EndTime= new Date('<%= moment().add(1,'days').format('YYYY/MM/DD 00:00:00') %>').getTime() ; //截止时间
+        var NowTime =new Date().getTime();
+        var t =EndTime - NowTime;
+        var h=Math.floor(t/1000/60/60%24);
+        var m=Math.floor(t/1000/60%60);
+        var s=Math.floor(t/1000%60);
+
+        todayMS.html("距离结束&nbsp;&nbsp;&nbsp;"+(h<10?'0'+h:h)+":"+(m<10?'0'+m:m)+":"+(s<10?'0'+s:s));
+    }
+
 </script>
 </body>
 </html>

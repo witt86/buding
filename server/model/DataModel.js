@@ -125,7 +125,7 @@ let Supplier = sequelize.define('supplier', {
 //         'type': Sequelize.STRING(64),
 //         'allowNull': false,
 //         'unique': true,
-//         'comment': "土猴帐号系统的用户ID"
+//         'comment': "布丁帐号系统的用户ID"
 //     },
 //     wx_openID: {
 //         'type': Sequelize.STRING(64),
@@ -137,7 +137,7 @@ let Supplier = sequelize.define('supplier', {
 //         'type': Sequelize.STRING(64),
 //         'allowNull': false,
 //         'unique': true,
-//         'comment': "个人是真实名称"
+//         'comment': "个人真实名称"
 //     },
 //     mobile: Sequelize.STRING(15),
 //     City: {

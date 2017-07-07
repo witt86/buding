@@ -25,29 +25,40 @@ router.get('/:shopcode', async(req, res, next) => {
         const {shopcode}=req.params;
         rs.title = '布丁酒店';
 
+        //今日秒杀商品
         rs.activityProducts = await DataModel.ProductSource.findAll({
             where: {
                 tags: {
-                    like: '%布丁首页%'
-                }
-            },
-            limit: 4
+                    '$like': '%今日秒杀%'
+                },
+                status: 1
+            }
         });
 
+        //首页分类商品
         let categorys = await DataModel.ProductCategory.findAll();
+        console.log(categorys);
         categorys = JSON.parse(JSON.stringify(categorys));
         for (let category of categorys) {
             category.products = await DataModel.ProductSource.findAll({
                 where: {
                     productcategoryId: category.id,
-                    status: 1
-                },
-                limit: 5
+                    status: 1,
+                    tags:{
+                        '$like':'%首页%'
+                    }
+                }
             });
-        }
+        };
+        //首页bannel和大图标
+        let bannerAndAD=await TMSProductAPI("get_navilinks",{ scenario:'首页轮播,首页大图标'});
         rs.sections = categorys;
         rs.shopcode = shopcode;
         rs.type = 'shopHome';
+        rs.banner=bannerAndAD.filter(item=>item.scenario=='首页轮播');
+        rs.nav=bannerAndAD.filter(item=>item.scenario=='首页大图标');
+
+
         res.render('shop/shopHome', rs);
     } catch (e) {
         console.error('-----e:/shopHome-----');
@@ -123,8 +134,6 @@ router.get('/:shopcode/ordersettle', async(req, res, next) => {
 router.get('/:shopcode/productCategory', async(req, res, next) => {
     try {
         let [rs,shopcode] = [{}, req.params.shopcode];
-
-        // rs.productList = await DataModel.ProductSource.findAll({where:{}});
 
         rs.categorys = await DataModel.ProductCategory.findAll();
 

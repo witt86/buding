@@ -97,7 +97,6 @@
       }
     }
     .shopHomeTab {
-      height: 95px;
       width: 100%;
       background: #fff;
       div {
@@ -113,7 +112,7 @@
           margin-top: 10px;
         }
         p {
-          color: #A5A5A5;
+          color: #000000;
           font-size: 12px;
         }
       }
@@ -122,7 +121,7 @@
       width: 100%;
       height: 140px;
       background: #fff;
-      margin-top: 2px;
+      margin-top: 10px;
       .shopHomeActivityTitle {
         height: 20px;
         width: 100%;
@@ -143,8 +142,10 @@
         height: 110px;
         width: 100%;
         padding: 0 10px;
+        overflow-y: hidden;
+        overflow-x: scroll;
         div {
-          width: 25%;
+          width: 20%;
           height: 100%;
           display: inline-block;
           float: left;
@@ -230,7 +231,7 @@
         text-shadow: 1px 1px 1px #f58282;
       }
       .shopHomeSectionImg {
-        height: 160px;
+        height: 140px;
         width: 100%;
         img {
           height: 100%;
@@ -240,13 +241,12 @@
       .shopHomeSectionProducts {
         overflow-x: scroll;
         background: #fff;
-        margin-top: 3px;
         overflow-scrolling: touch;
         webkit-overflow-scrolling: touch;
         div{
           div{
             width: 110px;
-            height: 170px;
+            height: 150px;
             display: inline-block;
             float: left;
             text-align: center;
@@ -255,8 +255,11 @@
               width: 90px;
               height: 90px;
               + p{
-                height: 40px;
                 overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical
               }
             }
             p {
@@ -273,6 +276,23 @@
               color: #D70238;
             }
           }
+        }
+      }
+    }
+    .quick-entry-nav{
+      padding: 0 10px;
+      margin-top: 10px;
+      >div{
+        text-align: center;
+        width: 20%;
+        padding-bottom: 10px;
+        img{
+         width: 50%;
+        }
+        p{
+          text-align: center;
+          color: #000000;
+          font-size: 12px;;
         }
       }
     }
