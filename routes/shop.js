@@ -23,7 +23,7 @@ router.get('/:shopcode', async(req, res, next) => {
     try {
         let [rs] = [{}];
         const {shopcode}=req.params;
-        rs.title = '布丁酒店';
+        rs.title = '布丁酒店上海徐家汇店';
 
         //今日秒杀商品
         rs.activityProducts = await DataModel.ProductSource.findAll({
@@ -37,7 +37,7 @@ router.get('/:shopcode', async(req, res, next) => {
 
         //首页分类商品
         let categorys = await DataModel.ProductCategory.findAll();
-        console.log(categorys);
+
         categorys = JSON.parse(JSON.stringify(categorys));
         for (let category of categorys) {
             category.products = await DataModel.ProductSource.findAll({
@@ -57,7 +57,6 @@ router.get('/:shopcode', async(req, res, next) => {
         rs.type = 'shopHome';
         rs.banner=bannerAndAD.filter(item=>item.scenario=='首页轮播');
         rs.nav=bannerAndAD.filter(item=>item.scenario=='首页大图标');
-
 
         res.render('shop/shopHome', rs);
     } catch (e) {

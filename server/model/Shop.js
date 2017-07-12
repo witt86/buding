@@ -17,6 +17,7 @@ export const AddToCart = async({uid, prd_code, prd_pcs = 1})=> {
             agent_code:'05987386'
         };
 
+
         const res = await TMSProductAPI('add_to_cart',query);
 
         return res;
@@ -375,7 +376,6 @@ export const selectAll = async ({uid,status = 1})=> {
             for(const item of shopCar.items){
                 idList += (idList.length > 0 ? ',' : '') + item.id
             }
-
             const query = {
                 uid:uid,
                 item_id:idList,
@@ -408,8 +408,9 @@ export const fastBuy = async ({uid,prd_code,prd_pcs=1})=> {
         if(list.length > 0){
             await UpdateCartItem({uid:uid,item_id:list[0].id,pcs:prd_pcs});
             await statusToggle({uid:uid,item_id:list[0].id,status:1});
-        }else await AddToCart({uid:uid,prd_code:prd_code,pcs:prd_pcs});
-
+        }else {
+            await AddToCart({uid:uid,prd_code:prd_code,prd_pcs:prd_pcs});
+        }
         return true;
     }catch (e) {
         console.log("--------fastBuy:e--------");

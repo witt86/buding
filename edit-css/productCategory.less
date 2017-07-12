@@ -1,4 +1,46 @@
 .shopCategory {
+  header {
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font-family: PingFangSC-Regular, Helvetica, "Droid Sans", Arial, sans-serif;
+    vertical-align: baseline;
+    font: inherit;
+  }
+  .bd-index-header {
+    position: relative;
+    background: #efefef url(/images/header-bg.png) repeat-x 0 0;
+    background-size: 100% 44px;
+    min-height: 44px;
+    border-bottom: 1px solid #bfbfbf;
+    border-width: 0 0 1px 0;
+  }
+  .bd-index-header-icon-back {
+    position: absolute;
+    width: 40px;
+    height: 44px;
+    span {
+      width: 20px;
+      height: 20px;
+      background-position: -20px 0;
+      margin: 12px 0 0 10px;
+      text-indent: -100px;
+      overflow: hidden;
+      display: block;
+      background: url(/images/jd-sprites.png) no-repeat -20px top;
+      background-size: 200px 200px;
+    }
+  }
+  .bd-index-header-title {
+    margin: 0 50px;
+    text-align: center;
+    height: 44px;
+    line-height: 44px;
+    font-size: 16px;
+    color: #252525;
+  }
   @padding-bottom:53px;
   .pageContainerSearch {
     position: fixed;
@@ -10,7 +52,7 @@
   }
   .shopCategoryNav {
     position: fixed;
-    top: 50px;
+    top: 45px;
     left: 0;
     bottom:@padding-bottom;
     width: 70px;
