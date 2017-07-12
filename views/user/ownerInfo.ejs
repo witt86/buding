@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<% include ./../header.ejs %>
+<body class="userRegister">
+<div class="infoContainer">
+    <div class="infoForm">
+        <div class="weui-cell">
+            <div class="weui-cell__hd">真实姓名：</div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" type="text">
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd">手机号码：</div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" type="number">
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd">身份证号：</div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" type="text">
+            </div>
+        </div>
+    </div>
+
+    <div class="infoImg">
+        <div onclick="chooseImg('font')">
+            点击上传身份证照片
+            <p>（正面）</p>
+        </div>
+        <div onclick="chooseImg('back')">
+            点击上传身份证照片
+            <p>（背面）</p>
+        </div>
+    </div>
+
+    <div class="weui-btn" onclick="infoSubmit()">
+        提交申请
+    </div>
+</div>
+
+<% include ./../footer.ejs %>
+
+<script type="text/javascript">
+    function infoSubmit() {
+        window.location.href= '/user/requestAwaiting';
+    }
+
+    function chooseImg(type) {
+        wx.chooseImage({
+            count: 1,
+            success: function (res) {
+            }
+        });
+    }
+</script>
+</body>
+</html>

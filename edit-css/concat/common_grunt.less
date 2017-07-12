@@ -2345,3 +2345,116 @@ html, body {
     }
   }
 }
+
+.userRegister {
+  .indexContainer {
+    background: url("/images/userRegitser_bg.jpeg") no-repeat;
+    background-size: 100% 100%;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    text-align: center;
+    img {
+      margin: 100px 0 200px 0;
+      width: calc(~"100% - 60px");
+      height: auto;
+    }
+    .weui-btn {
+      width: calc(~"100% - 30px");
+      margin: auto;
+      color: #fff;
+      border: none;
+      background: #EB652A;
+    }
+  }
+  .infoContainer {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #F0EFF5;
+    position: relative;
+    .infoForm  {
+      background: #fff;
+      padding-top: 10px;
+      .weui-cell {
+        input[type='radio'] {
+          display: none;
+        }
+        input[type='radio']:checked + .infoRadio {
+          background: #EB652A;
+        }
+        .infoRadio {
+          float: right;
+          border: 1px solid #aaa;
+          width: 22px;
+          height: 22px;
+          border-radius: 15px;
+        }
+        .weui-cell__ft {
+          color: #aaa;
+        }
+      }
+    }
+    .infoImg {
+      margin-top: 10px;
+      width: 100%;
+      div {
+        width: 50%;
+        box-sizing: border-box;
+        height: 200px;
+        padding-top: 80px;
+        overflow: hidden;
+        color: #aaa;
+        font-size: 12px;
+        float: left;
+        text-align: center;
+        background: #fff;
+      }
+      div:first-child {
+        border-right: 1px solid #ddd;
+      }
+    }
+    .weui-btn {
+      position: absolute;
+      left: 15px;
+      bottom: 50px;
+      width: calc(~"100% - 30px");
+      color: #fff;
+      background: #EB652A;
+    }
+  }
+  .iconContainer {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #F0EFF5;
+    text-align: center;
+    padding-top: 50px;
+    position: relative;
+    img {
+      width: calc(~"100% - 80px");
+      height: auto;
+      margin-bottom: 10px;
+    }
+    p {
+      color: #666;
+    }
+    .message {
+      margin-top: 100px;
+      p {
+        color: #BA2336;
+        font-size: 24px;
+        font-weight: 500;
+      }
+    }
+    .weui-btn {
+      position: absolute;
+      bottom: 50px;
+      left: 15px;
+      width: calc(~"100% - 30px");
+      border: none;
+      color: #fff;
+      background: #EB652A;
+    }
+  }
+}
