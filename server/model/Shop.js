@@ -16,10 +16,7 @@ export const AddToCart = async({uid, prd_code, prd_pcs = 1})=> {
             prd_pcs:prd_pcs,
             agent_code:'05987386'
         };
-
-
         const res = await TMSProductAPI('add_to_cart',query);
-
         return res;
     }catch (e) {
         console.log("--------AddToCart:e--------");
@@ -230,13 +227,6 @@ export const cancelOrder = async ({ uid, order_no, reason="XXX" })=> {
         //提交微信退款
         const refund_weixin_result = await Payment.Refund_Weixn(query);
         if (refund_weixin_result){
-            //微信退款一成功,就通知导游和供货商 退款通知
-            delayRun(async ()=> {
-                //BusinessEvent.onUserCancelPayedOrder(buyment);
-            }, 10, (err)=> {
-               // console.error(`onUserCancelPayedOrder时间内部错误:${buyment}`);
-                console.error(err);
-            });
             await TMSProductAPI("mark_refunded", {uid, order_no,fee: parseFloat(orderInfo.pay_amount).toFixed(2)});
         }
     } else if(orderInfo.order_state ==2 || orderInfo.order_state == 3 || orderInfo.order_state == 31) {
