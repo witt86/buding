@@ -265,7 +265,7 @@ let ShopManagerInfo = sequelize.define('shopmanagerinfo', {  //店长、店员�
         'defaultValue': types.ShopStaff
     },
     pid: {
-        'type': Sequelize.INTEGER,
+        'type': Sequelize.STRING(64),
         'allowNull': true
     }
 });
@@ -500,7 +500,6 @@ let PayRecord = sequelize.define('payrecord', {
         orderID: Sequelize.STRING(64)
     }
 )
-
 let Paynotify_weixin = sequelize.define('paynotify_weixin',
     {
         appid: {'type': Sequelize.STRING, 'allowNull': false, 'defaultValue': ""},
@@ -522,7 +521,6 @@ let Paynotify_weixin = sequelize.define('paynotify_weixin',
         businessdone: Sequelize.BOOLEAN,
     }
 );
-
 //热搜
 let HotSearch = sequelize.define('hotsearch', {
     district: Sequelize.STRING(32),
@@ -579,6 +577,17 @@ let SMSMessage = sequelize.define('smsmessage', {
     'deletedAt': 'dtime',
     'paranoid': true
 });
+
+//用户浏览店铺关系表
+let User_ShopCode=sequelize.define('usershopcode',{
+    uid:Sequelize.STRING(64),
+    shopcode:Sequelize.STRING(32)
+
+},{
+    'deletedAt':'dtime',
+    'paranoid': true
+});
+
 //短信
 SMSMessage.belongsTo(RegUser);
 RegUser.hasMany(SMSMessage);
@@ -610,6 +619,7 @@ module.exports.Paynotify_weixin = Paynotify_weixin;
 module.exports.HotSearch = HotSearch;
 module.exports.SMSMessage = SMSMessage;
 module.exports.SaleShopProduct=SaleShopProduct;
+module.exports.User_ShopCode=User_ShopCode;
 
 
 

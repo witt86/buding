@@ -18,7 +18,7 @@
             <div style="width: <%= 86 * (sections.length + 1) %>px">
                 <div class="shopHomeCateItem shopHomeCateActive" id="homeNav">
                     首页
-                    <input type="hidden" value="home">
+                    <input type="hidden" value="home" >
                 </div>
                 <% sections.length > 0 && sections.map(function (item) { %>
                 <% if(item.products.length > 0){ %>
@@ -57,7 +57,7 @@
 
             <% nav.forEach(function (item) { %>
 
-            <div class="weui-col-20">
+            <div class="weui-col-20"  onclick="navilink('<%= item.link_to %>','<%= shopcode %>')">
                 <img src="<%= item.image %>" alt="">
                 <p><%= item.subject %></p>
             </div>

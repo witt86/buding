@@ -8,7 +8,7 @@ const weixin_templateId=require("./../../weixin_template_map.json")[_config.wxco
 import * as types from './../constants';
 
 //网站启动事件,限定一台运行
-export  const  OnWebSiteStartEvent=async ()=> {
+export const  OnWebSiteStartEvent=async ()=> {
     resetWeixinMenu();
 };
 
@@ -24,7 +24,7 @@ export const resetWeixinMenu=async ()=> {
         let menuDefault = require("./../../menu_default.json");
         menuDefault = JSON.parse(JSON.stringify(menuDefault).replace(/(\{hostname\})/igm, _config.sitehost));
         const createmenu = await global.wechat_api.createMenuAsync(menuDefault);
-        data = merge(data, {R_createMenu: createmenu});
+        data = merge(data,{ R_createMenu: createmenu });
         console.log("----------创建默认组自定义菜单结果-------------");
         console.log(JSON.stringify(data));
         //获得最终菜单创建结果
@@ -90,8 +90,12 @@ export const onOrderPaySuccess= async (orderID)=>{
         //         }
         //     }else throw "供货商没有绑定微信账号";
         // },30,e=>{ console.error("send weixin msg 给供应商发游客付款成功通知:err");console.error(e); });
-    }catch (err) {
+    } catch (err) {
         console.error("onUserCancelPayedOrder...err ");
         console.error(err);
     }
+};
+
+export const onUserRegister=async ({ reguser })=>{
+
 };

@@ -1,6 +1,11 @@
 .userRegister {
+  .weui-cell__bd{
+    .weui-input{
+      padding-left: 10px;
+    }
+  }
   .indexContainer {
-    background: url("/images/userRegitser_bg.jpeg") no-repeat;
+    background: url(~"/images/userRegitser_bg.jpeg") no-repeat;
     background-size: 100% 100%;
     width: 100%;
     height: 100%;
@@ -50,19 +55,28 @@
     .infoImg {
       margin-top: 10px;
       width: 100%;
-      div {
+      >div {
         width: 50%;
         box-sizing: border-box;
-        height: 200px;
-        padding-top: 80px;
+        height: auto;
+        min-height: 200px;
         overflow: hidden;
         color: #aaa;
         font-size: 12px;
         float: left;
         text-align: center;
         background: #fff;
+        .infoImgContent,.backImgContent{
+          width: 100%;
+          img{
+            width: 100%;
+          }
+          p:first-child{
+            margin-top: 80px;
+          }
+        }
       }
-      div:first-child {
+      >div:first-child {
         border-right: 1px solid #ddd;
       }
     }

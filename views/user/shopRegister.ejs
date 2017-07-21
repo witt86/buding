@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<% include ./../header.ejs %>
+<body class="userRegister">
+<div class="infoContainer">
+    <div class="infoForm">
+        <div class="weui-cell">
+            <div class="weui-cell__hd">店铺名称</div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" type="text" id="shopName" value="" />
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd">地域</div>
+            <div class="weui-cell__bd">
+                <input type="text" class="weui-input" id='city_picker' value="" />
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd">详细地址</div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" type="text" id="address" value="" />
+            </div>
+        </div>
+    </div>
+    <div class="weui-btn weui-btn_primary" onclick="infoSubmit()">
+        提交
+    </div>
+</div>
+
+<% include ./../footer.ejs %>
+<script type="text/javascript" src="/libs/jq-weui/js/city-picker.min.js" charset="utf-8"></script>
+
+<script type="text/javascript">
+    var shopName = $("#shopName");
+    var city_picker = $("#city_picker");
+    var address = $("#address");
+
+    $(function () {
+        $("#city_picker").cityPicker({
+            title: "店铺地域"
+        });
+    });
+
+    function infoSubmit() {
+        var shopName_V = shopName.val();
+        var city_picker_V = city_picker.val();
+        var address_V = address.val();
+        var citys = city_picker_V.split(' ');
+        var province = "";
+        var city = "";
+        var district = "";
+        if (citys.length == 3) {
+            province = citys[0];
+            city = citys[1];
+            district = citys[2];
+        } else if (citys.length == 2) {
+            province = citys[0];
+            city = citys[1];
+        }
+
+        ApiInvoke('user', 'ShopRegister',
+                {
+                    name: shopName_V,
+                    province: province,
+                    city: city,
+                    district: district,
+                    address: address_V
+                }, function (err, result) {
+                    if (err) {
+                        $.alert(err);
+                    } else {
+                        window.location.href = '/user/shopRegisterSuccess';
+                    }
+                });
+    }
+</script>
+</body>
+</html>

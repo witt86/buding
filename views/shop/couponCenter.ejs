@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<% include ./../header.ejs %>
+<body class="couponCenter">
+<header>
+    <div class="bd-index-header">
+        <div class="bd-index-header-icon-back" id="reset_btn_back">
+            <span></span>
+        </div>
+        <div class="bd-index-header-title">
+            <%= title %>
+        </div>
+    </div>
+</header>
+<ul class="coupon-list" id="coupon-list" style="padding-bottom: 50px">
+
+</ul>
+
+<script type="text/html" id="tpl_couponList">
+    <~ if(couponList && couponList.length>0 ) { ~>
+
+    <~ couponList.forEach(function(item){ ~>
+    <li class="coupon-blue">
+        <a class="coupon-a">
+            <div class="coupon-left">
+                <div class="triangle-border-left">
+                    <i></i><i></i><i></i><i></i><i></i>
+                    <i></i><i></i><i></i><i></i><i></i>
+                    <i></i><i></i><i></i><i></i><i></i>
+                    <i></i><i></i><i></i><i></i><i></i>
+                    <i></i><i></i><i></i><i></i><i></i>
+                </div>
+                <div class="img-div-backg">
+                    <div class="img-div">
+                        <img src="<~= item.image ~>">
+                    </div>
+                </div>
+                <div class="pro-content">
+                    <span class="pro-info"><~= item.description ~></span>
+                    <div class="pro-price">
+                        <span class="big-price"><~= item.discount ~></span>
+                        <span class="price-info">满<~= item.threshold ~>可用</span>
+                    </div>
+                </div>
+            </div>
+            <div class="coupon-right">
+                <div class="triangle-border-right">
+                    <em class="circular0"></em>
+                    <em class="circular1"></em>
+                    <i></i><i></i><i></i><i></i>
+                    <i></i><i></i><i></i><i></i>
+                    <i></i><i></i><i></i><i></i>
+                    <i></i><i></i><i></i><i></i>
+                    <i></i><i></i><i></i><i></i>
+                    <i></i><i></i><i></i><i></i>
+                </div>
+                <div class="change-block" onclick="fetchCoupons(this,'<~= item.code ~>')">
+                    <div class="progress-bar-block">
+                        <div class="progress-bar"><span style='width:<~= parseInt((item.tickets_claimed/item.pub_number)*100) ~>%'></span></div>
+                    </div>
+                    <span class="progress-text">已抢&nbsp;<~= parseInt((item.tickets_claimed/item.pub_number)*100) ~>%</span>
+                    <span class="coupon-btn">立即领取</span>
+                </div>
+                <div class="change-block" style="display: none" onclick="toUse(this,'<~= item.link_page ~>')" >
+                    <i class="had"></i>
+                    <span class="coupon-btn-yellow">去使用</span>
+                </div>
+            </div>
+        </a>
+    </li>
+    <~ }) ~>
+
+    <~ } else { ~>
+
+    <span></span>
+
+    <~ } ~>
+</script>
+
+<% include ./../footer.ejs %>
+<script type="text/javascript">
+    var loading=false;
+    $(function () {
+        loadCouponList(0,function () {
+            loading=false;
+        });
+        $(document.body).infinite(0).on("infinite",function () {
+            if (loading)return;
+            loading=true;
+            var allLength=$("#coupon-list").children().length;
+            if (allLength<10) return;
+            if (allLength%10==0){
+                loadCouponList(allLength,function () {
+                    loading=false;
+                });
+            }
+        });
+    });
+    //加载优惠券
+    function loadCouponList(pos,callback) {
+        ApiInvoke("shop", "getCouponList", {pos: pos, size: 10}, function (err, result) {
+            if (err) {
+//                $("#noOrder").show();
+//                $("#allOrders").hide();
+            } else {
+                if (!result || result.length==0){
+                    if (pos==0){
+//                        $("#noOrder").show();
+//                        $("#allOrders").hide();
+                    }
+                    if (pos%10==0){
+                        return;
+                    }
+                    if (callback)callback();
+                }else {
+//                    $("#noOrder").hide();
+//                    $("#allOrders").show();
+                    var render_tpl_couponlistview = _.template($("#tpl_couponList").html().replace(/\~/igm, "%"));
+                    var render_tpl_couponlistviewHtml=render_tpl_couponlistview({couponList: result});
+
+                    if (pos==0){
+                        $("#coupon-list").html(render_tpl_couponlistviewHtml);
+                    }else {
+                        $("#coupon-list").append(render_tpl_couponlistviewHtml);
+                    }
+                    if (callback)callback();
+                }
+            }
+        });
+
+    }
+    function fetchCoupons(obj,rules) {
+        ApiInvokeNoloading("shop","fetchCoupons",{ rules:rules },function (err,result) {
+               if (err){
+                   $.toast(err, "cancel");
+                   console.error(err);
+               }else {
+                   $(obj).hide().next().show();
+                   $.toast("领取成功",800);
+               }
+          });
+    }
+    function toUse(obj,url) {
+        if (!url){
+            $.toast("管理员太懒,未设置使用链接","cancel");
+        }else {
+            go_to(url);
+        }
+    }
+
+</script>
+</body>
+</html>

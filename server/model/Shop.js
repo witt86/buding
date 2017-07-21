@@ -24,7 +24,6 @@ export const AddToCart = async({uid, prd_code, prd_pcs = 1})=> {
         throw e;
     }
 };
-
 //修改购物车商品
 export const UpdateCartItem = async({uid, item_id, pcs})=> {
     try{
@@ -45,7 +44,6 @@ export const UpdateCartItem = async({uid, item_id, pcs})=> {
         throw e;
     }
 };
-
 //移除购物车项
 export const RemoveCartItem = async({uid, item_id})=> {
     try{
@@ -64,11 +62,6 @@ export const RemoveCartItem = async({uid, item_id})=> {
         console.log(e);
         throw e;
     }
-};
-
-//清空购物车
-export const ClearCarItem = async({uid})=> {
-
 };
 //获得购物车信息
 export const GetShopCart = async({uid, select,shopcode})=> {
@@ -241,7 +234,6 @@ export const cancelOrder = async ({ uid, order_no, reason="XXX" })=> {
     }
     console.dir("cancelOrder....done");
 };
-
 export const conformOrder=async ({ uid,order_no })=>{
     console.dir("cancelOrder...."+order_no);
     const orderInfo = await TMSProductAPI("get_order", {uid, order_no});
@@ -252,11 +244,9 @@ export const conformOrder=async ({ uid,order_no })=>{
     const conformResult=await TMSProductAPI("ship_signoff",{ order_no,uid });
     return conformResult;
 };
-
 export const loadProducts = async ({shopcode,code})=> {
     try{
         if(!shopcode || !code) return {err:'缺少参数'};
-
         let result = {};
         if(code == 'hot'){
             result = await DataModel.ProductSource.findAll({
@@ -267,13 +257,12 @@ export const loadProducts = async ({shopcode,code})=> {
                     status:1
                 }
             });
-        }else{
+        } else {
             const cate = await DataModel.ProductCategory.findOne({
                 where:{
                     code:code
                 }
             });
-
             result = await DataModel.ProductSource.findAll({
                 where:{
                     productcategoryId:cate.id,
@@ -281,7 +270,6 @@ export const loadProducts = async ({shopcode,code})=> {
                 }
             });
         }
-
         return result;
     }catch (e) {
         console.log("--------loadProducts:e--------");
@@ -303,7 +291,6 @@ export const checkAll = async ({shopCar})=> {
         throw e;
     }
 };
-
 export const statusToggle = async ({uid,status = 1,item_id})=> {
     try{
         if(!item_id) return {err:'缺少参数'};
@@ -353,7 +340,6 @@ export const againBuy=async ({ uid,order_no,shopcode })=>{
     }
     return true;
 };
-
 export const selectAll = async ({uid,status = 1})=> {
     try{
         const shopCar = await TMSProductAPI('get_shopcart',{
@@ -384,7 +370,6 @@ export const selectAll = async ({uid,status = 1})=> {
         throw e;
     }
 };
-
 export const fastBuy = async ({uid,prd_code,prd_pcs=1})=> {
     try{
         if(!prd_code) throw '缺少参数';
@@ -407,4 +392,67 @@ export const fastBuy = async ({uid,prd_code,prd_pcs=1})=> {
         console.log(e);
         throw e;
     }
+};
+//获得优惠活动列表
+export const getCouponList = async ({ uid,pos,size,code })=>{
+    let query={
+        pos,
+        size,
+    };
+    if (code){
+        query.code=code;
+    }
+    const couponList=await TMSProductAPI("query_coupon_rules",query);
+    return couponList;
+};
+//获取优惠券
+export const fetchCoupons = async ({uid,rules})=>{
+    const result=await TMSProductAPI("fetch_coupons",{ uid,rules });
+    if (!result.tickets || result.tickets.length==0){
+        if (result.failures){
+            throw result.failures[0][2];
+        }
+    }
+    return result;
+};
+//获得用户下单可用优惠券
+export const getUserValidCoupon=async ({uid,shopcode})=>{
+     const shopcarItem=await GetShopCart({ uid,shopcode,select:1 });
+     if (!shopcarItem) return [];
+     const items=shopcarItem.items;
+     let shop_data=items.map(o=>{ return { code:o.product.code,pcs:o.pcs } });
+
+     const query={ is_expired: false, is_consumed: false, shop_data: JSON.stringify(shop_data), group: 1,uid};
+     const ValidCouponList=await TMSProductAPI("query_coupons",query);
+     return ValidCouponList;
+};
+//获得店铺商品
+export const getShopProducts=async ({ shopcode })=>{
+      let productsInfo=[];
+      const cache_key = `products_${ shopcode }`;
+      let cache = await global.redisClient.getAsync(cache_key);
+      if (cache){
+          productsInfo=JSON.parse(cache);
+      }else {
+          const ShopProducts=await TMSProductAPI("bd_query_products",{ code:shopcode });
+          const productCodes=ShopProducts.products;
+          console.log(productCodes);
+          const products=await DataModel.ProductSource.findAll({
+              where:{
+                  status:1,
+                  sourceCode:{
+                      '$in': productCodes
+                  }
+              }
+          });
+          productsInfo=products;
+          //缓存结果
+          delayRun(async()=> {
+              await global.redisClient.setAsync(cache_key, JSON.stringify(products));
+              await global.redisClient.expireAsync(cache_key, 60);//缓存一分钟
+          }, 5, (err)=> {
+              console.error(`保存${cache_key}缓存key错误:${JSON.stringify(err)}`);
+          });
+      }
+      return productsInfo;
 };

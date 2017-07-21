@@ -16,6 +16,26 @@ router.all("*", async(req, res, next)=> {
         }
         return;
     }
+    try {
+        const shopcode= req.params[0].split('/')[1];
+        const user=req.session.user;
+        const saleShop=await TMSProductAPI('bd_get_saleshop',{ code:shopcode });
+        if (saleShop && saleShop.state==1){
+            const query = {
+                where: {
+                    uid: user.uid,
+                    shopcode: shopcode
+                },
+                defaults: {
+                    uid: user.uid,
+                    shopcode: shopcode
+                }
+            };
+            let [User_ShopCode, created] = await DataModel.User_ShopCode.findOrCreate(query);
+        }
+    }catch (e){
+        console.error(e);
+    }
     next();
 });
 
@@ -23,31 +43,23 @@ router.get('/:shopcode', async(req, res, next) => {
     try {
         let [rs] = [{}];
         const {shopcode}=req.params;
-        rs.title = '布丁酒店上海徐家汇店';
+
+        const mysaleshop=await TMSProductAPI('bd_get_saleshop',{ code:shopcode });
+
+        rs.title = mysaleshop.name;
 
         //今日秒杀商品
-        rs.activityProducts = await DataModel.ProductSource.findAll({
-            where: {
-                tags: {
-                    '$like': '%今日秒杀%'
-                },
-                status: 1
-            }
+        const shopProduct=await Shop.getShopProducts({ shopcode });
+        rs.activityProducts=shopProduct.filter((item)=>{
+            return item.tags.indexOf('今日秒杀')>=0 && item.status==1;
         });
-
         //首页分类商品
         let categorys = await DataModel.ProductCategory.findAll();
 
         categorys = JSON.parse(JSON.stringify(categorys));
         for (let category of categorys) {
-            category.products = await DataModel.ProductSource.findAll({
-                where: {
-                    productcategoryId: category.id,
-                    status: 1,
-                    tags:{
-                        '$like':'%首页%'
-                    }
-                }
+            category.products=shopProduct.filter((item)=>{
+                return item.productcategoryId==category.id && item.status==1 && item.tags.indexOf('首页')>=0;
             });
         };
         //首页bannel和大图标
@@ -65,7 +77,6 @@ router.get('/:shopcode', async(req, res, next) => {
         res.alert(types.ALERT_WARN, e, " ");
     }
 });
-
 
 router.get('/:shopcode/productDetail/:code', async(req, res, next) => {
     try {
@@ -109,7 +120,6 @@ const getProductMultispec = (productInfo)=> {
     Multispec.push(s);
     return Multispec;
 };
-
 
 router.get('/:shopcode/ordersettle', async(req, res, next) => {
     try {
@@ -162,8 +172,6 @@ router.get('/:shopcode/shopCar', async(req, res, next) => {
         rs.shopcode = shopcode;
         rs.type = 'shopCar';
         rs.isAll = await Shop.checkAll({shopCar: rs.shopCar});
-
-        // console.log(rs);
         res.render('shop/shopCar', rs);
     } catch (e) {
         console.error('-----e:/shopCar-----');
@@ -180,12 +188,25 @@ router.get('/:shopcode/orderpayresult', async(req, res, next) => {
         rs.shopcode = shopcode;
         res.render('shop/orderPayResult', rs);
     } catch (e) {
-        console.error('-----e:/ordersettle-----');
+        console.error('-----e:/orderpayresult-----');
         console.error(e);
         res.alert(types.ALERT_WARN, e, " ");
     }
 });
 
+router.get('/:shopcode/couponcenter',async (req,res,next)=>{
+    try {
+        let [rs,shopcode] = [{}, req.params.shopcode];
+        const user = req.session.user;
+        rs.title = "领券中心";
+        rs.shopcode = shopcode;
+        res.render('shop/couponCenter', rs);
+    } catch (e) {
+        console.error('-----e:/couponCenter-----');
+        console.error(e);
+        res.alert(types.ALERT_WARN, e, " ");
+    }
+});
 
 router.all("*", async(req, res, next)=> {
     res.render('unknown');

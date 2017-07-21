@@ -104,7 +104,7 @@
             var currentStatus = $(this).prop('checked');
             var item_id2 = $(this).parent().parent().parent().children('.productId').val();
             var data = {status:currentStatus ? 1 : 0,item_id:item_id2};
-            ApiInvoke('shop','statusToggle',data,function (err,res) {
+            ApiInvokeNoloading('shop','statusToggle',data,function (err,res) {
                 if(err){
                     $.alert({
                         title:'出错！',
@@ -120,7 +120,7 @@
         
         $('#allCheck').on('click',function () {
             var currentStatus = $('#allCheck').prop('checked');
-            ApiInvoke('shop','selectAll',{status:(currentStatus ? 1 : 0)},function (err,res) {
+            ApiInvokeNoloading('shop','selectAll',{status:(currentStatus ? 1 : 0)},function (err,res) {
                 if(err){
                     $.alert({
                         title:'出错！',

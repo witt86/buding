@@ -10,11 +10,13 @@ import {merge} from 'lodash';
 import {delayRun} from "./server/util/util";
 import * as globals from "./server/global";
 import main from './routes/main';
+import Index from './routes/Index';
 import wechat_auth from "./server/wechat/wechat_auth.js";
 import xhr_wx_js_config from "./routes/xhr_wx_js_config";
 import wxpay_notify from "./server/wechat/wechat_paynotify";
 import * as types from './server/constants';
 import moment from "moment";
+import itravelbuyApi from "./routes/itravelbuy-api";
 
 import TMSProductAPI from './server/lib/TMSProductAPI';
 
@@ -35,7 +37,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(express.static(path.join(__dirname, 'data/images')));
 //确保只有一个进程执行token重置任务
 if (process.env.NODE_APP_INSTANCE == 0 || typeof process.env.NODE_APP_INSTANCE == "undefined") {
     globals.initWeixinTokens();
@@ -84,15 +86,15 @@ app.use(function (req, res, next) {
     next();
 });
 
+
+app.use('/',wechat_auth,Index);
+
 app.use("/xhr_wx_js_config_js", xhr_wx_js_config);
 
 //接收微信的支付成功的异步通知
 app.use("/wxpay_notify", wxpay_notify);
-
-// app.get('*',wechat_auth, routes);
 //api
 app.use("/api", main);
-
 //店铺
 app.use("/shop", wechat_auth, router_shop);
 //订单
@@ -141,6 +143,9 @@ app.get("/dopay/:orderId", wechat_auth, async(req, res)=> {
 
 app.use("/openid-map", wechat_auth, openid_map);
 
+
+//开放的api入口
+app.use("/itravelbuy-api", itravelbuyApi);
 
 //清空当前访问者的session
 app.get("/___clearsession", async(req, res) => {

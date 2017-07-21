@@ -23,6 +23,7 @@
     "babel-runtime": "^6.11.6",
     "bluebird": "^3.5.0",
     "body-parser": "~1.15.1",
+    "connect-multiparty": "^2.0.0",
     "connect-redis": "^3.3.0",
     "cookie-parser": "~1.4.3",
     "css-loader": "^0.28.4",
@@ -58,6 +59,7 @@
     "wechat-api": "^1.32.1",
     "wechat-oauth": "^1.2.1",
     "weixin-pay": "^1.1.7",
-    "xml2js": "^0.4.17"
+    "xml2js": "^0.4.17",
+    "yaqrcode": "^0.2.1"
   }
 }

@@ -5,33 +5,41 @@
 <div class="infoContainer">
     <div class="infoForm">
         <div class="weui-cell">
-            <div class="weui-cell__hd">真实姓名：</div>
+            <div class="weui-cell__hd">真实姓名 </div>
             <div class="weui-cell__bd">
-                <input class="weui-input" type="text">
+                <input class="weui-input" type="text" id="trueName" />
             </div>
         </div>
         <div class="weui-cell">
-            <div class="weui-cell__hd">手机号码：</div>
+            <div class="weui-cell__hd">手机号码 </div>
             <div class="weui-cell__bd">
-                <input class="weui-input" type="number">
+                <input class="weui-input" type="number" id="telPhone" />
             </div>
         </div>
         <div class="weui-cell">
-            <div class="weui-cell__hd">身份证号：</div>
+            <div class="weui-cell__hd">身份证号 </div>
             <div class="weui-cell__bd">
-                <input class="weui-input" type="text">
+                <input class="weui-input" type="text" id="idCard" />
             </div>
         </div>
     </div>
 
     <div class="infoImg">
         <div onclick="chooseImg('font')">
-            点击上传身份证照片
-            <p>（正面）</p>
+            <div class="infoImgContent">
+                <p>点击上传身份证照片</p>
+                <p>（正面）</p>
+                <!--<img src="/images/WechatIMG32.jpeg">-->
+            </div>
+            <input id="hidfont" type="hidden" value="" />
         </div>
         <div onclick="chooseImg('back')">
-            点击上传身份证照片
-            <p>（背面）</p>
+            <div class="backImgContent">
+                <!--<img src="/images/WechatIMG317.jpeg">-->
+                <p>点击上传身份证照片</p>
+                <p>（背面）</p>
+            </div>
+            <input id="hidback" type="hidden" value="" />
         </div>
     </div>
 
@@ -43,14 +51,66 @@
 <% include ./../footer.ejs %>
 
 <script type="text/javascript">
+    var trueName=$("#trueName");
+    var telPhone=$("#telPhone");
+    var idCard=$("#idCard");
+
+    var hidfont=$("#hidfont");
+    var hidback=$("#hidback");
+
     function infoSubmit() {
-        window.location.href= '/user/requestAwaiting';
+        var trueName_V=trueName.val();
+        var telPhone_V=telPhone.val();
+        var idCard_V=idCard.val();
+
+        var hidfont_V=hidfont.val();
+        var hidback_V=hidback.val();
+
+        ApiInvoke('user','ShopkeeperRegister',
+        {
+            truename:trueName_V,
+            mobile:telPhone_V,
+            photo:hidfont_V,
+            photoReverse:hidback_V,
+            id_card:idCard_V
+        },function (err,result) {
+             if (err){
+                 $.alert(err);
+             }else {
+                 window.location.href= '/user/requestAwaiting';
+             }
+        });
     }
 
     function chooseImg(type) {
         wx.chooseImage({
-            count: 1,
-            success: function (res) {
+            count: 1, // 默认9
+            sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+            sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+            success:  function (res) {
+                var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+                var localid=localIds[0];
+                window.wx.uploadImage({
+                    localId: localid, // 需要上传的图片的本地ID，由chooseImage接口获得
+                    isShowProgressTips: 0, // 默认为1，显示进度提示
+                    success:function(res) {
+                        var serverId = res.serverId; // 返回图片的服务器端ID
+                         ApiInvoke('user','UploadIDCard',{ serverId:serverId },function (err,result) {
+                              if (err){
+                                  $.alert(err);
+                              }else {
+                                  if (type=="font"){
+                                      hidfont.val(result);
+                                      $(".infoImgContent").html('<img src="'+ localid +'">');
+                                  }else if (type=="back"){
+                                      hidback.val(result);
+                                      $(".backImgContent").html('<img src="'+ localid +'">');
+                                  }
+                              }
+                        });
+                    }
+                });
+
             }
         });
     }
