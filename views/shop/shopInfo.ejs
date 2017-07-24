@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<% include ./../header.ejs %>
+<body class="shopInfo">
+<link href="/libs/light7/css/light7.min.css" rel="stylesheet">
+
+<div style="width: 100%;height: 100%;background: #F0EFF5;padding-top: 10px;">
+    <div class="weui-cells" style="padding: 0 !important;margin-top: 0 !important;">
+        <div class="weui-cell weui-cell_access">
+            <div class="weui-cell__hd">
+                店铺头像
+            </div>
+            <div class="weui-cell__bd"></div>
+            <div class="weui-cell__ft">
+                <img style="height: 44px;width: 44px;border-radius: 22px;" src="/images/jdtx.png" alt="">
+            </div>
+        </div>
+
+        <div class="weui-cell weui-cell_access">
+            <div class="weui-cell__hd">
+                店铺名称
+            </div>
+            <div class="weui-cell__bd"></div>
+            <div class="weui-cell__ft">
+                王涛的小店
+            </div>
+        </div>
+
+        <div class="weui-cell weui-cell_access">
+            <div class="weui-cell__hd">
+                店铺编号
+            </div>
+            <div class="weui-cell__bd"></div>
+            <div class="weui-cell__ft">
+                3123123123131231231232
+            </div>
+        </div>
+
+        <div class="weui-cell weui-cell_access">
+            <div class="weui-cell__hd">
+                店铺二维码
+            </div>
+            <div class="weui-cell__bd"></div>
+            <div class="weui-cell__ft">
+                <img style="width: 18px;height: 18px;" src="/images/p6.png" alt="">
+            </div>
+        </div>
+
+        <div class="weui-cell weui-cell_access">
+            <div class="weui-cell__hd">
+                地域
+            </div>
+            <div class="weui-cell__bd"></div>
+            <div class="weui-cell__ft">
+                <input id="location" class="weui-input" style="border:none;text-align: right;" type="text" value="北京 北京市 东城区">
+            </div>
+        </div>
+
+        <div class="weui-cell weui-cell_access">
+            <div class="weui-cell__hd">
+               详细地址
+            </div>
+            <div class="weui-cell__bd"></div>
+            <div class="weui-cell__ft">
+                南长街胡洞534号
+            </div>
+        </div>
+    </div>
+
+    <div class="weui-cells">
+        <div class="weui-cell weui-cell_access">
+            <div class="weui-cell__hd">
+                我的员工
+            </div>
+            <div class="weui-cell__bd"></div>
+            <div class="weui-cell__ft">
+                3人
+            </div>
+        </div>
+
+        <div class="weui-cell weui-cell_access">
+            <div class="weui-cell__hd">
+                邀请员工
+            </div>
+            <div class="weui-cell__bd"></div>
+            <div class="weui-cell__ft"></div>
+        </div>
+    </div>
+
+    <div style="position: fixed;bottom: 0;left: 0;height: 50px;width: 100%;line-height: 50px;overflow: hidden;text-align: center;
+background: #EB652A;color: #fff;">预览店铺</div>
+</div>
+
+<% include ./../footer.ejs %>
+<script type="text/javascript" src="/libs/light7/js/light7.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="/libs/light7/js/light7-city-picker.min.js" charset="utf-8"></script>
+
+<script type="text/javascript">
+    $("#location").cityPicker({
+        toolbarTemplate: '<header class="bar bar-nav">\
+        <button class="button button-link pull-right close-picker">OK</button>\
+        <h1 class="title">选择收货省市</h1>\
+        </header>'
+    });
+</script>
+</body>
+</html>

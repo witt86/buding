@@ -205,6 +205,17 @@ router.get('/:shopcode/couponcenter',async (req,res,next)=>{
     }
 });
 
+router.get('/:shopcode/shopInfo', async(req, res, next)=> {
+    try {
+        let rs = {};
+        rs.title = '乐途逸品商城';
+        res.render('shop/shopInfo', rs);
+    } catch (e) {
+        console.error('-----e:/shopInfo-----');
+        console.error(e);
+    }
+});
+
 router.all("*", async(req, res, next)=> {
     res.render('unknown');
 });
