@@ -28,6 +28,8 @@ import router_shop from './routes/shop';
 import router_order from './routes/order';
 import router_user from './routes/user';
 import openid_map from "./routes/openid-map";
+
+import _config from './config';
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -104,7 +106,7 @@ app.use("/user", wechat_auth, router_user);
 //支付
 app.get("/dopay/:orderId", wechat_auth, async(req, res)=> {
     const orderId = req.params.orderId;
-    const {status, shopcode = "05987386"}=req.query;
+    const {status, shopcode = _config.officialShopcode }=req.query;
     let buttons = [
         {url: '/order/orderlist', title: '我的订单'},
         {url: '/shop/' + shopcode, title: '商城首页'},

@@ -165,7 +165,7 @@
     function addShopCart() {
         var code = '<%= productInfo.code %>';
 
-        ApiInvokeNoloading('shop', 'AddToCart', {prd_code: code,prd_pcs:$("#num_zz").val()}, function (err, res) {
+        ApiInvokeNoloading('shop', 'AddToCart', {prd_code: code,prd_pcs:$("#num_zz").val(),shopcode:'<%= shopcode %>'}, function (err, res) {
             if (err) {
                 $.alert({
                     title: '出错！',
@@ -185,7 +185,7 @@
 
     function fastBuy() {
         var code = '<%= productInfo.code %>';
-        ApiInvokeNoloading('shop', 'fastBuy', {prd_code: code,prd_pcs: parseInt($("#num_zz").val())}, function (err, res) {
+        ApiInvokeNoloading('shop', 'fastBuy', {prd_code: code,shopcode:'<%= shopcode %>',prd_pcs: parseInt($("#num_zz").val())}, function (err, res) {
             if (err) {
                 $.alert({
                     title: '出错！',

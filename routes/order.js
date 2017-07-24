@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import TMSProductAPI from './../server/lib/TMSProductAPI';
 
-import * as DataModel from './../server/model/DataModel';
+import _config from './../config.js' ;
 
 import * as types from './../server/constants';
 const router = new Router();
@@ -25,7 +25,7 @@ router.get('/orderlist', async (req, res, next) => {
         let [rs] = [{}];
         let { fun_id,shopcode }=req.query;
         rs.title="我的订单";
-        rs.shopcode=shopcode?shopcode:"05987386";
+        rs.shopcode=shopcode?shopcode:_config.officialShopcode;
         rs.fun_id=fun_id?fun_id:"newUserAllOrderList";
         res.render('order/orderList', rs);
     }catch (e){
@@ -39,7 +39,7 @@ router.get('/orderdetail/:orderno', async (req, res, next) => {
         let [rs,orderno] = [{},req.params.orderno];
         let { shopcode }=req.query;
         rs.title="订单详情";
-        rs.shopcode=shopcode?shopcode:"05987386";
+        rs.shopcode=shopcode?shopcode:_config.officialShopcode;
         rs.orderno=orderno;
 
         const orderInfo=await TMSProductAPI("get_order",{ order_no:orderno });

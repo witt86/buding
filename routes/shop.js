@@ -162,7 +162,7 @@ router.get('/:shopcode/shopCar', async(req, res, next) => {
 
         rs.shopCar = await TMSProductAPI('get_shopcart', {
             uid: uid,
-            agent_code: '05987386'
+            agent_code: shopcode
         });
 
         rs.title = '购物车';

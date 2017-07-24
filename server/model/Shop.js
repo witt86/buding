@@ -6,7 +6,7 @@ import { delayRun } from '../util/util';
 import * as Payment from './../model_inner/Payment';
 
 //添加购物车
-export const AddToCart = async({uid, prd_code, prd_pcs = 1})=> {
+export const AddToCart = async({uid, prd_code, prd_pcs = 1,shopcode=_config.officialShopcode})=> {
     try{
         if(!prd_code) throw '缺少参数';
 
@@ -14,7 +14,7 @@ export const AddToCart = async({uid, prd_code, prd_pcs = 1})=> {
             uid:uid,
             prd_code:prd_code,
             prd_pcs:prd_pcs,
-            agent_code:'05987386'
+            agent_code:shopcode
         };
         const res = await TMSProductAPI('add_to_cart',query);
         return res;
@@ -25,14 +25,14 @@ export const AddToCart = async({uid, prd_code, prd_pcs = 1})=> {
     }
 };
 //修改购物车商品
-export const UpdateCartItem = async({uid, item_id, pcs})=> {
+export const UpdateCartItem = async({uid, item_id, pcs,shopcode})=> {
     try{
         if(!item_id || !pcs) throw '缺少参数';
         const res = await TMSProductAPI('update_cartitem',{
             uid:uid,
             item_id:item_id,
             pcs:pcs,
-            agent_code:'05987386'
+            agent_code:shopcode
         });
 
         res.isAll = await checkAll({shopCar:res});
@@ -45,13 +45,13 @@ export const UpdateCartItem = async({uid, item_id, pcs})=> {
     }
 };
 //移除购物车项
-export const RemoveCartItem = async({uid, item_id})=> {
+export const RemoveCartItem = async({uid, item_id,shopcode})=> {
     try{
         if(!item_id) throw '缺少参数';
         const res = await TMSProductAPI('remove_cartitem',{
             uid:uid,
             item_id:item_id,
-            agent_code:'05987386'
+            agent_code:shopcode
         });
 
         res.isAll = await checkAll({shopCar:res});
@@ -291,14 +291,14 @@ export const checkAll = async ({shopCar})=> {
         throw e;
     }
 };
-export const statusToggle = async ({uid,status = 1,item_id})=> {
+export const statusToggle = async ({uid,status = 1,item_id,shopcode})=> {
     try{
         if(!item_id) return {err:'缺少参数'};
 
         const query = {
             uid:uid,
             item_id:item_id,
-            agent_code:'05987386',
+            agent_code:shopcode,
             is_selected:status
         };
 
@@ -331,20 +331,20 @@ export const againBuy=async ({ uid,order_no,shopcode })=>{
         if (items.length>0){
             for (let x of items){
                 if (code==x.product.code){
-                    await RemoveCartItem({  uid,item_id:x.id });
+                    await RemoveCartItem({  uid,item_id:x.id,shopcode });
                     break;
                 }
             }
         }
-        await AddToCart({ uid,prd_code:code });
+        await AddToCart({ uid,prd_code:code,shopcode });
     }
     return true;
 };
-export const selectAll = async ({uid,status = 1})=> {
+export const selectAll = async ({uid,status = 1,shopcode})=> {
     try{
         const shopCar = await TMSProductAPI('get_shopcart',{
             uid:uid,
-            agent_code:'05987386'
+            agent_code:shopcode
         });
 
         let idList = '';
@@ -355,7 +355,7 @@ export const selectAll = async ({uid,status = 1})=> {
             const query = {
                 uid:uid,
                 item_id:idList,
-                agent_code:'05987386',
+                agent_code:shopcode,
                 is_selected:status
             };
             const res = await TMSProductAPI('mark_selected_cartitem',query);
@@ -370,21 +370,21 @@ export const selectAll = async ({uid,status = 1})=> {
         throw e;
     }
 };
-export const fastBuy = async ({uid,prd_code,prd_pcs=1})=> {
+export const fastBuy = async ({uid,prd_code,prd_pcs=1,shopcode})=> {
     try{
         if(!prd_code) throw '缺少参数';
 
-        const shopCar = await selectAll({uid:uid,status:0});
+        const shopCar = await selectAll({uid:uid,status:0,shopcode});
 
         const list = filter(shopCar.items, function (item) {
             return item.product.code == prd_code;
         });
 
         if(list.length > 0){
-            await UpdateCartItem({uid:uid,item_id:list[0].id,pcs:prd_pcs});
-            await statusToggle({uid:uid,item_id:list[0].id,status:1});
+            await UpdateCartItem({uid:uid,item_id:list[0].id,pcs:prd_pcs,shopcode});
+            await statusToggle({uid:uid,item_id:list[0].id,status:1,shopcode});
         }else {
-            await AddToCart({uid:uid,prd_code:prd_code,prd_pcs:prd_pcs});
+            await AddToCart({uid:uid,prd_code:prd_code,prd_pcs:prd_pcs,shopcode});
         }
         return true;
     }catch (e) {

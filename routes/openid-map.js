@@ -36,7 +36,7 @@ router.all('*',async (req,res)=>{
             };
             await addNewOpenIDMap(queryInfo);
             let buttons = [
-                {url: 'http://test2.itravelbuy.twohou.com/shop/05987386', title: '开始测试'}
+                {url: 'http://test2.itravelbuy.twohou.com/saleshop', title: '开始测试'}
             ];
             res.alert(types.ALERT_SUCCESS, "支付环境准备OK", "",buttons);
         }

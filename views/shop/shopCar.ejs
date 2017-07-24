@@ -85,7 +85,7 @@
             var limitLow = $(this).parent().children('.limitLow').val();
             var that = this;
             if(quantity1 >= limitLow){
-                ApiInvoke('shop','UpdateCartItem',{item_id:item_id1,pcs:quantity1},function (err,res) {
+                ApiInvoke('shop','UpdateCartItem',{item_id:item_id1,pcs:quantity1,shopcode:"<%= shopcode %>"},function (err,res) {
                     if(err) $.alert({title:'出错！', text:err});
 
                     changeMinusColor(that,quantity1,limitLow);
@@ -120,7 +120,7 @@
         
         $('#allCheck').on('click',function () {
             var currentStatus = $('#allCheck').prop('checked');
-            ApiInvokeNoloading('shop','selectAll',{status:(currentStatus ? 1 : 0)},function (err,res) {
+            ApiInvokeNoloading('shop','selectAll',{status:(currentStatus ? 1 : 0),shopcode:'<%= shopcode%>'},function (err,res) {
                 if(err){
                     $.alert({
                         title:'出错！',
@@ -150,7 +150,7 @@
         $('#del_id').val(item_id);
         $.confirm({title:'确认删除此商品？',
             onOK:function () {
-                ApiInvoke('shop','RemoveCartItem',{item_id:item_id},function (err,res) {
+                ApiInvoke('shop','RemoveCartItem',{item_id:item_id,shopcode:'<%= shopcode %>'},function (err,res) {
                     if(err){
                         $.alert({
                             title:'出错！',
@@ -178,7 +178,7 @@
         else if(type == 'minus') quantity0--;
 
         if(quantity0 >= limitLow){
-            ApiInvoke('shop','UpdateCartItem',{item_id:item_id0,pcs:quantity0},function (err,res) {
+            ApiInvoke('shop','UpdateCartItem',{item_id:item_id0,pcs:quantity0,shopcode:'<%= shopcode %>'},function (err,res) {
                 if(err){
                     $.alert({
                         title:'出错！',
