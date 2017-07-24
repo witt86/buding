@@ -104,11 +104,14 @@ router.get('/staffInfo', async(req, res, next) => {
     }
 });
 
-router.get('/shopmanage', async(req, res, next)=> {
+router.get('/shopManage', async(req, res, next)=> {
     try {
-        res.render('/user/shopmanage', rs);
+        let rs = {};
+        rs.title = '乐途逸品商城';
+        res.render('user/shopManage', rs);
     } catch (e) {
-
+        console.error('-----e:/shopManage-----');
+        console.error(e);
     }
 });
 

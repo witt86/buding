@@ -2691,6 +2691,132 @@ html, body {
   }
 }
 
+.shopManage {
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  overflow-scrolling: touch;
+  -webkit-overflow-scrolling: touch;
+  background: #F1F0F5;
+  .shopManageHeader {
+    height: 220px;
+    width: 100%;
+    position: relative;
+    background: #EA652A;
+    color: #fff;
+    font-size: 14px;
+    .payNumber {
+      position: absolute;
+      left: 15px;
+      top: 20px;
+    }
+    .showDate {
+      position: absolute;
+      right: 15px;
+      top: 20px;
+    }
+    .payAmount {
+      padding-top: 85px;
+      text-align: center;
+      p:last-child {
+        font-size: 40px;
+      }
+    }
+  }
+  .shopManageEntrances {
+    width: 100%;
+    background: #fff;
+    clear: both;
+    .entranceItem {
+      width: 25%;
+      float: left;
+      text-align: center;
+      img {
+        width: 24px;
+        height: 40px;
+        padding-top: 15px;
+      }
+      p {
+        font-size: 12px;
+        padding-bottom: 10px;
+        color: #878787;
+      }
+    }
+  }
+  .shopManageToday {
+    background: #fff;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    position: relative;
+    img {
+      float: left;
+      width: 36px;
+      height: 56px;
+      margin-left: 15px;
+      padding: 10px 0;
+    }
+    .todayDate {
+      float: left;
+      margin-left: 10px;
+      font-size: 12px;
+      padding-top: 10px;
+    }
+    span {
+      float: right;
+      margin-right: 15px;
+      font-size: 16px;
+      padding-top: 15px;
+      span {
+        padding: 0;
+        margin: 0;
+        color: #EB652A;
+      }
+    }
+  }
+  .shopManageSettles {
+    .settleItem {
+      width: 100%;
+      position: relative;
+      display: table;
+      margin-top: 5px;
+      background: #fff;
+      .common {
+        position: absolute;
+        font-size: 12px;
+      }
+      .settleNo {
+        .common;
+        left: 15px;
+        top: 15px;
+      }
+      .settleStatus {
+        .common;
+        right: 15px;
+        top: 15px;
+        color: #EB652A;
+      }
+      p {
+        padding: 70px 0;
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center;
+      }
+      .settleDetail {
+        .common;
+        left: 15px;
+        bottom: 15px;
+        color: #BDBDBD;
+        text-decoration: underline;
+       }
+      .settleTime {
+        .common;
+        right: 15px;
+        bottom: 15px;
+        color: #BDBDBD;
+      }
+    }
+  }
+}
 
 .userRegister {
   .weui-cell__bd{
