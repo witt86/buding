@@ -143,13 +143,10 @@ router.get('/:shopcode/ordersettle', async(req, res, next) => {
 router.get('/:shopcode/productCategory', async(req, res, next) => {
     try {
         let [rs,shopcode] = [{}, req.params.shopcode];
-
         rs.categorys = await DataModel.ProductCategory.findAll();
-
         rs.title = '分类';
         rs.shopcode = shopcode;
         rs.type = 'shopCategory';
-
         res.render('shop/shopCategory', rs);
     } catch (e) {
         console.error('-----e:/productCategory-----');
