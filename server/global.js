@@ -234,10 +234,13 @@ const saveBufferToFile = global.saveBufferToFile = (buffer)=> {
     });
 };
 
-const getqrcode = global.getqrcode =async (content)=> {
+const getqrcode = global.getqrcode =async (content,type)=> {
     let xqbase64 = qrcode(content, {
         size: 200
     });
+    if (type && type=='base64'){
+        return xqbase64;
+    }
     const url=await base64savetoFile(xqbase64);
     return url;
 };

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<% include ../header.ejs %>
+<body class="orderList" ontouchstart>
+<header>
+    <div class="bd-index-header">
+        <div class="bd-index-header-icon-back" id="reset_btn_back">
+            <span></span>
+        </div>
+        <div class="bd-index-header-title">
+            <%= title %>
+        </div>
+    </div>
+</header>
+<div class="order-tab bdb-1px">
+    <ul>
+        <li style="width: 33.3333%" class="li_orderlist <%= fun_id=='awaitShipments'?'curr':'' %>" func-id="awaitShipments">
+            <a href="javascript:;"><span>待发货</span></a>
+        </li>
+        <li style="width: 33.3333%" class="li_orderlist <%= fun_id=='wait4Delivery'?'curr':'' %>" func-id="wait4Delivery">
+            <a href="javascript:;"><span>待收货</span></a>
+        </li>
+        <li style="width: 33.3333%" class="li_orderlist <%= fun_id=='userCompletedOrderList'?'curr':'' %>" func-id="userCompletedOrderList">
+            <a href="javascript:;"><span>已完成</span></a>
+        </li>
+    </ul>
+</div>
+<div id="div_orderlist">
+    <div id="allOrders" style="position: relative;display: block;padding-bottom: 50px">
+
+    </div>
+    <div class="no-order" id="noOrder" style="display: none;">
+        <div class="noorder-pic">
+
+        </div>
+        <span>您还没有相关订单</span>
+    </div>
+</div>
+<script type="text/html" id="tpl_orderList">
+    <~ if(orderlist && orderlist.length>0 ) { ~>
+
+    <~ orderlist.forEach(function(item){ ~>
+
+    <div class="weui-panel nopadding weui-panel_access">
+        <div class="weui-panel__hd weui-flex">
+            <div class="weui-flex__item" style="color: #000;">
+                   <span style="overflow: hidden;
+                   display: block;
+                   white-space: nowrap;
+                   text-overflow: ellipsis;
+                   max-width: 156px;">
+                   <i class="fa fa-lemon-o" style="color:#f56c6c">
+                      <span style="color:#000;margin-left: 5px ">布丁酒店</span>
+                   </i>
+                   </span>
+            </div>
+            <div class="weui-flex__item" style="color:#f15353;text-align:right">
+                <~= item.state_display ~>
+            </div>
+        </div>
+
+        <div class="weui-panel__bd"  onclick="go_to('/order/shopmanageorderdetail/<~= item.order_no~>?shopcode=<%= shopcode%>')">
+            <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+
+                <~ if(item.items.length<=1){ ~>
+
+                <div class="weui-media-box__hd">
+                    <img class="weui-media-box__thumb"
+                         src="<~= item.items[0].product.image ~>">
+                </div>
+                <div class="weui-media-box__bd">
+                    <p class="weui-media-box__desc">
+                        <~= item.items[0].product.name+" "+item.items[0].product.brief  ~>
+                    </p>
+                </div>
+
+                <~ } else { ~>
+
+                <~ item.items.forEach(function(o){ ~>
+
+                <div class="weui-media-box__hd">
+                    <img class="weui-media-box__thumb"
+                         src="<~= o.product.image ~>">
+                </div>
+
+                <~ }) ~>
+
+                <~ } ~>
+            </a>
+        </div>
+        <div class="weui-panel__ft">
+            <div href="javascript:void(0);" class="weui-cell weui-cell_link">
+                <div class="weui-cell__bd" style="color: #000">实付款:¥<~= item.pay_amount ~></div>
+                <div class="weui-cell__ft">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <~ }) ~>
+
+    <~ } else { ~>
+
+    <span></span>
+
+    <~ } ~>
+</script>
+
+<% include ../footer.ejs %>
+<script>
+    var loading=false;
+    var fun_id="<%= fun_id %>";
+
+    $(function () {
+        $(".li_orderlist").click(function () {
+            $(".li_orderlist").removeClass('curr');
+            $(this).addClass("curr");
+            fun_id=$(this).attr("func-id");
+            getOrderListByFun_ID(fun_id,0,function () {
+                loading=false;
+            });
+        });
+        getOrderListByFun_ID(fun_id,0,function () {
+            loading=false;
+        });
+        $(document.body).infinite(0).on("infinite",function () {
+            if (loading)return;
+            loading=true;
+            var allLength=$("#allOrders").children().length;
+            if (allLength<10) return;
+            if (allLength%10==0){
+                getOrderListByFun_ID(fun_id,allLength,function () {
+                    loading=false;
+                });
+            }
+        });
+
+    });
+
+    function getOrderListByFun_ID(func_id,pos,callback) {
+        if (func_id=="awaitShipments"){
+            loadOrder(1,pos,callback);//待发货
+        }else if (func_id=="wait4Delivery"){
+            loadOrder(2,pos,callback);//待收货
+        }else if (func_id=="userCompletedOrderList"){
+            loadOrder("3,31",pos,callback);//已完成
+        }
+    }
+    //加载订单
+    function loadOrder(status, pos,callback) {
+        ApiInvoke("order", "GetShopManageOrderList", {status: status, pos: pos, size: 10,shopcode:'<%= shopcode %>'}, function (err, result) {
+            if (err) {
+                $("#noOrder").show();
+                $("#allOrders").hide();
+            } else {
+                if (!result || result.length==0){
+                    if (pos==0){
+                        $("#noOrder").show();
+                        $("#allOrders").hide();
+                    }
+                    if (pos%10==0){
+                        return;
+                    }
+                    if (callback)callback();
+                }else {
+                    $("#noOrder").hide();
+                    $("#allOrders").show();
+                    var render_tpl_orderlistview = _.template($("#tpl_orderList").html().replace(/\~/igm, "%"));
+                    var render_tpl_orderlistviewHtml=render_tpl_orderlistview({orderlist: result});
+
+                    if (pos==0){
+                        $("#allOrders").html(render_tpl_orderlistviewHtml);
+                    }else {
+                        $("#allOrders").append(render_tpl_orderlistviewHtml);
+                    }
+                    if (callback)callback();
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

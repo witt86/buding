@@ -19,6 +19,10 @@ router.all("*", async(req, res, next)=> {
     try {
         const shopcode= req.params[0].split('/')[1];
         const user=req.session.user;
+        let referrer="";
+        if (req.query &&req.query.referrer){
+            referrer=req.query.referrer;
+        }
         const saleShop=await TMSProductAPI('bd_get_saleshop',{ code:shopcode });
         if (saleShop && saleShop.state==1){
             const query = {
@@ -28,7 +32,8 @@ router.all("*", async(req, res, next)=> {
                 },
                 defaults: {
                     uid: user.uid,
-                    shopcode: shopcode
+                    shopcode: shopcode,
+                    referrer
                 }
             };
             let [User_ShopCode, created] = await DataModel.User_ShopCode.findOrCreate(query);

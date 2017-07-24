@@ -169,10 +169,10 @@
     var pay_amount=<%- shopCartItems.pay_amount %>;
     $(function () {
         $("#makeorder").click(function () {
-            if ($("#ship_address_value").val() == "") {
-                $.alert("请填写收货地址");
-                return;
-            }
+//            if ($("#ship_address_value").val() == "") {
+//                $.alert("请填写收货地址");
+//                return;
+//            }
             var buyInfo = {
                 buyer_note: "",
                 note_to_receiver: "",

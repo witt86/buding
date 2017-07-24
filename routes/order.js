@@ -53,6 +53,41 @@ router.get('/orderdetail/:orderno', async (req, res, next) => {
     }
 });
 
+router.get('/shopmanageOrderList',async (req,res,next)=>{
+     try {
+         let rs={};
+         let { fun_id,shopcode }=req.query;
+         rs.title="店铺订单";
+         rs.shopcode=shopcode?shopcode:_config.officialShopcode;
+         rs.fun_id=fun_id?fun_id:"awaitShipments";
+         res.render('order/shopmanageOrderList',rs);
+     }catch (e){
+         console.error('-----e:/shopmanageOrderList-----');
+         console.error(e);
+         res.alert(types.ALERT_WARN, e, " ");
+     }
+});
+
+router.get('/shopmanageorderdetail/:orderno', async (req, res, next) => {
+    try{
+        let [rs,orderno] = [{},req.params.orderno];
+        let { shopcode }=req.query;
+        let user=req.session.user;
+        rs.title="店铺订单详情";
+        rs.shopcode=shopcode?shopcode:_config.officialShopcode;
+        rs.orderno=orderno;
+
+        const orderInfo=await TMSProductAPI("get_order",{ order_no:orderno});
+
+        rs.orderInfo=orderInfo;
+
+        res.render('order/shopmanageOrderDetail', rs);
+    }catch (e){
+        console.error('-----e:/orderDetail-----');
+        console.error(e);
+    }
+});
+
 router.all("*",async (req, res, next)=> {
     res.render('unknown');
 });

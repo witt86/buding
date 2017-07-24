@@ -5,6 +5,7 @@ import md5 from 'md5';
 import {delayRun} from "./../util/util";
 import * as BusinessEvent from './BusinessEvent';
 import _config from './../../config.js';
+import crypto from 'crypto';
 
 export const findAndCreateUserFromWeixinAuthor = async(accessTokenInfo)=> {
     try {
@@ -181,7 +182,13 @@ export const StaffRegister=async ({ uid,TrueName,mobile,shopcode,pid,role })=>{
              role,
              pid
          });
-
-    return result;
+     return result;
+};
+//生成店铺推广码
+export const createShopQrcode=async ({ uid,shopcode })=>{
+    if (!uid || !shopcode ) throw '指定参数不允许为空!';
+    const url=_config.sitehost+'/shop/'+shopcode+`?referrer=${ uid }`;
+    let qrcode = await global.getqrcode(url,"base64");
+    return qrcode;
 };
 

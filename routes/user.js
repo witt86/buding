@@ -34,6 +34,7 @@ router.get('/mine', async(req, res, next) => {
     } catch (e) {
         console.error('-----e:/shopHome-----');
         console.error(e);
+        res.alert(types.ALERT_WARN, e, " ");
     }
 });
 
@@ -47,6 +48,7 @@ router.get('/userRegister', async(req, res, next) => {
     } catch (e) {
         console.error('-----e:/userRegister-----');
         console.error(e);
+        res.alert(types.ALERT_WARN, e, " ");
     }
 });
 
@@ -98,6 +100,7 @@ router.get('/staffInfo', async(req, res, next) => {
     } catch (e) {
         console.error('-----e:/staffInfo-----');
         console.error(e);
+        res.alert(types.ALERT_WARN, e, " ");
     }
 });
 

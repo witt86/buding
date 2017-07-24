@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<% include ../header.ejs %>
+<body class="orderDetail">
+<header>
+    <div class="bd-index-header">
+        <div class="bd-index-header-icon-back" id="reset_btn_back">
+            <span></span>
+        </div>
+        <div class="bd-index-header-title">
+            <%= title %>
+        </div>
+    </div>
+</header>
+<div class="common-wrapper pad55">
+    <div class="weui-cells" style="margin-top: 0">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p style="font-size: 13px">订单号:<%= orderInfo.order_no %></p>
+            </div>
+            <div class="weui-cell__ft" style="font-size: 13px;color: #f15353"><%= orderInfo.state_display %></div>
+        </div>
+    </div>
+
+    <div class="step2 bdr-new">
+        <div class="m step2-in ">
+            <div class="mt">
+                <div class="s2-name"><i></i><%= orderInfo.receiver ? orderInfo.receiver : "[姓名未填写]" %></div>
+                <div class="s2-phone">
+                    <i></i><%= orderInfo.receiver_mobile ? orderInfo.receiver_mobile.substring(0, 3) + "****" + orderInfo.receiver_mobile.substring(7) : "[手机号未填写]" %>
+                </div>
+            </div>
+            <div class="mc step2-in-con">
+                <%= (orderInfo.ship_province || "") + (orderInfo.ship_city || "") + (orderInfo.ship_district || "") + (orderInfo.ship_address || "[地址未填写]") %>
+            </div>
+        </div>
+        <b class="s2-borderT"></b>
+        <b class="s2-borderB"></b>
+    </div>
+
+    <div class="weui-panel weui-panel_access">
+        <div class="weui-panel__hd  weui-flex">
+            <div class="weui-flex__item" style="color: #000;">
+                   <span style="overflow: hidden;
+                   display: block;
+                   white-space: nowrap;
+                   text-overflow: ellipsis;
+                   max-width: 156px;">
+                   <i class="fa fa-lemon-o" style="color:#f56c6c">
+                      <span style="color:#000;margin-left: 5px ">布丁酒店</span>
+                   </i>
+                   </span>
+            </div>
+        </div>
+        <div class="weui-panel__bd">
+            <% if(orderInfo.items.length > 0){ %>
+            <% orderInfo.items.forEach(function (item) { %>
+
+            <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+                <div class="weui-media-box__hd">
+                    <img class="weui-media-box__thumb"
+                         src="<%= item.product.image %>">
+                </div>
+                <div class="weui-media-box__bd">
+                    <h4 class="weui-media-box__title" style="font-size: 14px">
+                        <%= item.product.name %>
+                    </h4>
+                    <p class="weui-media-box__desc">x<%= item.pcs %></p>
+                </div>
+                <div class="weui-cell__ft">
+                    <span class="price mini nocolor"> <%= item.product.retail_price %> </span>
+                </div>
+            </a>
+            <% }) %>
+            <% } %>
+
+        </div>
+        <div class="weui-panel__ft">
+            <a href="javascript:void(0);" class="weui-cell weui-cell_access weui-cell_link">
+                <div class="weui-cell__bd" style="color:#262629"></div>
+                <span class="weui-cell__ft" style="color:#262629">联系客服</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="weui-panel weui-panel_access">
+        <div class="weui-panel__hd  weui-flex">
+            <div class="weui-flex__item" style="color: #000;">
+                支付方式
+            </div>
+            <div class="weui-flex__item" style="color: #000;text-align: right">
+                微信支付
+            </div>
+        </div>
+        <div class="weui-panel__bd">
+            <a href="javascript:void(0);" class="weui-cell weui-cell_access" style="font-size: 13px">
+                <div class="weui-cell__bd" style="color:#262629">
+                    配送信息
+                </div>
+                <span class="weui-cell__ft" style="color:#262629">
+                <%= orderInfo.ship_vendor_name ? orderInfo.ship_vendor_name : "" %>
+            </span>
+            </a>
+        </div>
+    </div>
+
+    <div class="weui-cells" style="font-size: 13px;margin-top: 10px">
+        <div class="weui-cell">
+            <div class="weui-cell__bd" style="color:#262629">
+                商品总额
+            </div>
+            <div class="weui-cell__ft" style="color:#262629">
+                <span class="price mini">
+                    <%= orderInfo.shop_amount %>
+                </span>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd" style="color:#262629">
+                + 运费
+            </div>
+            <div class="weui-cell__ft" style="color:#262629">
+                <span class="price mini">
+                   <%= orderInfo.ship_fee - orderInfo.ship_fee_off %>
+                </span>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd" style="color:#262629">
+                - 商品优惠
+            </div>
+            <div class="weui-cell__ft" style="color:#262629">
+                <span class="price mini">
+                    <%= orderInfo.shop_amount_off %>
+                </span>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd" style="color:#262629">
+
+            </div>
+            <div class="weui-cell__ft" style="color:#262629;font-size: 16px">
+                实付款:
+                <span class="price">
+                    <%= orderInfo.pay_amount %>
+                </span>
+                <% if ( orderInfo.refunded_fee && parseFloat(orderInfo.refunded_fee) > 0) { %>
+                <p style="font-size: 12px">退款金额: <span class="price mini"><%= orderInfo.refunded_fee %></span></p>
+                <% } %>
+                <p style="font-size: 12px">下单时间:<%= orderInfo.order_date %></p>
+            </div>
+        </div>
+    </div>
+</div>
+<% include ../footer.ejs %>
+</body>
+</html>

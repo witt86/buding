@@ -581,8 +581,8 @@ let SMSMessage = sequelize.define('smsmessage', {
 //用户浏览店铺关系表
 let User_ShopCode=sequelize.define('usershopcode',{
     uid:Sequelize.STRING(64),
-    shopcode:Sequelize.STRING(32)
-
+    shopcode:Sequelize.STRING(32),
+    referrer:Sequelize.STRING(64)
 },{
     'deletedAt':'dtime',
     'paranoid': true

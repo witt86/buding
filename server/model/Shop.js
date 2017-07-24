@@ -112,6 +112,12 @@ export const makeOrder = async({uid, shopcode, buyInfo})=> {
         ship_district: buyInfo.local_address.ship_district
     };
 
+    //看一下下单人是谁推荐过来的
+    const usershopcode=await DataModel.User_ShopCode.findOne({ where:{ uid,shopcode } });
+    if (usershopcode && usershopcode.referrer){
+        orderInfo.referrer_id=usershopcode.referrer;
+    }
+
     console.log("make_order.............");
     console.log(orderInfo);
 
