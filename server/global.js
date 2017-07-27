@@ -218,9 +218,9 @@ function createQiniuToken() {
     return putPolicy.token();
 };
 
-const saveBufferToFile = global.saveBufferToFile = (buffer)=> {
+const saveBufferToFile = global.saveBufferToFile = (buffer,type)=> {
     return new Promise((resolve, reject)=> {
-        const fileName = `${ new Date().getTime() }_cert.jpg`;
+        const fileName = `${ new Date().getTime() }_${type}.jpg`;
         const filePath = `./data/images/${fileName}`;
         fs.writeFile(filePath, buffer, function (err) {
             if (err) {

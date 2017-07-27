@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<% include ../header.ejs %>
+<body class="accountlist">
+<div class="weui-cells__title" style="color: red">
+    因订单签收后可能出现退货退款，订单佣金到账后七天方可提现
+</div>
+<div  style="position: relative;display: block;padding-bottom: 50px">
+    <div class="weui-cells" id="accountlist">
+
+    </div>
+    <p style="text-align: center;color: #c2c2c2;margin-top: 80px;display: none" id="nodata">暂无数据</p>
+</div>
+
+
+<script type="text/html" id="tpl_accountlist">
+    <~ if(accountlist && accountlist.length>0 ) { ~>
+
+    <~ accountlist.forEach(function(item){ ~>
+
+    <div class="weui-cell">
+        <div class="weui-cell__hd">
+            <p>
+                <~= item.create_time ~>
+            </p>
+        </div>
+        <div class="weui-cell__bd">
+            <p>
+                <~ if(item.is_income){ ~>
+                <span style="color: #04be02 ">+ <~= item.figure ~> </span>
+                <~ }else { ~>
+                <span style="color: #EF4F4F ">- <~= item.figure ~> </span>
+                <~ } ~>
+                <br>
+                <small><~= item.type_display+(item.account_desc?('-'+item.account_desc):'') ~></small>
+            </p>
+        </div>
+    </div>
+
+    <~ }) ~>
+
+    <~ } else { ~>
+
+    <span></span>
+
+    <~ } ~>
+</script>
+<% include ../footer.ejs %>
+<script type="text/javascript">
+    var loading=false;
+    var shopcode='<%= shopcode %>';
+
+    $(function () {
+        getAccountlist(0,function () {
+            loading=false;
+        });
+        $(document.body).infinite(0).on("infinite",function () {
+            if (loading)return;
+            loading=true;
+            var allLength=$("#rewardlist").children().length;
+            if (allLength<10) return;
+            if (allLength%10==0){
+                getAccountlist(allLength,function () {
+                    loading=false;
+                });
+            }
+        });
+    });
+
+    function getAccountlist(pos,callback) {
+        ApiInvoke('shop','getAccountlist',{ shopcode:shopcode,pos:pos,size:10 },function (err,result) {
+            if (err){
+                $.alert(err);
+            }else {
+                if (!result || result.length==0){
+                    if (pos==0){
+                       $("#nodata").show();
+                       $("#accountlist").hide();
+                    }
+                    if (pos%10==0){
+                        return;
+                    }
+                    if (callback)callback();
+                }else {
+                    $("#nodata").hide();
+                    $("#accountlist").show();
+                    var render_tpl_Accountlistview = _.template($("#tpl_accountlist").html().replace(/\~/igm, "%"));
+                    var render_tpl_AccountlistviewHtml=render_tpl_Accountlistview({accountlist: result});
+                    if (pos==0){
+                        $("#accountlist").html(render_tpl_AccountlistviewHtml);
+                    }else {
+                        $("#accountlist").append(render_tpl_AccountlistviewHtml);
+                    }
+                    if (callback)callback();
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

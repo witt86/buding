@@ -1,3 +1,25 @@
+.accountlist{
+  background: #F1F0F5;
+  .weui-cell__hd{
+    width: 80px;
+    p{
+      font-size: 10px;
+      color:rgb(102, 102, 102)
+    }
+  }
+  .weui-cell__bd{
+    p{
+      font-size: 13px;
+    }
+  }
+  .weui-cell__ft{
+    font-size: 13px;
+  }
+  .weui-cells__title{
+    font-size: 13px;
+    color: red;
+  }
+}
 .px0_5_bottom {
   content: " ";
   position: absolute;
@@ -18,6 +40,10 @@ div{
 }
 .weui-btn_primary{
   background-color:#EB652A ;
+}
+.weui-btn_primary:not(.weui-btn_disabled):active {
+  color: rgba(255, 255, 255, 0.6);
+  background-color: #ec6b32;
 }
 .weui-icon-success {
   color: #EB652A;
@@ -85,6 +111,15 @@ span.price.max {
 span.price.maxnoweight {
   font-size: 20px;
   font-weight: 200;
+}
+
+span.price.bdcolor{
+  color:#EA652A;
+  font-weight:100;
+  font-size: 14px;
+  &:before{
+    color: #EA652A;
+  }
 }
 
 span.quantity {
@@ -2129,6 +2164,28 @@ html, body {
     width: 100%;border: 1px solid #ccc;padding: 3px;text-align: center;
   }
 }
+.rewardlist{
+  background: #F1F0F5;
+  .weui-cell__hd{
+    width: 80px;
+    p{
+      font-size: 10px;
+      color:rgb(102, 102, 102)
+    }
+  }
+  .weui-cell__bd{
+    p{
+      font-size: 13px;
+    }
+  }
+  .weui-cell__ft{
+    font-size: 13px;
+  }
+  .weui-cells__title{
+    font-size: 13px;
+    color: red;
+  }
+}
 .shopCar {
   header {
     display: block;
@@ -2728,7 +2785,7 @@ html, body {
     background: #fff;
     clear: both;
     .entranceItem {
-      width: 25%;
+      width: 33.3333333%;
       float: left;
       text-align: center;
       img {
@@ -2814,6 +2871,14 @@ html, body {
         bottom: 15px;
         color: #BDBDBD;
       }
+    }
+  }
+}
+.shopPropertyManage{
+  background: #F1F0F5;
+  .weui-cell__bd{
+    p{
+      font-size: 14px;
     }
   }
 }

@@ -70,9 +70,9 @@
                     if (err) {
                         $.alert(err);
                     } else {
-                        window.location.href = '/user/shopRegisterSuccess';
+                        window.location.href = '/user/shopRegisterSuccess?shopcode='+result.code;
                     }
-                });
+        });
     }
 </script>
 </body>

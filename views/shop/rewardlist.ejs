@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<% include ../header.ejs %>
+<body class="rewardlist">
+<div class="weui-cells__title">
+    <% if (status==0) { %>
+    提示:用户签收订单物流后,收益将结算进帐户余额(受物流信息滞后影响,可能有1天的误差)
+    <% }else if (status==1){ %>
+    提示:已结算的收益,累计进您的帐户余额
+    <%} else { %>
+    提示:这里汇总支付后发生取消/退款/退货的订单,收益撤销
+    <% }%>
+</div>
+<div  style="position: relative;display: block;padding-bottom: 50px">
+    <div class="weui-cells" id="rewardlist">
+
+    </div>
+    <p style="text-align: center;color: #c2c2c2;margin-top: 80px;display: none" id="nodata">暂无数据</p>
+</div>
+
+
+<script type="text/html" id="tpl_rewardlist">
+    <~ if(rewardlist && rewardlist.length>0 ) { ~>
+
+    <~ rewardlist.forEach(function(item){ ~>
+
+    <div class="weui-cell">
+        <div class="weui-cell__hd">
+            <p>
+                <~= item.create_time ~>
+            </p>
+        </div>
+        <div class="weui-cell__bd">
+            <p>
+                <span class="price bdcolor"><~= item.reward ~></span>/
+                <small><~= item.order_no ~></small>
+            </p>
+        </div>
+        <div class="weui-cell__ft">
+            <~ if(item.status==1){ ~>
+            <span style="color: rgb(4, 190, 2);"><~= item.status==0?'待结算':(item.status==1?'已结算':'已取消') ~></span>
+            <~ }else{ ~>
+            <span><~= item.status==0?'待结算':(item.status==1?'已结算':'已取消') ~></span>
+            <~ } ~>
+            |
+            <span style="color: red;">销售利润</span>
+        </div>
+    </div>
+
+    <~ }) ~>
+
+    <~ } else { ~>
+
+     <span></span>
+
+    <~ } ~>
+</script>
+<% include ../footer.ejs %>
+</body>
+<script type="text/javascript">
+    var loading=false;
+    var status=<%= status %>;
+    var reward_type=<%= reward_type %>;
+    var shopcode='<%= shopcode %>';
+
+    $(function () {
+        getRewardlist(status,reward_type,0,function () {
+            loading=false;
+        });
+        $(document.body).infinite(0).on("infinite",function () {
+            if (loading)return;
+            loading=true;
+            var allLength=$("#rewardlist").children().length;
+            if (allLength<10) return;
+            if (allLength%10==0){
+                getRewardlist(status,reward_type,allLength,function () {
+                    loading=false;
+                });
+            }
+        });
+    });
+
+    function getRewardlist(status,reward_type,pos,callback) {
+        ApiInvoke('shop','getRewardlist',{ status:status,reward_type:reward_type,pos:pos,size:10,shopcode:shopcode },function (err,result) {
+            if (err){
+                $.alert(err);
+            }else {
+                if (!result || result.length==0){
+                    if (pos==0){
+                        $("#nodata").show();
+                        $("#rewardlist").hide();
+                    }
+                    if (pos%10==0){
+                        return;
+                    }
+                    if (callback)callback();
+                }else {
+                    $("#nodata").hide();
+                    $("#rewardlist").show();
+                    var render_tpl_Rewardlistview = _.template($("#tpl_rewardlist").html().replace(/\~/igm, "%"));
+                    var render_tpl_RewardlistviewHtml=render_tpl_Rewardlistview({rewardlist: result});
+                    if (pos==0){
+                        $("#rewardlist").html(render_tpl_RewardlistviewHtml);
+                    }else {
+                        $("#rewardlist").append(render_tpl_RewardlistviewHtml);
+                    }
+                    if (callback)callback();
+                }
+            }
+        });
+    }
+</script>
+</html>

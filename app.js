@@ -10,7 +10,7 @@ import {merge} from 'lodash';
 import {delayRun} from "./server/util/util";
 import * as globals from "./server/global";
 import main from './routes/main';
-import Index from './routes/Index';
+import Index from './routes/index';
 import wechat_auth from "./server/wechat/wechat_auth.js";
 import xhr_wx_js_config from "./routes/xhr_wx_js_config";
 import wxpay_notify from "./server/wechat/wechat_paynotify";
@@ -142,13 +142,9 @@ app.get("/dopay/:orderId", wechat_auth, async(req, res)=> {
     }
 });
 //微信测试支付openId映射
-
 app.use("/openid-map", wechat_auth, openid_map);
-
-
 //开放的api入口
 app.use("/itravelbuy-api", itravelbuyApi);
-
 //清空当前访问者的session
 app.get("/___clearsession", async(req, res) => {
     if (req.session.user) {

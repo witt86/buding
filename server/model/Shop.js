@@ -442,7 +442,6 @@ export const getShopProducts=async ({ shopcode })=>{
       }else {
           const ShopProducts=await TMSProductAPI("bd_query_products",{ code:shopcode });
           const productCodes=ShopProducts.products;
-          console.log(productCodes);
           const products=await DataModel.ProductSource.findAll({
               where:{
                   status:1,
@@ -461,4 +460,60 @@ export const getShopProducts=async ({ shopcode })=>{
           });
       }
       return productsInfo;
+};
+//上传店铺头像
+export const UploadShopIcon=async ({ uid,serverId,shopcode })=>{
+    const buffer=await global.wechat_api.getMediaAsync(serverId);
+    const url= await global.saveBufferToFile(buffer,"shopicon");
+    delayRun(async()=>{
+        await TMSProductAPI('bd_update_shop',{ code:shopcode,uid,shopicon:url });
+    },500);
+    return url;
+};
+//修改店铺信息
+export const UploadShopInfo=async (params)=>{
+    let result = await TMSProductAPI('bd_update_shop',params);
+    return result;
+};
+//获得收益结算明细
+export const getRewardlist=async ({ uid,status,reward_type,pos,size,shopcode })=>{
+     const rewardsList=await TMSProductAPI('query_rewards',{
+         uid,
+         status,
+         reward_type,
+         pos,
+         size,
+         store_code:shopcode
+     });
+     return rewardsList;
+};
+//获得小店账户总览数据
+export const GetRewardsstatisticInfo = async({uid, shopcode })=> {
+    try {
+        let rewards_summary = await TMSProductAPI('bd_get_rewards_summary', {store_code:shopcode});//获取用户收益记录简单统计结果(销售回佣)
+        let accounts_summary = await TMSProductAPI('bd_get_store_summary', {store_code:shopcode});//获取用户资金账户总额
+        const result = {
+            "accountAmount": accounts_summary.total || 0,
+            "cashAmount": accounts_summary.available || 0,
+            "withdraw_tbd": accounts_summary.withdraw_tbd || 0,
+            "reward_status_0": rewards_summary["pending"].rewards || 0,
+            "reward_status_1": rewards_summary["achieved"].rewards || 0,
+            "reward_status_2": rewards_summary["cancelled"].rewards || 0,
+            "reward_frozen": accounts_summary.reward_frozen || 0
+        };
+        return result;
+    } catch (e) {
+        console.log('--------GetRewardsstatisticInfo:e--------');
+        console.log(e);
+        throw e;
+    }
+};
+//获得小店账户流水
+export const getAccountlist=async ({ uid,shopcode,pos,size })=>{
+    const Accountlist=await TMSProductAPI('bd_query_accounts',{
+        store_code:shopcode,
+        pos,
+        size
+    });
+    return Accountlist;
 };

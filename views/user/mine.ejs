@@ -24,20 +24,18 @@
                 <div class="my-img-wrap">
                     <img class="my-img-border"
                          src="//m.360buyimg.com/img/jfs/t3928/27/482890805/22652/d95af356/5850e0edN1dca846b.png">
-                    <span class="my-img"><img
-                                src="<%= reguser.headimgurl %>"></span>
+                    <span class="my-img">
+                        <img src="<%= reguser.headimgurl %>" />
+                    </span>
                 </div>
                 <div class="my-person-info">
                     <p class="my-jd-head-name"><%= reguser.userName %></p>
                     <div class="my-jd-head-member">
                         <span class="my-jd-head-type">普通会员</span>
                         <div class="my-jd-head-plus">
-													<span class="plus-icon-wrap">
-														<img class="plus-icon"
-                                                             src="//m.360buyimg.com/mobilecms/jfs/t3835/278/642907156/1552/a6f2d3b2/58173a43Nc71052cf.png">
-										 			</span>
-                            <!--<span class="plus-icon-text">PLUS会员</span>-->
-                            <!--<span class="info-hint"></span>-->
+							<span class="plus-icon-wrap">
+								<img class="plus-icon" src="//m.360buyimg.com/mobilecms/jfs/t3835/278/642907156/1552/a6f2d3b2/58173a43Nc71052cf.png">
+							</span>
                         </div>
                     </div>
                 </div>
@@ -118,8 +116,8 @@
                 <a id="daifukuan"
                    href="/order/orderlist?fun_id=wait4Payment&shopcode=<%= shopcode %>">
                     <div class="myID-part w-3">
-                            						<span class="myID-img">
-                    									<img src="//m.360buyimg.com/mobilecms/jfs/t2734/339/468866355/3035/82b4343b/57147baaNf2463e54.png">
+                     	<span class="myID-img">
+                    		<img src="//m.360buyimg.com/mobilecms/jfs/t2734/339/468866355/3035/82b4343b/57147baaNf2463e54.png">
                                                         <% if ( orderListWaitPay && orderListWaitPay.length > 0 ) { %>
                                                         <span name="daifukuan" class="my-count re-count">
                                                             <%= orderListWaitPay.length %>
@@ -154,8 +152,25 @@
     </div>
     <!--我的布丁-我的订单结束-->
 </div>
+<% if (identity) { %>
+
+<div class="weui-cells">
+    <a class="weui-cell weui-cell_access" href="/user/shopqrcode?shopcode=<%= shopcode %>">
+        <div class="weui-cell__bd">
+            <p style="font-size: 15px">店铺推广码</p>
+        </div>
+        <div class="weui-cell__ft">
+        </div>
+    </a>
+</div>
+
+<% } %>
+
 
 <% include ./../footer.ejs %>
 
+<script>
+
+</script>
 </body>
 </html>

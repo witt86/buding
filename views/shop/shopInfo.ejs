@@ -2,83 +2,84 @@
 <html>
 <% include ./../header.ejs %>
 <body class="shopInfo">
-<link href="/libs/light7/css/light7.min.css" rel="stylesheet">
-
 <div style="width: 100%;height: 100%;background: #F0EFF5;padding-top: 10px;">
     <div class="weui-cells" style="padding: 0 !important;margin-top: 0 !important;">
-        <div class="weui-cell weui-cell_access">
+        <div class="weui-cell weui-cell_access" onclick="chooseImg()">
             <div class="weui-cell__hd">
                 店铺头像
             </div>
             <div class="weui-cell__bd"></div>
             <div class="weui-cell__ft">
-                <img style="height: 44px;width: 44px;border-radius: 22px;" src="/images/jdtx.png" alt="">
+                <img id="shopicon" style="height: 44px;width: 44px;border-radius: 22px;" src="<%= shopInfo.shopicon %>"
+                     alt="">
             </div>
         </div>
 
-        <div class="weui-cell weui-cell_access">
+        <div class="weui-cell weui-cell_access" onclick="updateShopName()">
             <div class="weui-cell__hd">
                 店铺名称
             </div>
             <div class="weui-cell__bd"></div>
-            <div class="weui-cell__ft">
-                王涛的小店
+            <div class="weui-cell__ft" id="name">
+                <%= shopInfo.name %>
             </div>
         </div>
 
-        <div class="weui-cell weui-cell_access">
+        <div class="weui-cell">
             <div class="weui-cell__hd">
                 店铺编号
             </div>
             <div class="weui-cell__bd"></div>
             <div class="weui-cell__ft">
-                3123123123131231231232
+                <%= shopInfo.code %>
             </div>
         </div>
 
-        <div class="weui-cell weui-cell_access">
+        <div class="weui-cell weui-cell_access" onclick="go_to('/user/shopqrcode?shopcode=<%= shopcode %>')">
             <div class="weui-cell__hd">
                 店铺二维码
             </div>
             <div class="weui-cell__bd"></div>
             <div class="weui-cell__ft">
-                <img style="width: 18px;height: 18px;" src="/images/p6.png" alt="">
+                <img style="width: 18px;height: 18px;position: relative;top:4px;" src="/images/p6.png" alt="">
+                <input type="hidden" value="<%= shopInfo.qrcode %>" id="shopInfoqrcode"/>
             </div>
         </div>
 
         <div class="weui-cell weui-cell_access">
             <div class="weui-cell__hd">
-                地域
+                店铺地域
             </div>
             <div class="weui-cell__bd"></div>
             <div class="weui-cell__ft">
-                <input id="location" class="weui-input" style="border:none;text-align: right;" type="text" value="北京 北京市 东城区">
+                <input id="location" class="weui-input"
+                       style="border:none;text-align: right;"
+                       type="text" value="<%= shopInfo.province + " " + shopInfo.city + " " + (shopInfo.district==' '?"":shopInfo.district) %>">
             </div>
         </div>
 
-        <div class="weui-cell weui-cell_access">
+        <div class="weui-cell weui-cell_access" onclick="updateShopAddress()">
             <div class="weui-cell__hd">
-               详细地址
+                详细地址
             </div>
             <div class="weui-cell__bd"></div>
-            <div class="weui-cell__ft">
-                南长街胡洞534号
+            <div class="weui-cell__ft" id="shopaddress">
+                <%= shopInfo.address %>
             </div>
         </div>
     </div>
 
     <div class="weui-cells">
-        <div class="weui-cell weui-cell_access">
-            <div class="weui-cell__hd">
-                我的员工
-            </div>
-            <div class="weui-cell__bd"></div>
-            <div class="weui-cell__ft">
-                3人
-            </div>
-        </div>
-
-        <div class="weui-cell weui-cell_access">
+        <!--<div class="weui-cell weui-cell_access">-->
+            <!--<div class="weui-cell__hd">-->
+                <!--我的员工-->
+            <!--</div>-->
+            <!--<div class="weui-cell__bd"></div>-->
+            <!--<div class="weui-cell__ft">-->
+                <!--3人-->
+            <!--</div>-->
+        <!--</div>-->
+        <div class="weui-cell weui-cell_access" onclick="go_to('/user/shopinviteqrcode?shopcode=<%= shopcode %>')">
             <div class="weui-cell__hd">
                 邀请员工
             </div>
@@ -87,21 +88,111 @@
         </div>
     </div>
 
-    <div style="position: fixed;bottom: 0;left: 0;height: 50px;width: 100%;line-height: 50px;overflow: hidden;text-align: center;
-background: #EB652A;color: #fff;">预览店铺</div>
+    <div onclick="go_to('/shop/<%= shopcode %>')" style="position: fixed;bottom: 0;left: 0;height: 50px;width: 100%;line-height: 50px;overflow: hidden;text-align: center;
+background: #EB652A;color: #fff;">预览店铺
+    </div>
 </div>
 
 <% include ./../footer.ejs %>
-<script type="text/javascript" src="/libs/light7/js/light7.min.js" charset="utf-8"></script>
-<script type="text/javascript" src="/libs/light7/js/light7-city-picker.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="/libs/jq-weui/js/city-picker.min.js" charset="utf-8"></script>
+<script>
+    var shopcode='<%= shopcode %>';
+    $(function () {
+        $("#location").cityPicker({
+            title: "店铺地域",
+            onChange:function (s) {
+                var location=s.displayValue;
+                console.log(location);
+                var province="";
+                var city="";
+                var district="";
+                if (location.length==3){
+                    province=location[0];
+                    city=location[1];
+                    district=location[2]?location[2]:" ";
+                }
+                ApiInvokeNoloading('shop', 'UploadShopInfo',{ code:shopcode,province:province,city:city,district:district }, function (err, result) {
+                    if (err) {
+                        $.alert(err);
+                    } else {
 
-<script type="text/javascript">
-    $("#location").cityPicker({
-        toolbarTemplate: '<header class="bar bar-nav">\
-        <button class="button button-link pull-right close-picker">OK</button>\
-        <h1 class="title">选择收货省市</h1>\
-        </header>'
+                    }
+                });
+            }
+        });
     });
+    function chooseImg() {
+        wx.chooseImage({
+            count: 1, // 默认9
+            sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+            sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+            success: function (res) {
+                var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+                var localid = localIds[0];
+                window.wx.uploadImage({
+                    localId: localid, // 需要上传的图片的本地ID，由chooseImage接口获得
+                    isShowProgressTips: 0, // 默认为1，显示进度提示
+                    success: function (res) {
+                        var serverId = res.serverId; // 返回图片的服务器端ID
+                        ApiInvoke('shop', 'UploadShopIcon', {
+                            serverId: serverId,
+                            shopcode: '<%= shopcode %>'
+                        }, function (err, result) {
+                            if (err) {
+                                $.alert(err);
+                            } else {
+                                $("#shopicon").attr('src', result);
+                            }
+                        });
+                    }
+                });
+
+            }
+        });
+    };
+    function updateShopName() {
+        var currname=$("#name").html().trim();
+        $.prompt({
+            title: '修改店铺名称',
+            input: currname,
+            empty: false, // 是否允许为空
+            onOK: function (input) {
+               console.log(input);
+                ApiInvokeNoloading('shop', 'UploadShopInfo',{ code:shopcode,name:input }, function (err, result) {
+                    if (err) {
+                        $.alert(err);
+                    } else {
+                        $("#name").html(result.name);
+                        $('title').html(result.name);
+                    }
+                });
+            },
+            onCancel: function () {
+                //点击取消
+            }
+        });
+    };
+    function updateShopAddress() {
+        var curraddress=$("#shopaddress").html().trim();
+        $.prompt({
+            title: '修改店铺详细地址',
+            input: curraddress,
+            empty: true, // 是否允许为空
+            onOK: function (input) {
+
+                ApiInvokeNoloading('shop', 'UploadShopInfo',{ code:shopcode,address:input?input:" " }, function (err, result) {
+                    if (err) {
+                        $.alert(err);
+                    } else {
+                        $("#shopaddress").html(result.address);
+                    }
+                });
+            },
+            onCancel: function () {
+                //点击取消
+            }
+        });
+    }
 </script>
 </body>
 </html>

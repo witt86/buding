@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<% include ../header.ejs %>
+<body class="shopPropertyManage">
+
+<div class="weui-cells">
+    <a class="weui-cell weui-cell_access" href="/shop/<%= shopcode %>/accountlist">
+        <div class="weui-cell__bd">
+            <p>账户余额</p>
+        </div>
+        <div class="weui-cell__ft">
+            <span class="price bdcolor" style="font-size: 30px;"><%= RewardsstatisticInfo.accountAmount %></span>
+        </div>
+    </a>
+    <a class="weui-cell weui-cell_access" href="javascript:;">
+        <div class="weui-cell__bd">
+            <p>可发放</p>
+        </div>
+        <div class="weui-cell__ft">
+            <span class="price bdcolor"><%= RewardsstatisticInfo.cashAmount %></span>
+        </div>
+    </a>
+    <a class="weui-cell weui-cell_access" href="/shop/<%= shopcode %>/accountlist">
+        <div class="weui-cell__bd">
+            <p>账户流水</p>
+        </div>
+        <div class="weui-cell__ft">
+        </div>
+    </a>
+</div>
+<div class="weui-cells__title">收益状态</div>
+<div class="weui-cells">
+    <a class="weui-cell weui-cell_access" href="/shop/<%= shopcode %>/rewardlist/1/0">
+        <div class="weui-cell__bd">
+            <p>已结算</p>
+        </div>
+        <div class="weui-cell__ft">
+           <span class="price bdcolor"><%= RewardsstatisticInfo.reward_status_1 %></span>
+        </div>
+    </a>
+    <a class="weui-cell weui-cell_access" href="/shop/<%= shopcode %>/rewardlist/0/0">
+        <div class="weui-cell__bd">
+            <p>未结算</p>
+        </div>
+        <div class="weui-cell__ft">
+            <span class="price bdcolor"><%= RewardsstatisticInfo.reward_status_0 %></span>
+        </div>
+    </a>
+    <a class="weui-cell weui-cell_access" href="/shop/<%= shopcode %>/rewardlist/2/0">
+        <div class="weui-cell__bd">
+            <p>已取消</p>
+        </div>
+        <div class="weui-cell__ft">
+            <span class="price bdcolor"><%= RewardsstatisticInfo.reward_status_2 %></span>
+        </div>
+    </a>
+</div>
+
+
+<% include ../footer.ejs %>
+</body>
+</html>

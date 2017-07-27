@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<% include ../header.ejs %>
+<body class="shopManage">
+
+<div class="shopManageHeader">
+    <div class="payNumber">付款订单数：<%= waitShipOrderToday.length %></div>
+    <div class="showDate"><%= pay_since %></div>
+    <div class="payAmount">
+        <p>今日付款金额：（元）</p>
+        <p><%= todayPayAmount.toFixed(2) %></p>
+    </div>
+</div>
+
+<div class="shopManageEntrances">
+    <div class="entranceItem" onclick="go_to('/shop/<%= shopcode %>/shopInfo')">
+        <img src="/images/p1.png" alt="">
+        <p>店铺管理</p>
+    </div>
+    <div class="entranceItem" style="position: relative" onclick="go_to('/order/shopmanageOrderList?shopcode=<%= shopcode %>')">
+        <img src="/images/p3.png" alt="">
+        <p>订单管理</p>
+        <% if (waitShipOrderAll.length > 0){ %>
+        <span class="weui-badge" style="position: absolute;top: 3px;right: 25px;"><%= waitShipOrderAll.length %></span>
+        <% } %>
+    </div>
+    <div class="entranceItem" onclick="go_to('/shop/<%= shopcode %>/propertyManage')">
+        <img src="/images/p4.png" alt="">
+        <p>资产管理</p>
+    </div>
+    <div style="clear: both"></div>
+</div>
+
+<div class="shopManageToday">
+    <img src="/images/p5.png" alt="">
+    <div class="todayDate">
+        <p>今日订单</p>
+        <p><%= pay_since %></p>
+    </div>
+    <span>未发货：<span><%= waitShipOrderToday.length %></span></span>
+    <div style="clear: both;"></div>
+</div>
+
+<% if (waitShipOrderToday && waitShipOrderToday.length > 0 ) { %>
+
+<% waitShipOrderToday.forEach(function (item) { %>
+
+<div class="shopManageSettles" onclick="go_to('/order/shopmanageorderdetail/<%= item.order_no %>?shopcode=<%= shopcode %>')">
+    <div class="settleItem">
+        <span class="settleNo">订单号：<%= item.order_no %></span>
+        <span class="settleStatus"><%= item.state_display %></span>
+        <p style="font-size: 13px">订单金额（元）<span style="font-size: 24px"><%= item.pay_amount %></span></p>
+        <span class="settleDetail">查看详情</span>
+        <span class="settleTime"><%= item.pay_date %></span>
+    </div>
+</div>
+
+<% }) %>
+
+<% } %>
+
+<% include ../footer.ejs %>
+</body>
+</html>

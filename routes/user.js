@@ -2,6 +2,9 @@ import {Router} from "express";
 import TMSProductAPI from './../server/lib/TMSProductAPI';
 import * as DataModel from './../server/model/DataModel';
 import * as types from './../server/constants';
+import * as User from './../server/model/User';
+import _config from './../config.js' ;
+
 const router = new Router();
 
 router.all("*", async(req, res, next)=> {
@@ -20,17 +23,46 @@ router.all("*", async(req, res, next)=> {
 router.get('/mine', async(req, res, next) => {
     try {
         let rs = {};
-        const user = req.session.user;
+        const user=req.session.user;
         const {shopcode}=req.query;
-        const reguser = await DataModel.RegUser.findOne({where: {uid: user.uid}});
-        const orderListWaitPay = await TMSProductAPI("query_orders", {uid: user.uid, status: 0});
 
-        rs.title = '我的布丁';
-        rs.shopcode = shopcode;
-        rs.reguser = reguser;
-        rs.orderListWaitPay = orderListWaitPay;
+        //获得用户身份
+        const bduser=await TMSProductAPI('bd_get_user',{ uid:user.uid });
+        if (!shopcode){
+            //判断是不是布丁员工
+            let identity=0;
+            if (bduser && bduser.length>0){
+                identity=bduser[0];
+            };
 
-        res.render('user/mine', rs);
+            //去哪个店?
+            let shopcode=_config.officialShopcode;//默认店铺
+            if (identity){
+                shopcode=identity.shopcode;
+            }else {
+                const userShopcodes=await DataModel.User_ShopCode.findAll({
+                    where:{
+                        uid:user.uid
+                    },
+                    order: [["createdAt", "DESC"]]
+                });
+                if (userShopcodes && userShopcodes.length>0){
+                    shopcode=userShopcodes[0].shopcode;
+                }
+            }
+            res.redirect(`/user/mine?shopcode=${ shopcode }`);
+        }else {
+            const reguser = await DataModel.RegUser.findOne({where: {uid: user.uid}});
+            const orderListWaitPay = await TMSProductAPI("query_orders", {uid: user.uid, status: 0});
+            if (bduser && bduser.length>0){
+                rs.identity=true;
+            };
+            rs.title = '我的布丁';
+            rs.shopcode = shopcode;
+            rs.reguser = reguser;
+            rs.orderListWaitPay = orderListWaitPay;
+            res.render('user/mine', rs);
+        }
     } catch (e) {
         console.error('-----e:/shopHome-----');
         console.error(e);
@@ -104,17 +136,6 @@ router.get('/staffInfo', async(req, res, next) => {
     }
 });
 
-router.get('/shopManage', async(req, res, next)=> {
-    try {
-        let rs = {};
-        rs.title = '乐途逸品商城';
-        res.render('user/shopManage', rs);
-    } catch (e) {
-        console.error('-----e:/shopManage-----');
-        console.error(e);
-    }
-});
-
 router.get('/requestAwaiting', async(req, res, next) => {
     try {
         let rs = {};
@@ -166,6 +187,8 @@ router.get('/shopRegisterSuccess', async(req, res, next)=> {
     try {
         let rs = {};
         rs.title = '店铺注册成功!';
+        const { shopcode }=req.query;
+        rs.shopcode=shopcode;
         res.render('user/shopRegisterSuccess', rs);
     } catch (e) {
         console.error('-----e:/requestReceived-----');
@@ -184,6 +207,38 @@ router.get('/staffRegisterSuccess',async (req,res,next)=>{
         res.render('user/staffRegisterSuccess', rs);
     } catch (e) {
         console.error('-----e:/requestReceived-----');
+        console.error(e);
+        res.alert(types.ALERT_WARN, e, " ");
+    }
+});
+
+router.get('/shopqrcode',async (req,res,next)=>{
+      try {
+          let { shopcode }=req.query;
+          let rs={};
+          const user=req.session.user;
+          const qrcode=await User.createShopQrcode({ uid:user.uid,shopcode:shopcode });
+          rs.qrcode=qrcode;
+          rs.title = '店铺推广码!';
+          res.render('user/shopqrcode', rs);
+      }catch (e){
+          console.error('-----e:/shopqrcode-----');
+          console.error(e);
+          res.alert(types.ALERT_WARN, e, " ");
+      }
+});
+
+router.get('/shopinviteqrcode',async (req,res,next)=>{
+    try {
+        let { shopcode }=req.query;
+        let rs={};
+        const user=req.session.user;
+        const qrcode=await User.createShopInviteQrcode({ uid:user.uid,shopcode:shopcode });
+        rs.qrcode=qrcode;
+        rs.title = '店铺员工邀请码!';
+        res.render('user/shopInviteQrcode', rs);
+    }catch (e){
+        console.error('-----e:/shopqrcode-----');
         console.error(e);
         res.alert(types.ALERT_WARN, e, " ");
     }

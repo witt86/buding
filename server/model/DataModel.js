@@ -621,8 +621,6 @@ module.exports.SMSMessage = SMSMessage;
 module.exports.SaleShopProduct=SaleShopProduct;
 module.exports.User_ShopCode=User_ShopCode;
 
-
-
 //由sql组成的函数方法,注意:需要对传入的所有参数做防SQL注入过滤(字符串替换或数值转换操作)
 module.exports.Functions = {};
 

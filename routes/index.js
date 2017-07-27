@@ -53,7 +53,7 @@ router.get('/saleshop',async (req,res,next)=>{
            where:{
              uid:user.uid
            },
-           order: [["createdAt", "DESC"]]
+           order: [["createdAt","DESC"]]
        });
        if (userShopcodes && userShopcodes.length>0){
           shopcode=userShopcodes[0].shopcode;

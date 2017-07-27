@@ -159,7 +159,7 @@ export const ShopRegister = async({uid, name, province, city, district, address}
 //上传身份证件
 export const UploadIDCard=async ({ uid,serverId })=>{
     const buffer=await global.wechat_api.getMediaAsync(serverId);
-    const url= await global.saveBufferToFile(buffer);
+    const url= await global.saveBufferToFile(buffer,"cert");
     return url;
 };
 //员工注册
@@ -188,6 +188,15 @@ export const StaffRegister=async ({ uid,TrueName,mobile,shopcode,pid,role })=>{
 export const createShopQrcode=async ({ uid,shopcode })=>{
     if (!uid || !shopcode ) throw '指定参数不允许为空!';
     const url=_config.sitehost+'/shop/'+shopcode+`?referrer=${ uid }`;
+    let qrcode = await global.getqrcode(url,"base64");
+    return qrcode;
+};
+//生成店铺员工邀请码
+export const createShopInviteQrcode=async ({ uid,shopcode })=>{
+    if (!uid || !shopcode ) throw '指定参数不允许为空!';
+    const reguser=await DataModel.RegUser.findOne({ where:{ uid } });
+    if (!reguser) throw '指定用户不存在!';
+    const url=_config.sitehost+`/user/staffInfo?shopcode=${shopcode}&id=${reguser.id}`;
     let qrcode = await global.getqrcode(url,"base64");
     return qrcode;
 };
