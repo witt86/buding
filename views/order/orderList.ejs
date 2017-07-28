@@ -96,7 +96,7 @@
                 <div class="weui-cell__bd" style="color: #000">实付款:¥<~= item.pay_amount ~></div>
                 <div class="weui-cell__ft">
                     <~ if(item.order_state==0){ ~>
-                    <a href="/dopay/<~= item.order_no~>"
+                    <a href="/dopay/<~= item.order_no~>?shopcode=<%= shopcode %>"
                        class="weui-btn weui-btn_mini weui-btn_plain-primary "
                        style="border: 1px solid #f15353;color: #f15353;">
                         去支付

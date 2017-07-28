@@ -40,7 +40,7 @@
     </div>
     <div class="weui-msg__opr-area">
         <p class="weui-btn-area">
-            <a href="/order/orderlist" class="weui-btn weui-btn_primary">查看订单</a>
+            <a href="/order/orderlist?shopcode=<%= shopcode %>" class="weui-btn weui-btn_primary">查看订单</a>
             <a href="/shop/<%= shopcode %>" class="weui-btn weui-btn_default">返回首页</a>
         </p>
     </div>
@@ -59,7 +59,7 @@
 </div>
 <div class="weui-msg__opr-area">
     <p class="weui-btn-area">
-        <a href="/order/orderlist" class="weui-btn weui-btn_primary">查看订单</a>
+        <a href="/order/orderlist?shopcode=<%= shopcode %>" class="weui-btn weui-btn_primary">查看订单</a>
         <a href="/shop/<%= shopcode %>" class="weui-btn weui-btn_default">返回首页</a>
     </p>
 </div>
@@ -85,9 +85,9 @@
                     console.log(requestSign);
                     wechatPay(requestSign,function (res) {
                         if (res.errMsg == "chooseWXPay:ok" || res.err_msg == "get_brand_wcpay_request:ok") {
-                            document.location.href="/dopay/"+orderId+"?status=1";
+                            document.location.href="/dopay/"+orderId+"?status=1&shopcode=<%= shopcode %>";
                         } else {
-                            document.location.href="/dopay/"+orderId+"?status=0";
+                            document.location.href="/dopay/"+orderId+"?status=0&shopcode=<%= shopcode %>";
                         }
                     });
                 }

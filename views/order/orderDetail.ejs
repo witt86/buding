@@ -156,7 +156,7 @@
         <div class="bb-info" id="bbInfo">
             <% if ( orderInfo.order_state == 0 ) { %>
             <div class="bottom-but">
-                <a href="/dopay/<%= orderInfo.order_no %>" class="bb-btn1-red">
+                <a href="/dopay/<%= orderInfo.order_no %>?shopcode=<%= shopcode %>" class="bb-btn1-red">
                     去支付
                 </a>
             </div>

@@ -36,8 +36,8 @@
             </div>
         </div>
         <div class="weui-cell">
-            <div class="weui-cell__hd">所属店铺 </div>
-            <div class="weui-cell__bd">
+            <div class="weui-cell__hd">所属店铺</div>
+            <div class="weui-cell__bd" style="padding-left: 5px">
                   <%= shopInfo.name %>
             </div>
         </div>
@@ -79,7 +79,7 @@
             if (err){
                 $.alert(err);
             }else {
-                go_to('/user/staffRegisterSuccess?shopcode'+shopcode);
+                go_to('/user/staffRegisterSuccess?shopcode='+shopcode);
             }
         });
     }

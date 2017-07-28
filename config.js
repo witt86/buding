@@ -16,7 +16,7 @@ const config = {
         },
         siteIP: "114.55.87.183",
         sitehost: "http://test2.itravelbuy.twohou.com",
-        officialShopcode:"05731762",
+        officialShopcode:"01442494",
         thmall: {
             apiURL: "http://test.tmonkey.cn:8001/tms-api/",
             secret: "......",
@@ -54,7 +54,7 @@ const config = {
         },
         siteIP: "114.55.87.183",
         sitehost: "http://test2.itravelbuy.twohou.com",
-        officialShopcode:"05731762",
+        officialShopcode:"01442494",
         thmall: {
             apiURL: "http://test.tmonkey.cn:8001/tms-api/",
             secret: "......",
@@ -92,7 +92,7 @@ const config = {
         },
         siteIP: "114.55.87.183",
         sitehost: "http://itravelbuy.twohou.com",
-        officialShopcode:"05731762",
+        officialShopcode:"01442494",
         thmall: {
             apiURL: "http://tms.twohou.com:8001/tms-api/",
             secret: "......",

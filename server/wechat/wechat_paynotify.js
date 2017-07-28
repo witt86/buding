@@ -23,6 +23,7 @@ router.post('/pay', global.wxpay.useWXCallback((msg, req, res, next)=>{
     //  trade_type: 'JSAPI',
     //  transaction_id: '4002522001201603284351966361'
     // }
+    console.log(msg);
     Payment.Paying_onNotify_weixin(msg, (err, result)=>{
         if(err){
             console.log(err);

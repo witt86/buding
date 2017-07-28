@@ -175,8 +175,9 @@ export const ProductSync = async ()=> {
             status: 'all',
             size: page_size
         }
-        const result_Products = await System_synProducts(query);
+        let result_Products = await System_synProducts(query);
         console.dir(`商品同步完成: ${JSON.stringify(result_Products)}`);
+        result_Products=null;
     } catch (err) {
         console.log("同步商品库,发生错误:");
         console.log(err);

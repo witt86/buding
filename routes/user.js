@@ -54,10 +54,21 @@ router.get('/mine', async(req, res, next) => {
         }else {
             const reguser = await DataModel.RegUser.findOne({where: {uid: user.uid}});
             const orderListWaitPay = await TMSProductAPI("query_orders", {uid: user.uid, status: 0});
+            let identity=false;
             if (bduser && bduser.length>0){
-                rs.identity=true;
+                identity=true;
             };
+            let usermanage=false;
+            for (let item of  bduser){
+                if (item.uid==user.uid && item.role==2){
+                    usermanage=true;
+                    break;
+                }
+            }
+
             rs.title = '我的布丁';
+            rs.identity=identity;
+            rs.usermanage=usermanage;
             rs.shopcode = shopcode;
             rs.reguser = reguser;
             rs.orderListWaitPay = orderListWaitPay;
@@ -69,6 +80,8 @@ router.get('/mine', async(req, res, next) => {
         res.alert(types.ALERT_WARN, e, " ");
     }
 });
+
+
 
 router.get('/userRegister', async(req, res, next) => {
     try {

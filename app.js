@@ -88,13 +88,13 @@ app.use(function (req, res, next) {
     next();
 });
 
+//接收微信的支付成功的异步通知
+app.use("/wxpay_notify", wxpay_notify);
 
-app.use('/',wechat_auth,Index);
+
 
 app.use("/xhr_wx_js_config_js", xhr_wx_js_config);
 
-//接收微信的支付成功的异步通知
-app.use("/wxpay_notify", wxpay_notify);
 //api
 app.use("/api", main);
 //店铺
@@ -106,7 +106,8 @@ app.use("/user", wechat_auth, router_user);
 //支付
 app.get("/dopay/:orderId", wechat_auth, async(req, res)=> {
     const orderId = req.params.orderId;
-    const {status, shopcode = _config.officialShopcode }=req.query;
+    const {status, shopcode }=req.query;
+    console.log(req.query);
     let buttons = [
         {url: '/order/orderlist', title: '我的订单'},
         {url: '/shop/' + shopcode, title: '商城首页'},
@@ -153,6 +154,7 @@ app.get("/___clearsession", async(req, res) => {
     }
     res.alert(types.ALERT_SUCCESS, "您的session已清空", " ");
 });
+app.use('/',wechat_auth,Index);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

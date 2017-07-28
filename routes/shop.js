@@ -228,7 +228,7 @@ router.get('/:shopcode/shopManage', async(req, res, next)=> {
             //获得未发货订单
             const pay_since=moment().format("YYYY-MM-DD");
             let waitShipOrderToday=[];
-            const waitShipOrderAll=await TMSProductAPI('query_orders',{ status:1,pos:0,size:100,store_code:shopcode,pay_since });
+            const waitShipOrderAll=await TMSProductAPI('query_orders',{ status:1,pos:0,size:100,store_code:shopcode });
             if (waitShipOrderAll && waitShipOrderAll.length>0){
                 waitShipOrderToday=waitShipOrderAll.filter(item=>{ return item.pay_date.indexOf(pay_since)>=0 });
             }
@@ -240,7 +240,6 @@ router.get('/:shopcode/shopManage', async(req, res, next)=> {
             }, 0);
             rs.pay_since=pay_since;
             rs.shopcode=shopcode;
-
             res.render('shop/shopManage', rs);
         }
     } catch (e) {

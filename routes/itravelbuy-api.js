@@ -14,8 +14,10 @@ router.all("*",async (req, res, next)=>{
 // });
 router.all("*",multipart(),async (req,res,next)=>{
     try{
+        console.log(req.path);
         const pathItems = req.path.split("/");
         const methodName = pathItems[1] ? pathItems[1] : null;
+        console.log(`methodName：${methodName}`);
         if (!OpenApiModel[methodName]) {
             throw `api请求的地址(${req.originalUrl})中不存在${methodName}方法,请确认映射的类是否正确!`;
         }

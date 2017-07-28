@@ -477,7 +477,7 @@ export const UploadShopInfo=async (params)=>{
 };
 //获得收益结算明细
 export const getRewardlist=async ({ uid,status,reward_type,pos,size,shopcode })=>{
-     const rewardsList=await TMSProductAPI('query_rewards',{
+     const rewardsList=await TMSProductAPI('bd_query_rewards',{
          uid,
          status,
          reward_type,

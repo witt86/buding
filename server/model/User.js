@@ -90,7 +90,7 @@ export const findAndCreateUserFromWeixinOpnId = async(accessTokenInfo)=> {
 };
 //店主注册
 export const ShopkeeperRegister = async({uid, mobile, truename, photo, photoReverse, id_card})=> {
-    const reguser = await DataModel.RegUser.findOne({uid});
+    const reguser = await DataModel.RegUser.findOne({where:{ uid }});
     if (!reguser) throw '指定用户不存在!';
     const wx_openid = reguser.wx_openID;
 
