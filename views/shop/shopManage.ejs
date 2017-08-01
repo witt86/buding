@@ -4,7 +4,7 @@
 <body class="shopManage">
 
 <div class="shopManageHeader">
-    <div class="payNumber">付款订单数：<%= waitShipOrderToday.length %></div>
+    <div class="payNumber">付款订单数：<%= ShipPayOrderToday.length %></div>
     <div class="showDate"><%= pay_since %></div>
     <div class="payAmount">
         <p>今日付款金额：（元）</p>
@@ -26,7 +26,7 @@
     </div>
     <div class="entranceItem" onclick="go_to('/shop/<%= shopcode %>/propertyManage')">
         <img src="/images/p4.png" alt="">
-        <p>资产管理</p>
+        <p>我的收益</p>
     </div>
     <div style="clear: both"></div>
 </div>

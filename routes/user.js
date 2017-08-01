@@ -232,7 +232,7 @@ router.get('/shopqrcode',async (req,res,next)=>{
           const user=req.session.user;
           const qrcode=await User.createShopQrcode({ uid:user.uid,shopcode:shopcode });
           rs.qrcode=qrcode;
-          rs.title = '店铺推广码!';
+          rs.title = '店铺推广码';
           res.render('user/shopqrcode', rs);
       }catch (e){
           console.error('-----e:/shopqrcode-----');

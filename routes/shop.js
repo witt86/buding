@@ -227,20 +227,23 @@ router.get('/:shopcode/shopManage', async(req, res, next)=> {
             const mysaleshop=await TMSProductAPI('bd_get_saleshop',{ code:shopcode });
             //获得未发货订单
             const pay_since=moment().format("YYYY-MM-DD");
-            let waitShipOrderToday=[];
-            const waitShipOrderAll=await TMSProductAPI('query_orders',{ status:1,pos:0,size:100,store_code:shopcode });
-            if (waitShipOrderAll && waitShipOrderAll.length>0){
-                waitShipOrderToday=waitShipOrderAll.filter(item=>{ return item.pay_date.indexOf(pay_since)>=0 });
+            let waitShipOrderToday=[],ShipPayOrderToday=[];
+            const ShopShipOrderAll=await TMSProductAPI('query_orders',{ pos:0,size:100,store_code:shopcode });
+            const waitShipOrderAll=ShopShipOrderAll.filter(item=>{ return item.order_state == 1 });
+            if (ShopShipOrderAll && ShopShipOrderAll.length>0){
+                waitShipOrderToday=ShopShipOrderAll.filter(item=>{ return item.pay_date && item.pay_date.indexOf(pay_since)>=0 && item.order_state==1 });
+                ShipPayOrderToday=ShopShipOrderAll.filter(item=>{ return item.pay_date && item.pay_date.indexOf(pay_since)>=0  });
             }
             rs.title = mysaleshop.name;
             rs.waitShipOrderToday=waitShipOrderToday;
             rs.waitShipOrderAll=waitShipOrderAll;
-            rs.todayPayAmount=reduce(waitShipOrderToday, (sum, item)=> {
+            rs.todayPayAmount=reduce(ShipPayOrderToday, (sum, item)=> {
                 return sum + parseFloat(item.pay_amount)
             }, 0);
             rs.pay_since=pay_since;
             rs.shopcode=shopcode;
-            res.render('shop/shopManage', rs);
+            rs.ShipPayOrderToday=ShipPayOrderToday;
+            res.render('shop/shopManage',rs);
         }
     } catch (e) {
         console.error('-----e:/shopManage-----');
@@ -291,7 +294,7 @@ router.get('/:shopcode/propertyManage',async (req,res,next)=>{
         const { shopcode }=req.params;
         const user=req.session.user;
         //todo 做权限判断
-        rs.title='小店营收';
+        rs.title='我的收益';
         rs.shopcode=shopcode;
         const RewardsstatisticInfo=await Shop.GetRewardsstatisticInfo({ uid:user.uid,shopcode });
         rs.RewardsstatisticInfo=RewardsstatisticInfo;
@@ -313,7 +316,7 @@ router.get('/:shopcode/rewardlist/:status/:reward_type',async (req,res,next)=>{
         rs.status=status;
         rs.reward_type=reward_type;
 
-        rs.title='小店营收';
+        rs.title='我的收益';
         res.render('shop/rewardlist',rs);
     }catch (e){
         console.error('-----e:/rewardlist-----');
@@ -329,10 +332,28 @@ router.get('/:shopcode/accountlist',async (req,res,next)=>{
         const user=req.session.user;
         //todo 做权限判断
         rs.shopcode=shopcode;
-        rs.title='小店营收';
+        rs.title='我的收益';
         res.render('shop/accountlist',rs);
     }catch (e){
         console.error('-----e:/accountlist-----');
+        console.error(e);
+        res.alert(types.ALERT_WARN, e, " ");
+    }
+});
+
+router.get('/:shopcode/withDrawManage',async (req,res,next)=>{
+    try {
+        let rs = {};
+        const { shopcode}=req.params;
+        const user=req.session.user;
+        let accounts_summary = await TMSProductAPI('get_accounts_summary', {uid:user.uid});//获取用户资金账户总额
+        rs.accounts_summary=accounts_summary;
+        //todo 做权限判断
+        rs.shopcode=shopcode;
+        rs.title='提现';
+        res.render('shop/withDrawManage',rs);
+    }catch (e){
+        console.error('-----e:/withDrawManage-----');
         console.error(e);
         res.alert(types.ALERT_WARN, e, " ");
     }

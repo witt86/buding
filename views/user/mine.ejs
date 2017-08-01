@@ -162,16 +162,9 @@
         <div class="weui-cell__ft">
         </div>
     </a>
-</div>
-
-<% } %>
-
-<% if ( usermanage ){ %>
-
-<div class="weui-cells">
-    <a class="weui-cell weui-cell_access" href="/shop/<%= shopcode %>/shopManage">
+    <a class="weui-cell weui-cell_access" href="/shop/<%= shopcode %>/propertyManage">
         <div class="weui-cell__bd">
-            <p style="font-size: 15px">店铺管理</p>
+            <p style="font-size: 15px">我的收益</p>
         </div>
         <div class="weui-cell__ft">
         </div>
@@ -179,7 +172,24 @@
 </div>
 
 <% } %>
-
+<div class="weui-cells">
+    <% if ( usermanage ){ %>
+    <a class="weui-cell weui-cell_access" href="/shop/<%= shopcode %>/shopManage">
+        <div class="weui-cell__bd">
+            <p style="font-size: 15px">店铺管理</p>
+        </div>
+        <div class="weui-cell__ft">
+        </div>
+    </a>
+    <% } %>
+    <a class="weui-cell weui-cell_access" href="/shop/<%= shopcode %>">
+        <div class="weui-cell__bd">
+            <p style="font-size: 15px">商城首页</p>
+        </div>
+        <div class="weui-cell__ft">
+        </div>
+    </a>
+</div>
 
 <% include ./../footer.ejs %>
 

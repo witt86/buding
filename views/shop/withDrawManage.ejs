@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<% include ../header.ejs %>
+<body class="withDrawManage">
+<div class="weui-panel weui-panel_access">
+    <div class="weui-panel__hd">
+        <small> 可提现金额:<span class="price bdcolor"><%= accounts_summary.available %></span></small>
+        |
+        <small>账户余额:<span class="price bdcolor"><%= accounts_summary.total %></span></small>
+    </div>
+    <div class="weui-panel__bd">
+        <div class="weui-media-box weui-media-box_appmsg">
+            <div class="weui-media-box__bd">
+                <h4 class="weui-media-box__title">
+                    <div style="color:#c2c2c2">提现金额
+                        <small>(100元起)</small>
+                    </div>
+                </h4>
+                <p class="weui-media-box__desc">
+                <div class="panel_moneyInput">
+                    <input type="number" id="money" class="weui_input moneyInput" placeholder="请输入金额">
+                </div>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="weui-panel__hd">
+        1.提现金额为100元起,提现金额最小单位为元,暂不支持小数位提现<br/>
+        2.提现款项将进入您的微信钱包,最晚48小时内到账<br/>
+        3.因订单签收后可能出现退货退款，到账的订单佣金七天后方可提现<br/>
+        4.每天仅限提现一次<br/>
+        5.每天同一个资金账号最大提现金额为20000
+    </div>
+</div>
+<div class="weui-btn_area" style="padding: 0 15px">
+    <a href="javascript:;" class="weui-btn weui-btn_primary" onclick="requestWithDrawInfo()">提交申请</a>
+</div>
+
+<% include ../footer.ejs %>
+<script>
+    var shopcode='<%= shopcode %>';
+    function requestWithDrawInfo() {
+        var money=$("#money").val();
+        if (!money){
+            alert('请填写提现金额!');
+            return;
+        }
+        if (money.length==0){
+            alert('请填写有效的金额数字!');
+            return;
+        }
+        if (parseInt(money)<100){
+            alert('提现金额为100元起!');
+            return;
+        }
+        ApiInvoke('shop','requestWithDrawInfo',{ money:money,shopcode:shopcode },function (err,result) {
+             if (err){
+                 alert(err);
+             }else {
+                 alert('申请成功');
+             }
+        });
+    }
+</script>
+</body>
+</html>

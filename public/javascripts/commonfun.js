@@ -25,7 +25,7 @@ function ApiInvoke(apiRoot,method,data,callback) {
     $.ajax({
         url: "/api/"+apiRoot+"/"+method,
         type: "POST",
-        data: JSON.stringify({  "queryObj": data}),
+        data: JSON.stringify({"queryObj": data}),
         contentType:'application/json',
         success: function (result, status, xhr) {
             if ($.hideLoading) {
