@@ -81,8 +81,6 @@ router.get('/mine', async(req, res, next) => {
     }
 });
 
-
-
 router.get('/userRegister', async(req, res, next) => {
     try {
         let rs = {};
