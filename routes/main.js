@@ -22,7 +22,7 @@ router.use("/user",ModelProxy(User,{}, async function(req,res,params) {
     const mysession =  req.session;
     if (!mysession.user){
         throw types.SESSION_TIMEOUT_PLEASE_RELOGIN;
-    }else {
+    } else {
         params.uid = mysession.user.uid;
         params.user = mysession.user;
         return params;
