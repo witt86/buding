@@ -4,7 +4,6 @@ import {delayRun} from './../util/util';
 import TMSProductAPI from '../lib/TMSProductAPI';
 import _config from './../../config.js' ;
 import {reduce, filter} from 'lodash';
-import Promise from 'bluebird';
 
 /*
  处理支付成功后的业务:
