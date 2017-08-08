@@ -141,7 +141,7 @@ function wechatPay(paysignResult,callback) {
         try {
             const wxpayargs = {
                 appId: paysignResult.appId, //公众号名称，由商户传入
-                timeStamp: paysignResult.timeStamp, //时间戳，自1970年以来的秒数
+                timeStamp: paysignResult.timeStamp.toString(), //时间戳，自1970年以来的秒数
                 nonceStr: paysignResult.nonceStr, //随机串
                 package: paysignResult.package,
                 signType: paysignResult.signType, //微信签名方式:

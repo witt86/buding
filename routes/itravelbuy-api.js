@@ -22,8 +22,6 @@ router.all("*",multipart(),async (req,res,next)=>{
             throw `api请求的地址(${req.originalUrl})中不存在${methodName}方法,请确认映射的类是否正确!`;
         }
         let data=(req.query&&JSON.stringify(req.query)!='{}')?req.query: req.body;
-        console.log('----reqData----');
-        console.log(data);
         const result= await OpenApiModel[methodName](data);
         res.json({ err:null,result:result });
     }catch (e){

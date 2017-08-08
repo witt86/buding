@@ -153,7 +153,6 @@
     <!--我的布丁-我的订单结束-->
 </div>
 <% if (identity) { %>
-
 <div class="weui-cells">
     <a class="weui-cell weui-cell_access" href="/user/shopqrcode?shopcode=<%= shopcode %>">
         <div class="weui-cell__bd">
@@ -162,6 +161,7 @@
         <div class="weui-cell__ft">
         </div>
     </a>
+
     <a class="weui-cell weui-cell_access" href="/shop/<%= shopcode %>/propertyManage">
         <div class="weui-cell__bd">
             <p style="font-size: 15px">我的收益</p>

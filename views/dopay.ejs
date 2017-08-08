@@ -86,7 +86,9 @@
                         if (res.errMsg == "chooseWXPay:ok" || res.err_msg == "get_brand_wcpay_request:ok") {
                             document.location.href="/dopay/"+orderId+"?status=1&shopcode=<%= shopcode %>";
                         } else {
-                            document.location.href="/dopay/"+orderId+"?status=0&shopcode=<%= shopcode %>";
+                            ApiInvoke('shop','aaa',{reqs:res},function (err,result) {
+                                document.location.href="/dopay/"+orderId+"?status=0&shopcode=<%= shopcode %>";
+                            });
                         }
                     });
                 }

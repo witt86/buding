@@ -198,6 +198,8 @@ export const payOrder = async({uid, orderId})=> {
     console.log('---签名obj---');
     console.log(requestParams);
     const requestSign = await global.wxpay.getBrandWCPayRequestParamsAsync(requestParams);
+    console.log('------requestSign-----');
+    console.log(requestSign);
     return {requestSign};
 };
 //取消订单
@@ -604,5 +606,11 @@ export const requestWithDrawInfo = async({uid, money, shopcode})=> {
         console.error(e);
         throw e;
     }
+};
+
+export const aaa=async ({uid,reqs})=>{
+    console.log(uid);
+    console.log(reqs);
+    return true;
 };
 
