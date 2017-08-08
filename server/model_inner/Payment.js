@@ -19,7 +19,6 @@ const Paying_paySuccess_business = async(paynotify_weixin, message)=> {
                 }
             }
         );
-        //
         console.dir(`开始处理支付跟踪编号${message.out_trade_no}的支付成功后业务`);
         payrecord.transaction_id = message.transaction_id;
         payrecord.success = true;
