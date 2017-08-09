@@ -609,8 +609,8 @@ export const requestWithDrawInfo = async({uid, money, shopcode})=> {
 };
 
 export const aaa=async ({uid,reqs})=>{
-    console.log(uid);
-    console.log(reqs);
+    console.error(uid);
+    console.error(reqs);
     return true;
 };
 

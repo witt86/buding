@@ -51,22 +51,22 @@ router.get('/:shopcode', async(req, res, next) => {
         const {shopcode}=req.params;
 
         const mysaleshop=await TMSProductAPI('bd_get_saleshop',{ code:shopcode });
-
         rs.title = mysaleshop.name;
-
         //今日秒杀商品
         const shopProduct=await Shop.getShopProducts({ shopcode });
         rs.activityProducts=shopProduct.filter((item)=>{
             return item.tags.indexOf('今日秒杀')>=0 && item.status==1;
         });
         //首页分类商品
-        let categorys = await DataModel.ProductCategory.findAll();
-
+        let categorys = await DataModel.ProductCategory.findAll({
+            where:{ is_active:1  },
+            order: [["list_order", "DESC"]]
+        });
         categorys = JSON.parse(JSON.stringify(categorys));
         for (let category of categorys) {
             category.products=shopProduct.filter((item)=>{
                 return item.productcategoryId==category.id && item.status==1 && item.tags.indexOf('首页')>=0;
-            });
+            }).sort((s1,s2)=>{ return s2.list_order-s1.list_order });
         };
         //首页bannel和大图标
         let bannerAndAD=await TMSProductAPI("get_navilinks",{ scenario:'首页轮播,首页大图标'});

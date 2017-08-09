@@ -116,9 +116,8 @@
             <div class="shopHomeSectionTitle">
                 ----<%= section.name %>----
             </div>
-            <div class="shopHomeSectionImg"
-                 onclick="go_to('/shop/<%= shopcode %>/productDetail/<%= section.products[0].code %>')">
-                <img class="lazy-load" data-url="<%= section.products[0].image + '-cover2' %>" alt="">
+            <div class="shopHomeSectionImg" onclick="navilink('<%= section.link_to %>','<%= shopcode %>')">
+                <img class="lazy-load" data-url="<%= section.image %>" alt="">
             </div>
             <div class="shopHomeSectionProducts">
                 <div style="width: <%= 110 * section.products.length %>px">

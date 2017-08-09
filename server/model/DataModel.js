@@ -274,7 +274,10 @@ let ProductCategory = sequelize.define('productcategory', {
     list_order: Sequelize.INTEGER,
     code: Sequelize.STRING,
     name: Sequelize.STRING,
-    p_code_id: Sequelize.STRING
+    p_code_id: Sequelize.STRING,
+    link_to:Sequelize.STRING(512),
+    is_active:Sequelize.BOOLEAN,
+    image:Sequelize.STRING(512)
 }, {
     'deletedAt': 'dtime',
     'paranoid': true

@@ -146,7 +146,10 @@ async function System_synProductsCategory() {
                     list_order: item.list_order,
                     code: item.code,
                     name: item.name,
-                    p_code_id: item.p_code_id
+                    p_code_id: item.p_code_id,
+                    image_link:item.image_link,
+                    is_active:item.is_active,
+                    image:item.image
                 };
                 await DataModel.ProductCategory.create(query_create);
             } else {
