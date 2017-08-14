@@ -3,7 +3,7 @@
     {
       "type": "view",
       "name": "布丁商城",
-      "url": "{hostname}/saleshop"
+      "url": "{hostname}"
     },
     {
       "type": "view",

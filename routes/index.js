@@ -32,7 +32,9 @@ router.get('/myshop',async (req,res,next)=>{
      }
 });
 
-router.get('/saleshop',async (req,res,next)=>{
+
+
+router.get('/',async (req,res,next)=>{
   try {
     const user=req.session.user;
     //获得用户身份

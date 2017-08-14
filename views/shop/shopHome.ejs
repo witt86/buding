@@ -79,8 +79,7 @@
             <div class="shopHomeActivityContent">
                 <div style="width:<%= 90 * activityProducts.length %>px ">
                     <% activityProducts.length > 0 && activityProducts.map(function (item) { %>
-
-                    <div onclick="go_to('/shop/<%= shopcode %>/productDetail/<%= item.code %>')">
+                    <div style="width: 90px" onclick="go_to('/shop/<%= shopcode %>/productDetail/<%= item.code %>')">
                         <img class="lazy-load" data-url="<%- item.image %>" alt="">
                         <p><%= item.retail_price %></p>
                     </div>

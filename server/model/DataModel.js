@@ -301,8 +301,8 @@ let ProductSource = sequelize.define('productsource', {
     margin: Sequelize.DECIMAL(8, 2),
     monthly_sales: Sequelize.INTEGER,
     list_order: Sequelize.INTEGER,
-    icon: Sequelize.STRING(256),
-    image: Sequelize.STRING(256),
+    icon: Sequelize.STRING(1024),
+    image: Sequelize.STRING(1024),
     is_package: {
         'type': Sequelize.BOOLEAN,
         'allowNull': false,

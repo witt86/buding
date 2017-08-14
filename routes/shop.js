@@ -56,7 +56,7 @@ router.get('/:shopcode', async(req, res, next) => {
         const shopProduct=await Shop.getShopProducts({ shopcode });
         rs.activityProducts=shopProduct.filter((item)=>{
             return item.tags.indexOf('今日秒杀')>=0 && item.status==1;
-        });
+        }).sort((s1,s2)=>{ return s2.list_order-s1.list_order });
         //首页分类商品
         let categorys = await DataModel.ProductCategory.findAll({
             where:{ is_active:1  },
@@ -133,9 +133,7 @@ router.get('/:shopcode/ordersettle', async(req, res, next) => {
         const user = req.session.user;
         rs.title = "填写订单";
         rs.shopcode = shopcode;
-
         let shopCartItems = await Shop.GetShopCart({uid: user.uid, select: 1, shopcode});
-
         rs.shopCartItems = shopCartItems;
         rs.user = user;
         res.render('shop/orderSettle', rs);
@@ -149,7 +147,9 @@ router.get('/:shopcode/ordersettle', async(req, res, next) => {
 router.get('/:shopcode/productCategory', async(req, res, next) => {
     try {
         let [rs,shopcode] = [{}, req.params.shopcode];
-        rs.categorys = await DataModel.ProductCategory.findAll();
+        rs.categorys = await DataModel.ProductCategory.findAll({
+            order: [["list_order", "DESC"]]
+        });
         rs.title = '分类';
         rs.shopcode = shopcode;
         rs.type = 'shopCategory';

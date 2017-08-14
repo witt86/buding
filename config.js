@@ -15,7 +15,7 @@ const config = {
             database: "buding"
         },
         siteIP: "114.55.87.183",
-        sitehost: "http://test2.itravelbuy.twohou.com",
+        sitehost: "http://abuhome.podinns.com/",
         officialShopcode:"01442494",
         thmall: {
             apiURL: "http://test.tmonkey.cn:8001/tms-api/",

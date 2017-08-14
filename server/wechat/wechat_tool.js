@@ -55,7 +55,7 @@ export const  SendInviteMsgLink= async (openid,inviteid)=>{
 
 export const  SendAttentionShopMsg= async (openid,shopcode)=>{
     try{
-        const url=_config.sitehost+`/saleshop/${shopcode}`;
+        const url=_config.sitehost;
         const saleshop=await DataModel.SaleShop.findOne({ where:{ code:shopcode },include:DataModel.Seller });
         const msg= "<a href='" + url + "'>您扫描了" + saleshop.seller.TrueName + "向导的二维码, 来观摩一下他的店铺吧</a>";
         const sendResult= await  global.wechat_api.sendTextAsync(openid,msg);

@@ -61,3 +61,8 @@ export const onInformCheckShopkeeper=async ({ uid })=>{
     });
     return 'ok';
 };
+
+export const onInformTmsDelProduct=async ({ productcode })=>{
+    await DataModel.ProductSource.destroy({ where:{ sourceCode:productcode },force: true });
+    return 'ok';
+};

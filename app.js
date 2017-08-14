@@ -33,7 +33,7 @@ import _config from './config';
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
+app.set('trust proxy', true);
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -61,12 +61,11 @@ app.use(session({
         httpOnly: false
     }
 }));
-
 app.locals.moment = moment;
 app.locals.types = types;
 app.locals._ = _;
 //全局http处理函数, 用在服务器端express/ejs页面中。react产品端用不到
-app.use(function (req, res, next) {
+app.use( (req, res, next) => {
     //微信分享信息设定,如果为空,则客户端的JS会从网页基本信息中提取
     res.locals.wxshare = {
         title: "",
@@ -87,14 +86,14 @@ app.use(function (req, res, next) {
     };
     next();
 });
-
-//接收微信的支付成功的异步通知
+app.use('/caiji/caiji.php', (req,res,next) => {
+    console.log(`采集者IP:${req.ip}`);
+    res.send('采集本站者，脑子瓦塔勒!');
+});
+//接收微信支付成功的异步通知
 app.use("/wxpay_notify", wxpay_notify);
-
-
-
+//微信JSSDK配置
 app.use("/xhr_wx_js_config_js", xhr_wx_js_config);
-
 //api
 app.use("/api", main);
 //店铺
@@ -155,6 +154,10 @@ app.get("/___clearsession", async(req, res) => {
     res.alert(types.ALERT_SUCCESS, "您的session已清空", " ");
 });
 app.use('/',wechat_auth,Index);
+//aa
+app.get('/MP_verify_6Z01ozWuNW2rVSen.txt',(req,res)=>{
+    res.send('6Z01ozWuNW2rVSen');
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
