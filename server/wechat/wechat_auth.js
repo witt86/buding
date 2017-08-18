@@ -81,6 +81,7 @@ router.all('*', async function(req, res, next) {
     }
     if(!code || needGoAuthorizeURL) {
         let url =  _config.sitehost + req.originalUrl;
+        console.log(`----url:${url}---`);
         //抹掉url中多余的from和isappinstalled参数
         const url_items = url.split("?");
         if (url_items.length > 1) {

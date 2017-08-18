@@ -17,12 +17,5 @@
     "transform-async-to-module-method",
     "transform-es2015-parameters",
     "transform-es2015-spread"
-  ],
-  "env": {
-    "production": {
-      "presets": [
-        "react-optimize"
-      ]
-    }
-  }
+  ]
 }

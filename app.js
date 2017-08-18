@@ -12,6 +12,7 @@ import * as globals from "./server/global";
 import main from './routes/main';
 import Index from './routes/index';
 import wechat_auth from "./server/wechat/wechat_auth.js";
+import wechat_msg from "./server/wechat/wechat_msg.js";
 import xhr_wx_js_config from "./routes/xhr_wx_js_config";
 import wxpay_notify from "./server/wechat/wechat_paynotify";
 import * as types from './server/constants';
@@ -90,6 +91,7 @@ app.use('/caiji/caiji.php', (req,res,next) => {
     console.log(`采集者IP:${req.ip}`);
     res.send('采集本站者，脑子瓦塔勒!');
 });
+app.use("/wechat",wechat_msg);
 //接收微信支付成功的异步通知
 app.use("/wxpay_notify", wxpay_notify);
 //微信JSSDK配置
@@ -153,11 +155,15 @@ app.get("/___clearsession", async(req, res) => {
     }
     res.alert(types.ALERT_SUCCESS, "您的session已清空", " ");
 });
-app.use('/',wechat_auth,Index);
 //aa
 app.get('/MP_verify_6Z01ozWuNW2rVSen.txt',(req,res)=>{
     res.send('6Z01ozWuNW2rVSen');
 });
+
+app.get('/saleshop',(req,res)=>{
+   res.redirect('/');
+})
+app.use('/',wechat_auth,Index);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -180,7 +186,7 @@ if (app.get('env') === 'development') {
 
 //网站启动事件
 delayRun(()=> {
-    //OnWebSiteStartEvent();
+    OnWebSiteStartEvent();
 }, 10, (err)=> {
     console.dir("网站启动事件运行出错:" + err);
 });

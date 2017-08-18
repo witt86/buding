@@ -92,7 +92,8 @@ router.get('/:shopcode/productDetail/:code', async(req, res, next) => {
 
         let multispec=[];
         if (rs.productInfo.is_multispec){
-            multispec= getProductMultispec(rs.productInfo);
+            multispec= getProductMultispec1(rs.productInfo);
+            console.log(multispec);
         }
 
         rs.title = rs.productInfo.name;
@@ -118,6 +119,7 @@ const getProductMultispec = (productInfo)=> {
     const spec_tag_descArr=spec_tag_desc.split(',').splice(0,1);
 
     let Multispec=[];
+
     let s={ title:spec_tag_descArr[0],spec_list:[] };
     for (let p of spec_list ){
         s.spec_list.push({ text:p.spec_tag1,value:p.code } );
@@ -126,6 +128,32 @@ const getProductMultispec = (productInfo)=> {
     Multispec.push(s);
     return Multispec;
 };
+
+const getProductMultispec1 = (productInfo)=> {
+    const spec = productInfo.spec;
+    if (!spec)return [];
+    const spec_tag_desc = productInfo.spec_tag_desc;
+    const spec_list=productInfo.spec_list;
+
+    const spec_tag_descArr=spec_tag_desc.split(',');
+    let Multispec=[];
+
+    spec_tag_descArr.forEach((item,index)=>{
+        let s={ title:item,spec_list:[] };
+        s.spec_list=spec_list.map(item=>{
+            let t=item["spec_tag"+(index+1)];
+            if (t&&t.length>0){
+                return t;
+            }else {
+                return "";
+            }
+        });
+        s.spec_list=unionBy(s.spec_list);
+        Multispec.push(s);
+    });
+    return Multispec;
+};
+
 
 router.get('/:shopcode/ordersettle', async(req, res, next) => {
     try {
@@ -147,10 +175,20 @@ router.get('/:shopcode/ordersettle', async(req, res, next) => {
 router.get('/:shopcode/productCategory', async(req, res, next) => {
     try {
         let [rs,shopcode] = [{}, req.params.shopcode];
-        rs.categorys = await DataModel.ProductCategory.findAll({
+        let categorys = await DataModel.ProductCategory.findAll({
             order: [["list_order", "DESC"]]
         });
+        const shopProduct=await Shop.getShopProducts({ shopcode });
+        categorys=categorys.filter((item)=>{
+             let catProducts=shopProduct.filter((product)=>{
+                 return product.productcategoryId==item.id && product.status==1;
+             });
+             return catProducts.length>0;
+        });
+
+        rs.categorys=categorys;
         rs.title = '分类';
+
         rs.shopcode = shopcode;
         rs.type = 'shopCategory';
         res.render('shop/shopCategory', rs);

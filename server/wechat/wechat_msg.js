@@ -10,6 +10,7 @@ const router = new Router();
 const handleMessage_text = wechat( _config.wxconfig, async function (req,res,next){
     const  MsgType=req.weixin.MsgType;
     const  text=req.weixin.Content;
+    res.reply('success');
     try {
         if (MsgType=='text') {
 

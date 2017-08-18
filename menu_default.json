@@ -2,8 +2,8 @@
   "button": [
     {
       "type": "view",
-      "name": "布丁商城",
-      "url": "{hostname}"
+      "name": "乐途逸品",
+      "url": "{hostname}/saleshop"
     },
     {
       "type": "view",

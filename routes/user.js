@@ -101,6 +101,7 @@ router.get('/ownerInfo', async(req, res, next) => {
         rs.title = '店主注册';
         const user = req.session.user;
         const shopkeeper = await TMSProductAPI("bd_get_shopkeeper", {uid: user.uid});
+        const myshops=await TMSProductAPI("bd_query_shops",{ uid:user.uid });
         if (shopkeeper) {
             let stateText = "";
             if (shopkeeper.state == 0) {
@@ -117,6 +118,14 @@ router.get('/ownerInfo', async(req, res, next) => {
                     title: "去开店"
                 }
             ] : [];
+
+
+            if (myshops && myshops.shops){
+                for(let item of myshops.shops){
+                    let shopInfo=await TMSProductAPI("bd_get_saleshop",{ code:item });
+                    buttons.push({ url:`/shop/${item}`,title:shopInfo.name });
+                }
+            }
 
             let msg = `已注册店主,状态:${ stateText }`;
             res.alert(types.ALERT_WARN, msg, " ", buttons);

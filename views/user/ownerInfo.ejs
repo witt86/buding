@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <div class="infoImg">
+    <div class="infoImg" style="display: none">
         <div onclick="chooseImg('font')">
             <div class="infoImgContent">
                 <p>点击上传身份证照片</p>
@@ -63,8 +63,8 @@
         var telPhone_V=telPhone.val();
         var idCard_V=idCard.val();
 
-        var hidfont_V=hidfont.val();
-        var hidback_V=hidback.val();
+        var hidfont_V="-";
+        var hidback_V="-";
 
         ApiInvoke('user','ShopkeeperRegister',
         {

@@ -41,25 +41,38 @@
     <div class="weui-cells" style="margin-top: 10px" id="selectspec">
         <% if (productInfo.is_multispec){ %>
 
-        <% multispec.forEach(function (item) { %>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"  style="color: #848383;font-size: 12px;">
+                已选择
+            </div>
+            <div class="weui-cell__bd" style="color: red;font-size: 14px;margin-left: 10px">
+                <%= productInfo.spec %>
+            </div>
+        </div>
+
+        <% multispec.forEach(function (item,index) { %>
 
         <div class="weui-cell">
             <div class="weui-cell__hd" style="color: #848383;font-size: 12px;">
                 <%= item.title %>
             </div>
             <div class="weui-cell__bd">
-                <div class="weui-row" style="margin-left: 10px">
+                <div class="weui-row" style=" justify-content:baseline !important; margin-left: 10px">
                     <% item.spec_list.forEach(function (o) { %>
 
-                    <div class="weui-col-50" style="margin-top: 5px">
-                        <a href="/shop/<%= shopcode %>/productDetail/<%= o.value %>"
-                           style="width: 100%; position: relative;top: 3px;word-wrap:break-word"
+                    <div style="margin-left: 10px;margin-bottom: 8px;margin-top: 8px" onclick="selectSpec('<%= o %>',<%= index %>)">
+                        <a href="#"
+                           style="width: 100%;
+                           position: relative;
+                           top: 0;
+                           word-wrap:break-word;
+                           line-height: 2.2;
+                           border-radius: 2px;"
                            class="weui-btn
                                 weui-btn_plain-default
                                 weui-btn_mini
-                                btn-red-plan
-                                <%= productInfo.spec.trim().split('/').indexOf(o.text.trim()) >= 0 ? 'btn-red' : '' %>">
-                            <%= o.text %>
+                                <%= productInfo.spec.trim().split('/').indexOf(o.trim()) >= 0 ? 'btn-red-plan' : '' %>">
+                            <%= o %>
                         </a>
                     </div>
 
@@ -72,18 +85,17 @@
         <% }) %>
 
         <% } %>
-
         <div class="weui-cell">
             <div class="weui-cell__hd" style="color: #848383;font-size: 12px;">
                 数量
             </div>
             <div class="weui-cell__bd">
                 <div class="weui-row" style="margin-left: 10px">
-                    <div class="weui-col-60">
+                    <div class="weui-col-50" style="border: 1px solid #c2c2c2">
                          <div class="minus" id="minus_zz">
                              -
                          </div>
-                         <div style="float: left;width: 30%;text-align: center">
+                         <div style="float: left;width: 33.333%;text-align: center;border-left: 1px solid #c2c2c2;border-right: 1px solid #c2c2c2">
                              <input type="tel" class="weui-input num" id="num_zz" value="1"   />
                          </div>
                          <div class="plus" id="plus_zz">
@@ -95,7 +107,6 @@
         </div>
     </div>
 
-
     <div class="productDetail">
         <%- productInfo.intro %>
     </div>
@@ -104,8 +115,13 @@
 <% include ./../footer.ejs %>
 
 <script type='text/javascript' src="/libs/jq-weui/js/swiper.min.js" charset='utf-8'></script>
+<script src="https://unpkg.com/vue"></script>
 
 <script type="text/javascript">
+    var spec_list=<%- JSON.stringify(productInfo.spec_list?productInfo.spec_list:[]) %>;
+    var spec="<%= productInfo.spec %>";
+    var specArr=spec.split('/');
+
     $(document).ready(function () {
         //轮播
         $('.swiper-container')//轮播图统一传750*750的图片
@@ -120,7 +136,7 @@
             res.items.map(function (item) {
                 count += item.pcs;
             })
-            if (count > 0) $('.shopcarDot').html(count);
+            if (count > 0) $('.shopcarDot').html(count).fadeIn(1);
             else $('.shopcarDot').fadeOut(1);
         });
 
@@ -181,7 +197,7 @@
                 $.toast("加入购物车成功", 500);
             }
         });
-    }
+    };
 
     function fastBuy() {
         var code = '<%= productInfo.code %>';
@@ -195,6 +211,19 @@
                 window.location.href = '/shop/<%= shopcode %>/ordersettle';
             }
         });
+    };
+
+    function selectSpec(o,index) {
+        specArr[index]=o;
+        var product=spec_list.filter((item)=>{
+            return  specArr.indexOf(item.spec_tag1)>=0 && specArr.indexOf(item.spec_tag2)>=0 && specArr.indexOf(item.spec_tag3)>=0
+        });
+        if (!product || product.length==0){
+            alert('指定规格商品不存在');
+            return;
+        }else {
+            window.location.href='/shop/<%= shopcode %>/productDetail/'+product[0].code;
+        }
     }
 </script>
 </body>

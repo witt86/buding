@@ -189,7 +189,7 @@
             res.items.map(function (item) {
                 count += item.pcs;
             })
-            if (count > 0) $('.shopcarDot').html(count);
+            if (count > 0) $('.shopcarDot').html(count).fadeIn(1);
             else $('.shopcarDot').fadeOut(1);
         });
         setInterval(getRTime,1000);

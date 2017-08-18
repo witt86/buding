@@ -128,7 +128,7 @@ export const makeOrder = async({uid, shopcode, buyInfo})=> {
         orderId = createdOrderInfo.order_no;
         console.log(orderId);
     } catch (e) {
-        throw global.errobj("makeOrderErr", `下单失败，请稍后重试`, e);
+        throw global.errobj("makeOrderErr", e, e);
     }
     return {orderId};
     // //生成支付密匙
@@ -171,8 +171,8 @@ export const payOrder = async({uid, orderId})=> {
     let payAmount = PayRecord.payAmount;
 
     //如果是开发或测试环境
-    if (process.env.NODE_ENV == 'development' ||
-        process.env.NODE_ENV == 'test'
+    if ((process.env.NODE_ENV == 'development' ||
+        process.env.NODE_ENV == 'test') && process.env.PAY_DEBUG==1
     ) {
         payAmount = 0.01;
         console.dir('调整为测试支付金额!');
@@ -269,7 +269,8 @@ export const loadProducts = async({shopcode, code})=> {
                         like: '%首页%'
                     },
                     status: 1
-                }
+                },
+                order: [["list_order", "DESC"]]
             });
         } else {
             const cate = await DataModel.ProductCategory.findOne({
@@ -281,7 +282,8 @@ export const loadProducts = async({shopcode, code})=> {
                 where: {
                     productcategoryId: cate.id,
                     status: 1
-                }
+                },
+                order: [["list_order", "DESC"]]
             });
         }
         return result;

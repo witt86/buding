@@ -14,8 +14,8 @@ const config = {
             charset: "utf8m64_general_ci",
             database: "buding"
         },
-        siteIP: "114.55.87.183",
-        sitehost: "http://abuhome.podinns.com/",
+        siteIP: "116.62.189.234",
+        sitehost: "http://abuhome.podinns.com",
         officialShopcode:"01442494",
         thmall: {
             apiURL: "http://test.tmonkey.cn:8001/tms-api/",
@@ -23,15 +23,15 @@ const config = {
             resourceRoot: "http://test.tmonkey.cn:8001"
         },
         wxconfig: {
-            appid: "wx3e37a71515f5b412",
-            secret: "aa9816351b7606a584178f547a2113d5",
-            token: "lkjsadoiuqwr87zvcnkljhqwr8asd",
-            encodingAESKey: "KOnGAMW692QXW5e6SjyRuiXFBtuJjMUKIXlJ3HskZq7",
+            appid: "wx966319356a5db11e",
+            secret: "fe2503a5be5073475b203d13b4958c40",
+            token: "4706c40be3c2965ede56b0d8d3b8fe05",
+            encodingAESKey: "L5FRhSWZyZwZCOnfQBxj9hYEvCQ1OlgOa6V2oTUYxZ2",
             isProductionAppID: false,
             pay: {
-                appid: "wx27cc67276705db51",
-                mch_id: "1316943601",
-                partner_key: "u2Cd8d7040Ee6e1e5a8EDe43e765f5Z6",
+                appid: "wx966319356a5db11e",
+                mch_id: "1248977901",
+                partner_key: "letu2014letu2014letu2014letu2014",
                 notify_url: "{sitehost}/wxpay_notify/pay"
             }
         },
