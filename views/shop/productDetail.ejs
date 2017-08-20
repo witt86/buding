@@ -34,6 +34,7 @@
     <div class="productPrice">
         <div class="price_wrap">
             <span class="price" id="priceSale"><%= productInfo.retail_price %></span>
+            <span class="price through" style="font-weight:100;font-size: 12px"><%= productInfo.market_price %></span>
         </div>
     </div>
 
@@ -123,6 +124,11 @@
     var specArr=spec.split('/');
 
     $(document).ready(function () {
+        window._weixin_shareInfo={ //微信分享信息
+            title:"来自 <%= user.userName%> 的推荐-><%= productInfo.name %>",
+            link:window.location.href,
+            imgurl:"<%= productInfo.images[0] %>"
+        }
         //轮播
         $('.swiper-container')//轮播图统一传750*750的图片
                 .swiper({
@@ -174,8 +180,6 @@
              pcsfocus=$("#num_zz").val();
 
         });
-
-
     });
 
     function addShopCart() {

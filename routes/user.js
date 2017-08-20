@@ -29,46 +29,35 @@ router.get('/mine', async(req, res, next) => {
         //获得用户身份
         const bduser=await TMSProductAPI('bd_get_user',{ uid:user.uid });
         if (!shopcode){
-            //判断是不是布丁员工
-            let identity=0;
-            if (bduser && bduser.length>0){
-                identity=bduser[0];
-            };
-
             //去哪个店?
             let shopcode=_config.officialShopcode;//默认店铺
-            if (identity){
-                shopcode=identity.shopcode;
-            }else {
-                const userShopcodes=await DataModel.User_ShopCode.findAll({
-                    where:{
-                        uid:user.uid
-                    },
-                    order: [["createdAt", "DESC"]]
-                });
-                if (userShopcodes && userShopcodes.length>0){
-                    shopcode=userShopcodes[0].shopcode;
-                }
+            const userShopcodes=await DataModel.User_ShopCode.findAll({
+                where:{
+                    uid:user.uid
+                },
+                order: [["createdAt", "DESC"]]
+            });
+            if (userShopcodes && userShopcodes.length>0){ //去最后一次进过的店铺
+                shopcode=userShopcodes[0].shopcode;
             }
             res.redirect(`/user/mine?shopcode=${ shopcode }`);
         }else {
             const reguser = await DataModel.RegUser.findOne({where: {uid: user.uid}});
             const orderListWaitPay = await TMSProductAPI("query_orders", {uid: user.uid, status: 0});
-            let identity=false;
-            if (bduser && bduser.length>0){
-                identity=true;
-            };
-            let usermanage=false;
-            for (let item of  bduser){
-                if (item.uid==user.uid && item.role==2){
-                    usermanage=true;
-                    break;
+
+            //判断是否有权限进入店铺管理,默认只有店主和店长有权进入店铺管理
+            let temparr=bduser.filter(item=>{ return [1,2].indexOf(item.role)>=0});
+            let userManageShops=[];
+            if (temparr && temparr.length>0){
+                for (let item of temparr){
+                    let shopInfo=await TMSProductAPI('bd_get_saleshop',{ code:item.shopcode });
+                    userManageShops.push(shopInfo);
                 }
             }
 
             rs.title = '我的布丁';
-            rs.identity=identity;
-            rs.usermanage=usermanage;
+            rs.userManageShops=userManageShops; //用户管理的店铺
+            rs.identity=bduser.length>0; //是否是布丁员工
             rs.shopcode = shopcode;
             rs.reguser = reguser;
             rs.orderListWaitPay = orderListWaitPay;
@@ -146,6 +135,19 @@ router.get('/staffInfo', async(req, res, next) => {
         const shopInfo = await TMSProductAPI('bd_get_saleshop', {code: shopcode});
         rs.shopInfo = shopInfo;
         const reguser = await DataModel.RegUser.findOne({where: {id}});
+
+        //获得用户身份
+        const bduser=await TMSProductAPI('bd_get_user',{ uid:reguser.uid });
+        //判断邀请人是否合法，即是否是店铺店长或者店主
+        let temparr=bduser.filter(item=>{ return item.shopcode==shopcode&&[1,2].indexOf(item.role)>=0});
+        if (!temparr || temparr.length==0){
+            res.alert(types.ALERT_WARN, "该用户没有邀请权限", " ");
+            return
+        }
+        //判断依据:一个人在一家店里只可能是店主、店长、店员一种角色，即temparr中最多出现一条记录
+        const shopmanager=temparr[0];
+
+        rs.shopmanager=shopmanager;
         rs.reguser = reguser;
         rs.title = '员工注册';
         res.render('user/staffInfo', rs);

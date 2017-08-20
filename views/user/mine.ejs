@@ -25,7 +25,7 @@
                     <img class="my-img-border"
                          src="//m.360buyimg.com/img/jfs/t3928/27/482890805/22652/d95af356/5850e0edN1dca846b.png">
                     <span class="my-img">
-                        <img src="<%= reguser.headimgurl %>" />
+                        <img src="<%= reguser.headimgurl %>"/>
                     </span>
                 </div>
                 <div class="my-person-info">
@@ -34,7 +34,8 @@
                         <span class="my-jd-head-type">普通会员</span>
                         <div class="my-jd-head-plus">
 							<span class="plus-icon-wrap">
-								<img class="plus-icon" src="//m.360buyimg.com/mobilecms/jfs/t3835/278/642907156/1552/a6f2d3b2/58173a43Nc71052cf.png">
+								<img class="plus-icon"
+                                     src="//m.360buyimg.com/mobilecms/jfs/t3835/278/642907156/1552/a6f2d3b2/58173a43Nc71052cf.png">
 							</span>
                         </div>
                     </div>
@@ -118,12 +119,12 @@
                     <div class="myID-part w-3">
                      	<span class="myID-img">
                     		<img src="//m.360buyimg.com/mobilecms/jfs/t2734/339/468866355/3035/82b4343b/57147baaNf2463e54.png">
-                                                        <% if ( orderListWaitPay && orderListWaitPay.length > 0 ) { %>
-                                                        <span name="daifukuan" class="my-count re-count">
+                            <% if ( orderListWaitPay && orderListWaitPay.length > 0 ) { %>
+                            <span name="daifukuan" class="my-count re-count">
                                                             <%= orderListWaitPay.length %>
                                                         </span>
-                                                        <% } %>
-                                                    </span>
+                            <% } %>
+                        </span>
                         <span class="myID-text">待付款</span>
                     </div>
                 </a>
@@ -141,7 +142,8 @@
                    href="/order/orderlist?fun_id=userCompletedOrderList&shopcode=<%= shopcode %>">
                     <div class="myID-part w-3">
                         <span class="myID-img">
-                    		<img src="/images/finish1.png" style="width: 35px;height: 25px;position: relative;top: -2px;left: -4px;"/>
+                    		<img src="/images/finish1.png"
+                                 style="width: 35px;height: 25px;position: relative;top: -2px;left: -4px;"/>
                     		<span name="fanxiutuihuo"></span>
                         </span>
                         <span class="myID-text">已完成</span>
@@ -172,16 +174,25 @@
 </div>
 
 <% } %>
+
+<% if ( userManageShops.length>0 ){ %>
+<div class="weui-cells__title">
+    店铺管理
+</div>
 <div class="weui-cells">
-    <% if ( usermanage ){ %>
-    <a class="weui-cell weui-cell_access" href="/shop/<%= shopcode %>/shopManage">
+    <% userManageShops.forEach(function (item) { %>
+    <a class="weui-cell weui-cell_access" href="/shop/<%= item.code %>/shopManage">
         <div class="weui-cell__bd">
-            <p style="font-size: 15px">店铺管理</p>
+            <p style="font-size: 15px"><%= item.name %></p>
         </div>
         <div class="weui-cell__ft">
         </div>
     </a>
-    <% } %>
+    <% }) %>
+</div>
+<% } %>
+
+<div class="weui-cells">
     <a class="weui-cell weui-cell_access" href="/shop/<%= shopcode %>">
         <div class="weui-cell__bd">
             <p style="font-size: 15px">商城首页</p>

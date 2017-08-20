@@ -17,31 +17,60 @@
             </div>
         </div>
         <div class="weui-cell">
-            <div class="weui-cell__hd">选择职位 </div>
-            <div class="weui-cell__bd"></div>
-            <div class="weui-cell__ft" id="position">店长</div>
-        </div>
-        <div class="weui-cell">
-            <div class="weui-cell__hd">店长</div>
-            <div class="weui-cell__bd">
-                <input type="radio" name="position" id="manager" checked>
-                <label class="infoRadio" for="manager"></label>
-            </div>
-        </div>
-        <div class="weui-cell">
-            <div class="weui-cell__hd">员工</div>
-            <div class="weui-cell__bd">
-                <input type="radio" name="position" id="staff">
-                <label class="infoRadio" for="staff"></label>
-            </div>
-        </div>
-        <div class="weui-cell">
             <div class="weui-cell__hd">所属店铺</div>
             <div class="weui-cell__bd" style="padding-left: 5px">
                   <%= shopInfo.name %>
             </div>
         </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd">邀请人</div>
+            <div class="weui-cell__bd" style="padding-left: 5px">
+                <%= reguser.userName %>
+            </div>
+        </div>
     </div>
+
+    <div class="weui-cells__title">
+        选择职位
+    </div>
+    <div class="weui-cells weui-cells_radio">
+        <% if (shopmanager.role==1){ %>
+
+        <label class="weui-cell weui-check__label" for="staff">
+            <div class="weui-cell__bd">
+                <p>员工</p>
+            </div>
+            <div class="weui-cell__ft">
+                <input type="radio"  class="weui-check" name="position" value="0" id="staff" />
+                <span class="weui-icon-checked"></span>
+            </div>
+        </label>
+
+        <% }else if (shopmanager.role==2) { %>
+
+        <label class="weui-cell weui-check__label" for="manager">
+            <div class="weui-cell__bd">
+                <p>店长</p>
+            </div>
+            <div class="weui-cell__ft">
+                <input type="radio" class="weui-check" name="position" value="1" id="manager" checked="checked" />
+                <span class="weui-icon-checked"></span>
+            </div>
+        </label>
+        <label class="weui-cell weui-check__label" for="staff">
+            <div class="weui-cell__bd">
+                <p>员工</p>
+            </div>
+            <div class="weui-cell__ft">
+                <input type="radio"  class="weui-check" name="position" value="0" id="staff" />
+                <span class="weui-icon-checked"></span>
+            </div>
+        </label>
+
+        <% } %>
+
+    </div>
+
     <div class="weui-btn" onclick="infoSubmit()">
         提交申请
     </div>
@@ -57,11 +86,14 @@
     var pid="<%= reguser.uid %>";
 
     $(document).ready(function () {
+        var firstradio= $('input[name="position"]:eq(0)');
+        stafftype.val(firstradio.val());
+        firstradio.attr("checked","checked");
+
         $('input[type="radio"]').on('change',function () {
-            var position = $(this).parent().parent().children('.weui-cell__hd').html();
-            stafftype.val(position=='员工'?0:1);
-            $('#position').html(position);
-        })
+            stafftype.val($('input[name="position"]:checked').val());
+        });
+
     });
 
     function infoSubmit() {

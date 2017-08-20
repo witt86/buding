@@ -167,7 +167,7 @@ export const StaffRegister=async ({ uid,TrueName,mobile,shopcode,pid,role })=>{
      if (!TrueName) throw '真实姓名不允许为空!';
      if (!mobile) throw '手机号不允许为空!';
      if (!shopcode) throw '店铺不允许为空!';
-     if (!pid) throw '推荐人允许为空!';
+     if (!pid) throw '推荐人不允许为空!';
 
      const reguser=await DataModel.RegUser.findOne({ where:{ uid } });
      if (!reguser) throw '指定用户不存在';

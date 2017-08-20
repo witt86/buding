@@ -81,7 +81,8 @@
                     <% activityProducts.length > 0 && activityProducts.map(function (item) { %>
                     <div style="width: 90px" onclick="go_to('/shop/<%= shopcode %>/productDetail/<%= item.code %>')">
                         <img class="lazy-load" data-url="<%- item.image %>" alt="">
-                        <p><%= item.retail_price %></p>
+                        <p class="retail_price"><span class="price mini" style="font-weight:600;font-size: 15px"><%= item.retail_price %></span> </p>
+                        <p class="market_price"><span class="price through"  style="font-weight:100"><%= item.market_price %></span></p>
                     </div>
                     <% }) %>
                 </div>
@@ -124,7 +125,8 @@
                     <div onclick="go_to('/shop/<%= shopcode %>/productDetail/<%= product.code %>')">
                         <img class="lazy-load" data-url="<%- product.image %>" alt="">
                         <p><%= product.name %></p>
-                        <p><%= product.retail_price %></p>
+                        <p style="line-height: 15px"><span class="price mini" style="font-weight:600;font-size: 15px"><%= product.retail_price %></span> </p>
+                        <p style="line-height: 13px" class="market_price"><span class="price through"  style="font-weight:100"><%= product.market_price %></span></p>
                     </div>
                     <% }) %>
                 </div>
@@ -142,6 +144,11 @@
 <script type="text/javascript" src="/javascripts/jquery.scrollLoading-min.js" charset='utf-8'></script>
 <script type="text/javascript">
     $(document).ready(function () {
+        window._weixin_shareInfo={ //微信分享信息
+            title:"来自 <%= user.userName%> 的推荐-><%= title %>",
+            link:window.location.href,
+            imgurl:"<%= mysaleshop.shopicon %>"
+        }
         $("img.lazy-load").scrollLoading({
             container: $("#shopHomeBody"),
             callback: function () {

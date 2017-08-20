@@ -151,7 +151,7 @@
     }
     .shopHomeActivity {
       width: 100%;
-      height: 140px;
+      height: 150px;
       background: #fff;
       margin-top: 10px;
       .shopHomeActivityTitle {
@@ -171,7 +171,6 @@
         }
       }
       .shopHomeActivityContent {
-        height: 110px;
         width: 100%;
         padding: 0 10px;
         overflow-y: hidden;
@@ -187,17 +186,12 @@
             height: 72px;
             margin-top: 10px;
           }
-          p {
-            color: #D70238;
-            font-size: 14px;
-            margin-top: 5px;
-
+          p.retail_price {
+            line-height: 14px;
           }
-          p:before {
-             content: '￥';
-             color: #D70238;
-             font-size: 14px;
-           }
+          p.market_price{
+            line-height: 12px;
+          }
         }
       }
     }
@@ -277,7 +271,6 @@
         div{
           div{
             width: 110px;
-            height: 150px;
             display: inline-block;
             float: left;
             text-align: center;
@@ -301,10 +294,6 @@
             p:last-child {
               color: #D70238;
 
-            }
-            p:last-child:before {
-              content:'￥';
-              color: #D70238;
             }
           }
         }

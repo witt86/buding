@@ -186,7 +186,7 @@ if (app.get('env') === 'development') {
 
 //网站启动事件
 delayRun(()=> {
-    OnWebSiteStartEvent();
+   // OnWebSiteStartEvent();
 }, 10, (err)=> {
     console.dir("网站启动事件运行出错:" + err);
 });

@@ -51,32 +51,37 @@ router.get('/:shopcode', async(req, res, next) => {
         const {shopcode}=req.params;
 
         const mysaleshop=await TMSProductAPI('bd_get_saleshop',{ code:shopcode });
-        rs.title = mysaleshop.name;
-        //今日秒杀商品
-        const shopProduct=await Shop.getShopProducts({ shopcode });
-        rs.activityProducts=shopProduct.filter((item)=>{
-            return item.tags.indexOf('今日秒杀')>=0 && item.status==1;
-        }).sort((s1,s2)=>{ return s2.list_order-s1.list_order });
-        //首页分类商品
-        let categorys = await DataModel.ProductCategory.findAll({
-            where:{ is_active:1  },
-            order: [["list_order", "DESC"]]
-        });
-        categorys = JSON.parse(JSON.stringify(categorys));
-        for (let category of categorys) {
-            category.products=shopProduct.filter((item)=>{
-                return item.productcategoryId==category.id && item.status==1 && item.tags.indexOf('首页')>=0;
+        if (mysaleshop.state==2){
+            res.alert(types.ALERT_WARN, "店铺休息中", " ");
+        }else {
+            rs.title = mysaleshop.name;
+            //今日秒杀商品
+            const shopProduct=await Shop.getShopProducts({ shopcode });
+            rs.activityProducts=shopProduct.filter((item)=>{
+                return item.tags.indexOf('今日秒杀')>=0 && item.status==1;
             }).sort((s1,s2)=>{ return s2.list_order-s1.list_order });
-        };
-        //首页bannel和大图标
-        let bannerAndAD=await TMSProductAPI("get_navilinks",{ scenario:'首页轮播,首页大图标'});
-        rs.sections = categorys;
-        rs.shopcode = shopcode;
-        rs.type = 'shopHome';
-        rs.banner=bannerAndAD.filter(item=>item.scenario=='首页轮播');
-        rs.nav=bannerAndAD.filter(item=>item.scenario=='首页大图标');
-
-        res.render('shop/shopHome', rs);
+            //首页分类商品
+            let categorys = await DataModel.ProductCategory.findAll({
+                where:{ is_active:1  },
+                order: [["list_order", "DESC"]]
+            });
+            categorys = JSON.parse(JSON.stringify(categorys));
+            for (let category of categorys) {
+                category.products=shopProduct.filter((item)=>{
+                    return item.productcategoryId==category.id && item.status==1 && item.tags.indexOf('首页')>=0;
+                }).sort((s1,s2)=>{ return s2.list_order-s1.list_order });
+            };
+            //首页bannel和大图标
+            let bannerAndAD=await TMSProductAPI("get_navilinks",{ scenario:'首页轮播,首页大图标'});
+            rs.sections = categorys;
+            rs.shopcode = shopcode;
+            rs.type = 'shopHome';
+            rs.banner=bannerAndAD.filter(item=>item.scenario=='首页轮播');
+            rs.nav=bannerAndAD.filter(item=>item.scenario=='首页大图标');
+            rs.user=req.session.user;
+            rs.mysaleshop=mysaleshop;
+            res.render('shop/shopHome', rs);
+        }
     } catch (e) {
         console.error('-----e:/shopHome-----');
         console.error(e);
@@ -101,6 +106,8 @@ router.get('/:shopcode/productDetail/:code', async(req, res, next) => {
         rs.shopcode = shopcode;
 
         rs.multispec = multispec;
+
+        rs.user=req.session.user;
 
         res.render('shop/productDetail', rs);
     } catch (e) {
@@ -249,40 +256,55 @@ router.get('/:shopcode/couponcenter',async (req,res,next)=>{
     }
 });
 
+//判断是否人员身份
+const getUserShopManageLimits=async (uid,shopcode)=>{
+    //获得用户身份
+    const bduser=await TMSProductAPI('bd_get_user',{ uid:uid });
+
+    //判断是否有权限进入店铺管理,默认只有店主和店长有权进入店铺管理
+    let temparr=bduser.filter(item=>{ return item.shopcode==shopcode&&[1,2].indexOf(item.role)>=0});
+
+    return temparr && temparr.length>0
+}
+
 router.get('/:shopcode/shopManage', async(req, res, next)=> {
     try {
         let rs = {};
         const { shopcode }=req.params;
         const user=req.session.user;
-        //获得用户身份
-        const bduser=await TMSProductAPI('bd_query_shops',{ uid:user.uid });
-        //判断是不是布丁店主，只有店主有权进入店铺管理
 
-        if (bduser && bduser.shops.length>0 && bduser.shops.indexOf(shopcode)<0){
+        //是否有权限进入店铺管理
+        const userlimits=await getUserShopManageLimits(user.uid,shopcode);
+        if (!userlimits){
             res.alert(types.ALERT_WARN, "没有权限", " ");
-        }else {
-            //获得店铺信息
-            const mysaleshop=await TMSProductAPI('bd_get_saleshop',{ code:shopcode });
-            //获得未发货订单
-            const pay_since=moment().format("YYYY-MM-DD");
-            let waitShipOrderToday=[],ShipPayOrderToday=[];
-            const ShopShipOrderAll=await TMSProductAPI('query_orders',{ pos:0,size:100,store_code:shopcode });
-            const waitShipOrderAll=ShopShipOrderAll.filter(item=>{ return item.order_state == 1 });
-            if (ShopShipOrderAll && ShopShipOrderAll.length>0){
-                waitShipOrderToday=ShopShipOrderAll.filter(item=>{ return item.pay_date && item.pay_date.indexOf(pay_since)>=0 && item.order_state==1 });
-                ShipPayOrderToday=ShopShipOrderAll.filter(item=>{ return item.pay_date && item.pay_date.indexOf(pay_since)>=0  });
-            }
-            rs.title = mysaleshop.name;
-            rs.waitShipOrderToday=waitShipOrderToday;
-            rs.waitShipOrderAll=waitShipOrderAll;
-            rs.todayPayAmount=reduce(ShipPayOrderToday, (sum, item)=> {
-                return sum + parseFloat(item.pay_amount)
-            }, 0);
-            rs.pay_since=pay_since;
-            rs.shopcode=shopcode;
-            rs.ShipPayOrderToday=ShipPayOrderToday;
-            res.render('shop/shopManage',rs);
+            return;
         }
+
+        //获得店铺信息
+        const mysaleshop=await TMSProductAPI('bd_get_saleshop',{ code:shopcode });
+        //获得未发货订单
+        const pay_since=moment().format("YYYY-MM-DD");
+        let waitShipOrderToday=[],ShipPayOrderToday=[];
+        const ShopShipOrderAll=await TMSProductAPI('query_orders',{ pos:0,size:100,store_code:shopcode });
+
+        const waitShipOrderAll=ShopShipOrderAll.filter(item=>{ return item.order_state == 1 });//获得未发货订单
+        if (ShopShipOrderAll && ShopShipOrderAll.length>0){
+            //今日未发货订单
+            waitShipOrderToday=ShopShipOrderAll.filter(item=>{ return item.pay_date && item.pay_date.indexOf(pay_since)>=0 && item.order_state==1 });
+            //今日付款订单
+            ShipPayOrderToday=ShopShipOrderAll.filter(item=>{ return item.pay_date && item.pay_date.indexOf(pay_since)>=0  });
+        }
+        rs.title = mysaleshop.name;
+        rs.waitShipOrderToday=waitShipOrderToday;
+        rs.waitShipOrderAll=waitShipOrderAll;
+        //今日付款金额
+        rs.todayPayAmount=reduce(ShipPayOrderToday, (sum, item)=> {
+            return sum + parseFloat(item.pay_amount)
+        }, 0);
+        rs.pay_since=pay_since;
+        rs.shopcode=shopcode;
+        rs.ShipPayOrderToday=ShipPayOrderToday;
+        res.render('shop/shopManage',rs);
     } catch (e) {
         console.error('-----e:/shopManage-----');
         console.error(e);
@@ -295,16 +317,17 @@ router.get('/:shopcode/shopInfo', async(req, res, next)=> {
         let rs = {};
         const { shopcode }=req.params;
         const user=req.session.user;
-        //获得用户身份
-        const bduser=await TMSProductAPI('bd_query_shops',{ uid:user.uid });
-        //判断是不是布丁店主，只有店主有权进入店铺管理
-        if (bduser && bduser.shops.length>0 && bduser.shops.indexOf(shopcode)<0){
+
+        //是否有权限进入店铺管理
+        const userlimits=await getUserShopManageLimits(user.uid,shopcode);
+        if (!userlimits){
             res.alert(types.ALERT_WARN, "没有权限", " ");
-        }else {
-            const shopInfo=await TMSProductAPI('bd_get_saleshop',{ code:shopcode });
-            rs.shopInfo=shopInfo;
-            rs.title=shopInfo.name;
+            return;
         }
+
+        const shopInfo=await TMSProductAPI('bd_get_saleshop',{ code:shopcode });
+        rs.shopInfo=shopInfo;
+        rs.title=shopInfo.name;
         rs.shopcode=shopcode;
         res.render('shop/shopInfo', rs);
     } catch (e) {
@@ -319,10 +342,32 @@ router.get('/:shopcode/productManage',async (req,res,next)=>{
         let rs = {};
         const { shopcode }=req.params;
         const user=req.session.user;
-        //todo 做权限判断
-        res.render('shop/shopInfo', rs);
-    }catch (e){
+        //是否有权限进入店铺管理
+        const userlimits=await getUserShopManageLimits(user.uid,shopcode);
+        if (!userlimits){
+            res.alert(types.ALERT_WARN, "没有权限", " ");
+            return;
+        }
 
+        let categorys = await DataModel.ProductCategory.findAll({
+            order: [["list_order", "DESC"]]
+        });
+        const shopProduct=await Shop.getShopProducts({ shopcode });
+        categorys=categorys.filter((item)=>{
+            let catProducts=shopProduct.filter((product)=>{
+                return product.productcategoryId==item.id && product.status==1;
+            });
+            return catProducts.length>0;
+        });
+
+        rs.categorys=categorys;
+        rs.title = '商品管理';
+        rs.shopcode = shopcode;
+        res.render('shop/shopProductManeage', rs);
+    } catch (e) {
+        console.error('-----e:/productCategory-----');
+        console.error(e);
+        res.alert(types.ALERT_WARN, e, " ");
     }
 });
 
@@ -331,7 +376,14 @@ router.get('/:shopcode/propertyManage',async (req,res,next)=>{
         let rs = {};
         const { shopcode }=req.params;
         const user=req.session.user;
-        //todo 做权限判断
+
+        //获得用户身份
+        const bduser=await TMSProductAPI('bd_get_user',{ uid:user.uid });
+        if (!bduser || bduser.length==0 ){
+            res.alert(types.ALERT_WARN, "没有权限", " ");
+            return;
+        }
+
         rs.title='我的收益';
         rs.shopcode=shopcode;
         const RewardsstatisticInfo=await Shop.GetRewardsstatisticInfo({ uid:user.uid,shopcode });
@@ -349,7 +401,13 @@ router.get('/:shopcode/rewardlist/:status/:reward_type',async (req,res,next)=>{
         let rs = {};
         const { shopcode,status,reward_type }=req.params;
         const user=req.session.user;
-        //todo 做权限判断
+        //获得用户身份
+        const bduser=await TMSProductAPI('bd_get_user',{ uid:user.uid });
+        if (!bduser || bduser.length==0 ){
+            res.alert(types.ALERT_WARN, "没有权限", " ");
+            return;
+        }
+
         rs.shopcode=shopcode;
         rs.status=status;
         rs.reward_type=reward_type;
@@ -368,7 +426,13 @@ router.get('/:shopcode/accountlist',async (req,res,next)=>{
         let rs = {};
         const { shopcode}=req.params;
         const user=req.session.user;
-        //todo 做权限判断
+        //获得用户身份
+        const bduser=await TMSProductAPI('bd_get_user',{ uid:user.uid });
+        if (!bduser || bduser.length==0 ){
+            res.alert(types.ALERT_WARN, "没有权限", " ");
+            return;
+        }
+
         rs.shopcode=shopcode;
         rs.title='我的收益';
         res.render('shop/accountlist',rs);
@@ -384,9 +448,16 @@ router.get('/:shopcode/withDrawManage',async (req,res,next)=>{
         let rs = {};
         const { shopcode}=req.params;
         const user=req.session.user;
+
+        //获得用户身份
+        const bduser=await TMSProductAPI('bd_get_user',{ uid:user.uid });
+        if (!bduser || bduser.length==0 ){
+            res.alert(types.ALERT_WARN, "没有权限", " ");
+            return;
+        }
+
         let accounts_summary = await TMSProductAPI('get_accounts_summary', {uid:user.uid});//获取用户资金账户总额
         rs.accounts_summary=accounts_summary;
-        //todo 做权限判断
         rs.shopcode=shopcode;
         rs.title='提现';
         res.render('shop/withDrawManage',rs);

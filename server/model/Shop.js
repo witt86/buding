@@ -261,30 +261,21 @@ export const conformOrder = async({uid, order_no})=> {
 export const loadProducts = async({shopcode, code})=> {
     try {
         if (!shopcode || !code) return {err: '缺少参数'};
+        const products=await getShopProducts({ shopcode });
         let result = {};
         if (code == 'hot') {
-            result = await DataModel.ProductSource.findAll({
-                where: {
-                    tags: {
-                        like: '%首页%'
-                    },
-                    status: 1
-                },
-                order: [["list_order", "DESC"]]
-            });
+            result = products.filter(item=>{
+                return item.is_hot==1;
+            }).sort((s1,s2)=>{ return s2.list_order-s1.list_order });
         } else {
             const cate = await DataModel.ProductCategory.findOne({
                 where: {
                     code: code
                 }
             });
-            result = await DataModel.ProductSource.findAll({
-                where: {
-                    productcategoryId: cate.id,
-                    status: 1
-                },
-                order: [["list_order", "DESC"]]
-            });
+            result= products.filter(item=>{
+                return item.productcategoryId==cate.id;
+            }).sort((s1,s2)=>{ return s2.list_order-s1.list_order });
         }
         return result;
     } catch (e) {
@@ -446,7 +437,7 @@ export const getUserValidCoupon = async({uid, shopcode})=> {
     const ValidCouponList = await TMSProductAPI("query_coupons", query);
     return ValidCouponList;
 };
-//获得店铺商品
+//获得店铺的商品
 export const getShopProducts = async({shopcode})=> {
     let productsInfo = [];
     const cache_key = `products_${ shopcode }`;
