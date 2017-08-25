@@ -75,12 +75,6 @@
             <% } %>
 
         </div>
-        <div class="weui-panel__ft">
-            <a href="javascript:void(0);" class="weui-cell weui-cell_access weui-cell_link">
-                <div class="weui-cell__bd" style="color:#262629"></div>
-                <span class="weui-cell__ft" style="color:#262629">联系客服</span>
-            </a>
-        </div>
     </div>
 
     <div class="weui-panel weui-panel_access">
@@ -92,8 +86,10 @@
                 微信支付
             </div>
         </div>
+       <% if (orderInfo.ship_code && orderInfo.ship_code.length>0) { %>
+
         <div class="weui-panel__bd">
-            <a href="javascript:void(0);" class="weui-cell weui-cell_access" style="font-size: 13px">
+            <a href="http://www.kuaidi100.com/chaxun?com=<%= orderInfo.ship_vendor_code %>&nu=<%= orderInfo.ship_code %>" class="weui-cell weui-cell_access" style="font-size: 13px">
                 <div class="weui-cell__bd" style="color:#262629">
                     配送信息
                 </div>
@@ -102,8 +98,31 @@
             </span>
             </a>
         </div>
+
+       <% } %>
+
     </div>
 
+    <% if ( orderInfo.sub_orders && orderInfo.sub_orders.length>0 ){ %>
+
+    <div class="weui-cells__title">
+        由于商品涉及到多个供应商发货，系统已为您拆成多个订单配送
+    </div>
+    <div class="weui-panel weui-panel_access">
+        <% orderInfo.sub_orders.forEach(function (item) { %>
+
+        <div class="weui-panel__bd">
+            <a href="/order/orderdetail/<%= item.order_no %>" class="weui-cell weui-cell_access" style="font-size: 13px">
+                <div class="weui-cell__bd" style="color:#262629">
+                    <%= item.order_no %>
+                </div>
+                <span class="weui-cell__ft" style="color:#262629">
+                </span>
+            </a>
+        </div>
+        <% }) %>
+    </div>
+    <%}%>
     <div class="weui-cells" style="font-size: 13px;margin-top: 10px">
         <div class="weui-cell">
             <div class="weui-cell__bd" style="color:#262629">

@@ -12,9 +12,9 @@
             <span class="price bdcolor" style="font-size: 30px;"><%= RewardsstatisticInfo.accountAmount %></span>
         </div>
     </a>
-    <a class="weui-cell weui-cell_access" href="/shop/<%= shopcode %>/withDrawManage">
+    <a class="weui-cell weui-cell_access" onclick="towithDraw()">
         <div class="weui-cell__bd">
-            <p>可提现</p>
+            <p>可提现<%= role==1?"(店长暂不支持直接提现)":"" %></p>
         </div>
         <div class="weui-cell__ft">
             <span class="price bdcolor"><%= RewardsstatisticInfo.cashAmount %></span>
@@ -58,5 +58,15 @@
 
 
 <% include ../footer.ejs %>
+<script>
+    function towithDraw() {
+        var role=<%= role %>;
+        if (role==1){
+
+        }else {
+            go_to('/shop/<%= shopcode %>/withDrawManage');
+        }
+    }
+</script>
 </body>
 </html>

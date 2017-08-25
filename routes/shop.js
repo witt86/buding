@@ -5,6 +5,7 @@ import * as types from './../server/constants';
 import * as Shop from './../server/model/Shop';
 import {uniq,unionBy,reduce} from 'lodash';
 import moment from "moment";
+import _config from './../config.js' ;
 const router = new Router();
 
 router.all("*", async(req, res, next)=> {
@@ -24,20 +25,23 @@ router.all("*", async(req, res, next)=> {
         if (req.query &&req.query.referrer){
             referrer=req.query.referrer;
         }
-        const saleShop=await TMSProductAPI('bd_get_saleshop',{ code:shopcode });
-        if (saleShop && saleShop.state==1){
-            const query = {
-                where: {
-                    uid: user.uid,
-                    shopcode: shopcode
-                },
-                defaults: {
-                    uid: user.uid,
-                    shopcode: shopcode,
-                    referrer
-                }
-            };
-            let [User_ShopCode, created] = await DataModel.User_ShopCode.findOrCreate(query);
+        if (referrer){
+            const saleShop=await TMSProductAPI('bd_get_saleshop',{ code:shopcode });
+            if (saleShop && saleShop.state==1 && user.uid!=referrer ){
+                const query = {
+                    where: {
+                        uid: user.uid,
+                        shopcode: shopcode,
+                        referrer
+                    },
+                    defaults: {
+                        uid: user.uid,
+                        shopcode: shopcode,
+                        referrer
+                    }
+                };
+                let [User_ShopCode, created] = await DataModel.User_ShopCode.findOrCreate(query);
+            }
         }
     }catch (e){
         console.error(e);
@@ -48,6 +52,7 @@ router.all("*", async(req, res, next)=> {
 router.get('/:shopcode', async(req, res, next) => {
     try {
         let [rs] = [{}];
+
         const {shopcode}=req.params;
 
         const mysaleshop=await TMSProductAPI('bd_get_saleshop',{ code:shopcode });
@@ -55,8 +60,12 @@ router.get('/:shopcode', async(req, res, next) => {
             res.alert(types.ALERT_WARN, "店铺休息中", " ");
         }else {
             rs.title = mysaleshop.name;
+            //店铺上架商品
+            let shopProduct=await Shop.getShopProducts({ shopcode });
+             shopProduct=shopProduct.filter((item,index)=>{;
+                return item.shopfieldObj && item.shopfieldObj.status==1
+             });
             //今日秒杀商品
-            const shopProduct=await Shop.getShopProducts({ shopcode });
             rs.activityProducts=shopProduct.filter((item)=>{
                 return item.tags.indexOf('今日秒杀')>=0 && item.status==1;
             }).sort((s1,s2)=>{ return s2.list_order-s1.list_order });
@@ -73,6 +82,21 @@ router.get('/:shopcode', async(req, res, next) => {
             };
             //首页bannel和大图标
             let bannerAndAD=await TMSProductAPI("get_navilinks",{ scenario:'首页轮播,首页大图标'});
+
+            const user=req.session.user;
+            //获得用户身份
+            const bduser=await TMSProductAPI('bd_get_user',{ uid:user.uid });
+            //判断是否为店里员工
+            let temparr=bduser.filter(item=>{ return item.shopcode==shopcode});
+            let referrer="";
+            if (temparr && temparr.length>0){
+                referrer=user.uid;
+            }
+            rs.sharelink=`${_config.sitehost}/shop/${shopcode}`;
+            if (referrer){
+                rs.sharelink=rs.sharelink+`?referrer=${referrer}`;
+            }
+
             rs.sections = categorys;
             rs.shopcode = shopcode;
             rs.type = 'shopHome';
@@ -99,6 +123,20 @@ router.get('/:shopcode/productDetail/:code', async(req, res, next) => {
         if (rs.productInfo.is_multispec){
             multispec= getProductMultispec1(rs.productInfo);
             console.log(multispec);
+        }
+
+        const user=req.session.user;
+        //获得用户身份
+        const bduser=await TMSProductAPI('bd_get_user',{ uid:user.uid });
+        //判断是否为店里员工
+        let temparr=bduser.filter(item=>{ return item.shopcode==shopcode });
+        let referrer="";
+        if (temparr && temparr.length>0){
+            referrer=user.uid;
+        }
+        rs.sharelink=`${_config.sitehost}/shop/${shopcode}/productDetail/${code}`;
+        if (referrer){
+            rs.sharelink=rs.sharelink+`?referrer=${referrer}`;
         }
 
         rs.title = rs.productInfo.name;
@@ -185,7 +223,11 @@ router.get('/:shopcode/productCategory', async(req, res, next) => {
         let categorys = await DataModel.ProductCategory.findAll({
             order: [["list_order", "DESC"]]
         });
-        const shopProduct=await Shop.getShopProducts({ shopcode });
+        let shopProduct=await Shop.getShopProducts({ shopcode });
+
+        //筛选出店铺上架的商品
+        shopProduct=shopProduct.filter(item=>item.shopfieldObj.status==1);
+
         categorys=categorys.filter((item)=>{
              let catProducts=shopProduct.filter((product)=>{
                  return product.productcategoryId==item.id && product.status==1;
@@ -265,7 +307,7 @@ const getUserShopManageLimits=async (uid,shopcode)=>{
     let temparr=bduser.filter(item=>{ return item.shopcode==shopcode&&[1,2].indexOf(item.role)>=0});
 
     return temparr && temparr.length>0
-}
+};
 
 router.get('/:shopcode/shopManage', async(req, res, next)=> {
     try {
@@ -342,9 +384,12 @@ router.get('/:shopcode/productManage',async (req,res,next)=>{
         let rs = {};
         const { shopcode }=req.params;
         const user=req.session.user;
-        //是否有权限进入店铺管理
-        const userlimits=await getUserShopManageLimits(user.uid,shopcode);
-        if (!userlimits){
+
+        //获得用户身份
+        const bduser=await TMSProductAPI('bd_get_user',{ uid:user.uid });
+        //判断是否为店里员工
+        let temparr=bduser.filter(item=>{ return item.shopcode==shopcode});
+        if (!temparr || temparr.length==0){
             res.alert(types.ALERT_WARN, "没有权限", " ");
             return;
         }
@@ -363,6 +408,7 @@ router.get('/:shopcode/productManage',async (req,res,next)=>{
         rs.categorys=categorys;
         rs.title = '商品管理';
         rs.shopcode = shopcode;
+        rs.role=temparr[0].role;
         res.render('shop/shopProductManeage', rs);
     } catch (e) {
         console.error('-----e:/productCategory-----');
@@ -382,12 +428,16 @@ router.get('/:shopcode/propertyManage',async (req,res,next)=>{
         if (!bduser || bduser.length==0 ){
             res.alert(types.ALERT_WARN, "没有权限", " ");
             return;
-        }
-
+        };
+        //判断是否为店里员工
+        let temparr=bduser.filter(item=>{ return item.shopcode==shopcode});
+        console.log(temparr);
         rs.title='我的收益';
         rs.shopcode=shopcode;
         const RewardsstatisticInfo=await Shop.GetRewardsstatisticInfo({ uid:user.uid,shopcode });
         rs.RewardsstatisticInfo=RewardsstatisticInfo;
+        rs.role=temparr.length>0?temparr[0].role:1;
+
         res.render('shop/shopPropertyManage',rs);
     }catch (e){
         console.error('-----e:/propertyManage-----');

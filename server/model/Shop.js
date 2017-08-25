@@ -78,7 +78,7 @@ export const makeOrder = async({uid, shopcode, buyInfo})=> {
     const reguser = await DataModel.RegUser.findOne({where: {uid}});
     if (!reguser) throw global.errobj('指定用户不存在!');
 
-    let guider_uid = uid;
+   // let guider_uid = uid;
     //获得选中的购物车项
     const allSelectCartItem = await GetShopCart({uid, shopcode, select: 1});
     let carItems = [];
@@ -96,7 +96,7 @@ export const makeOrder = async({uid, shopcode, buyInfo})=> {
         shop_data: JSON.stringify(shop_data),
         buyer_note: buyInfo.buyer_note || "",
         note_to_receiver: buyInfo.note_to_receiver || "",
-        referrer_id: guider_uid,
+        referrer_id: "",
         activity_code: "buding",
         coupon: buyInfo.coupon || "",
         store_code: shopcode,
@@ -113,9 +113,12 @@ export const makeOrder = async({uid, shopcode, buyInfo})=> {
     };
 
     //看一下下单人是谁推荐过来的
-    const usershopcode = await DataModel.User_ShopCode.findOne({where: {uid, shopcode}});
-    if (usershopcode && usershopcode.referrer) {
-        orderInfo.referrer_id = usershopcode.referrer;
+    const usershopcode = await DataModel.User_ShopCode.findAll({
+        where: {uid, shopcode},
+        order: [["createdAt","DESC"]]
+    });
+    if (usershopcode && usershopcode.length>0 && usershopcode[0].referrer) {
+        orderInfo.referrer_id = usershopcode[0].referrer;
     }
 
     console.log("make_order.............");
@@ -139,6 +142,69 @@ export const makeOrder = async({uid, shopcode, buyInfo})=> {
     //     throw global.errobj("paySignErr", `生成支付密钥失败`, e);
     // }
 };
+
+
+export const preOrders = async({uid, shopcode,  buyInfo})=> {
+    //检查用户是否存在
+    const reguser = await DataModel.RegUser.findOne({where: {uid}});
+    if (!reguser) throw global.errobj('指定用户不存在!');
+
+    // let guider_uid = uid;
+    //获得选中的购物车项
+    const allSelectCartItem = await GetShopCart({uid, shopcode, select: 1});
+    let carItems = [];
+    if (allSelectCartItem && allSelectCartItem.items && allSelectCartItem.items.length > 0) {
+        carItems = allSelectCartItem.items;
+    } else throw global.errobj('您还没选择商品哦!');
+
+    let shop_data = [];
+    shop_data = carItems.map(item=> {
+        return {item_id: item.id}
+    });
+
+    let orderInfo = {
+        uid,
+        shop_data: JSON.stringify(shop_data),
+        buyer_note: buyInfo.buyer_note || "",
+        note_to_receiver: buyInfo.note_to_receiver || "",
+        referrer_id: "",
+        activity_code: "buding",
+        coupon: buyInfo.coupon || "",
+        store_code: shopcode,
+        ship_type: buyInfo.ship_type,
+
+        //配送地址
+        receiver: buyInfo.local_address.receiver,
+        receiver_mobile: buyInfo.local_address.receiver_mobile,
+        ship_address: buyInfo.local_address.ship_address,
+        //省/市/行政区
+        ship_city: buyInfo.local_address.ship_city,
+        ship_province: buyInfo.local_address.ship_province,
+        ship_district: buyInfo.local_address.ship_district
+    };
+
+    //看一下下单人是谁推荐过来的
+    const usershopcode = await DataModel.User_ShopCode.findAll({
+        where: {uid, shopcode},
+        order: [["createdAt","DESC"]]
+    });
+    if (usershopcode && usershopcode.length>0 && usershopcode[0].referrer) {
+        orderInfo.referrer_id = usershopcode[0].referrer;
+    }
+
+    console.log("pre_order.............");
+    console.log(orderInfo);
+
+    //下单
+    let orderId = "";
+    try {
+        let createdOrderInfo = await TMSProductAPI("pre_order", orderInfo);
+        return createdOrderInfo;
+    } catch (e) {
+        throw global.errobj("pre_orderErr", e, e);
+    }
+};
+
 //支付订单
 export const payOrder = async({uid, orderId})=> {
     //检查用户是否存在
@@ -446,7 +512,7 @@ export const getShopProducts = async({shopcode})=> {
         productsInfo = JSON.parse(cache);
     } else {
         const ShopProducts = await TMSProductAPI("bd_query_products", {code: shopcode});
-        const productCodes = ShopProducts.products;
+        const productCodes = ShopProducts.products.map(item=>{ return item.productid });
         const products = await DataModel.ProductSource.findAll({
             where: {
                 status: 1,
@@ -455,17 +521,65 @@ export const getShopProducts = async({shopcode})=> {
                 }
             }
         });
+
         productsInfo = products;
+        for (let item of  productsInfo){
+            item.get().shopfieldObj=ShopProducts.products.filter(o=>o.productid==item.sourceCode)[0];
+        };
+        let productsInfoJSONstring=JSON.stringify(productsInfo);
+        productsInfo=JSON.parse(productsInfoJSONstring);
+        if (productsInfo && productsInfo.length>0){
+            //缓存结果
+            delayRun(async()=> {
+                await global.redisClient.setAsync(cache_key, productsInfoJSONstring);
+                await global.redisClient.expireAsync(cache_key, 60);//缓存一分钟
+            }, 5, (err)=> {
+                console.error(`保存${cache_key}缓存key错误:${JSON.stringify(err)}`);
+            });
+        }
+    }
+    return productsInfo;
+};
+//店铺商品上下架
+export const UpdateShopProductShelf=async ({ uid,id,status,shopcode })=>{
+   const s = await TMSProductAPI('bd_update_product',{ uid,id,status });
+   const productInfo= await UpdateShopProductCache({ shopproduct:s,shopcode });
+   return productInfo;
+};
+
+//更新店铺商品缓存，并返回
+const UpdateShopProductCache=async ({ shopproduct,shopcode })=>{
+    let productlist=[];
+    let productInfo={};
+    const cache_key = `products_${ shopcode }`;
+    let cache = await global.redisClient.getAsync(cache_key);
+    if (cache){
+        productlist = JSON.parse(cache);
+        for (let item of productlist){
+            if (item.sourceCode==shopproduct.productid){
+                item.shopfieldObj=shopproduct;
+                productInfo=item;
+                break;
+            }
+        }
         //缓存结果
         delayRun(async()=> {
-            await global.redisClient.setAsync(cache_key, JSON.stringify(products));
+            await global.redisClient.setAsync(cache_key, JSON.stringify(productlist));
             await global.redisClient.expireAsync(cache_key, 60);//缓存一分钟
         }, 5, (err)=> {
             console.error(`保存${cache_key}缓存key错误:${JSON.stringify(err)}`);
         });
+    }else {
+        productlist=await getShopProducts({ shopcode });
+        let productInfoArr=productlist.filter(item=>item.sourceCode==shopproduct.productid);
+        //console.log(productInfoArr);
+        if (productInfoArr && productInfoArr.length>0){
+            productInfo=productInfoArr[0];
+        }
     }
-    return productsInfo;
+    return productInfo;
 };
+
 //上传店铺头像
 export const UploadShopIcon = async({uid, serverId, shopcode})=> {
     const buffer = await global.wechat_api.getMediaAsync(serverId);
@@ -485,7 +599,6 @@ export const getRewardlist = async({uid, status, reward_type, pos, size, shopcod
     const rewardsList = await TMSProductAPI('query_rewards', {
         uid,
         status,
-        reward_type,
         pos,
         size,
         store_code: shopcode
@@ -495,7 +608,7 @@ export const getRewardlist = async({uid, status, reward_type, pos, size, shopcod
 //获得小店账户总览数据
 export const GetRewardsstatisticInfo = async({uid, shopcode})=> {
     try {
-        let rewards_summary = await TMSProductAPI('get_rewards_summary', {uid, reward_type: 0});//获取用户收益记录简单统计结果(销售回佣)
+        let rewards_summary = await TMSProductAPI('get_rewards_summary', {uid});//获取用户收益记录简单统计结果(销售回佣)
         let accounts_summary = await TMSProductAPI('get_accounts_summary', {uid});//获取用户资金账户总额
         const result = {
             "accountAmount": accounts_summary.total || 0,
@@ -528,17 +641,15 @@ export const requestWithDrawInfo = async({uid, money, shopcode})=> {
         let istest = false;
         //获得用户身份
         const bduser = await TMSProductAPI('bd_get_user', {uid});
-        //判断用户是不是店铺员工
-        let isstaff = false;
-        if (bduser && bduser.length > 0) {
-            for (let item of bduser) {
-                if (item.shopcode == shopcode) {
-                    isstaff = true;
-                    break;
-                }
-            }
+
+        //判断是否为店里员工
+        let temparr=bduser.filter(item=>{ return item.shopcode==shopcode});
+        if (!temparr || temparr.length <= 0){
+            throw '您不是该店铺员工';
         }
-        if (!isstaff) throw '您不是该店铺员工';
+        if (temparr[0].role==1){
+            throw '店长暂不支持直接提现';
+        }
         const wxopenId=bduser[0].wx_openid;
         money = parseFloat(money).toFixed(1);
         let query = {
@@ -599,6 +710,21 @@ export const requestWithDrawInfo = async({uid, money, shopcode})=> {
         console.error(e);
         throw e;
     }
+};
+
+export const getAddressList=async ({ uid })=>{
+    const addresslist=await TMSProductAPI('get_ship_addr',{ uid });
+    return addresslist;
+};
+
+export const AddOrUpdateAddressList=async ({ uid,receiver,receiver_mobile,ship_province,ship_city,ship_district,ship_address })=>{
+    const addresslist=await TMSProductAPI('add_ship_addr',{ uid,receiver,receiver_mobile,ship_province,ship_city,ship_district,ship_address });
+    return addresslist;
+};
+
+export const DelAddress=async ({ uid,id })=>{
+    const result=await TMSProductAPI('del_ship_addr',{ uid,addr_id:id });
+    return result;
 };
 
 export const aaa=async ({uid,reqs})=>{

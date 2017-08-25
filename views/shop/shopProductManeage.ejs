@@ -4,7 +4,6 @@
 <body class="shopProductManeage">
 
 <div class="pageContainer">
-
     <div class="pageContainerSearch" id="searchBar">
         <div class="bd-index-header">
             <div class="bd-index-header-icon-back" id="reset_btn_back">
@@ -35,12 +34,81 @@
         </div>
     </div>
 </div>
+<div style="position: fixed;
+    z-index: 200;
+    bottom: 0;
+    width: 100%;">
+    <a href="javascript:;" onclick="go_to('/shop/<%= shopcode%>')" class="weui-btn weui-btn_primary">预览商城</a>
+</div>
 
+<script type="text/html" id="tpl_productlist">
+    <~ if(productlist && productlist.length>0 ) { ~>
+
+    <~ productlist.forEach(function(item){ ~>
+
+    <div class="weui-cell shopCategoryProductPro">
+        <div class="weui-cell__hd" style="position: relative"  onclick="goProductDetail('<~= item.sourceCode ~>')">
+            <img data-url="<~= item.image ~>" class="lazy-load" alt="" style="display: block;">
+            <~ if(item.shopfieldObj.status==1){ ~>
+
+            <p style="background-color: #ef4f4f;
+                     padding:0 4px;
+                     width: 100%;
+                     font-size: 10px;
+                     color: white;
+                     position: absolute;
+                     bottom: 0px">
+                我在卖的
+            </p>
+
+            <~ } else  { ~>
+
+            <p style="background-color: #04be02;
+                     padding:0 4px;
+                     width: 100%;
+                     font-size: 10px;
+                     color: white;
+                     position: absolute;
+                     bottom: 0px">
+                我没卖的
+            </p>
+
+            <~ } ~>
+
+        </div>
+        <div class="weui-cell__bd">
+            <p class="pname"><~= item.name ~></p>
+            <p class="proprice">
+                <span class="price nocolor"><~= item.retail_price ~></span>
+
+                <span class="kz">赚<~= (item.margin*([1].indexOf(<%= role %>)<0?0.75:1)).toFixed(2) ~>元</span>
+            </p>
+            <% if ([1,2].indexOf(role)>=0) { %>
+            <~ if(item.shopfieldObj.status==1){ ~>
+            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn" onclick="UpdateShopProductShelf('<~= item.shopfieldObj.id ~>',2)" style="float: right">下架</a>
+            <~ }else{ ~>
+            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary " onclick="UpdateShopProductShelf('<~= item.shopfieldObj.id ~>',1)" style="background-color: #1AAD19;float: right">上架</a>
+            <~ } ~>
+            <% } %>
+        </div>
+    </div>
+
+    <~ }) ~>
+
+    <~ } else { ~>
+
+    <span></span>
+
+    <~ } ~>
+</script>
 <% include ./../footer.ejs %>
 <script type="text/javascript" src="/javascripts/jquery.scrollLoading-min.js"  charset='utf-8'></script>
 <script type="text/javascript">
+    var prolist=[];
+    var kw ="";
+    var role="<%= role %>";
+    var bili=0.75;
     $(document).ready(function () {
-
         //搜索框
         $('#searchText').on('click',function () {
             $('#searchBar').addClass('weui-search-bar_focusing');
@@ -63,13 +131,14 @@
         //左侧导航
         $('.shopCategoryNavItem').on('click',function () {
             loadProducts(this.id);
+            kw=this.id;
             $('.shopCategoryNavItem').removeClass('shopCategoryNavActive');
             $(this).addClass('shopCategoryNavActive');
             history.replaceState(null, document.title, location.href.split("?")[0] + "?" + 'query=' + this.id);
         })
 
         //默认加载推荐
-        var kw = location.search;
+        kw = location.search;
         if(kw.indexOf('?') != -1){
             kw = kw.split('=')[1];
             $('.shopCategoryNavItem').removeClass('shopCategoryNavActive');
@@ -89,7 +158,6 @@
             else $('.shopcarDot').fadeOut(1);
         });
     });
-
     function loadProducts(code) {
         ApiInvoke('shop','loadProducts',{shopcode:'<%= shopcode %>',code:code},function (err,result) {
             if(err){
@@ -97,26 +165,42 @@
                 $('#errorDialog').fadeIn(200);
                 return false;
             }
-
             $('#shopCategoryContent').empty();
             if(result.length > 0){
-                result.forEach(function (item) {
-                    var func = "goProductDetail('" + item.code + "')";
-                    var grid = '<div class="weui-cell shopCategoryProductPro" onclick="' + func.trim() + '">'+
-                            '<div class="weui-cell__hd"><img data-url="' + item.image + '" class="lazy-load"  alt=""></div>'+
-                            '<div class="weui-cell__bd">'+
-                            '<p class="pname">' + item.name + '</p>'+
-                            '<p class="proprice"><span class="price nocolor">' + item.retail_price + '</span><span class="kz">赚'+item.margin+'元</span></p>'+
-                            '</div>'+
-                            '</div>';
-                    $('#shopCategoryContent').append(grid);
-                });
-                $("img.lazy-load").scrollLoading({
-                    container: $("#shopCategoryContent"),
-                    callback: function() {
-                        //this.style.border = "3px solid #a0b3d6";
-                    }
-                });
+                prolist=result;
+                renderProductList();
+            }
+        });
+    }
+    function renderProductList() {
+        var result1=prolist.filter(item=>item.shopfieldObj.status==1); //上架的商品
+        var result02=prolist.filter(item=>item.shopfieldObj.status!=1);//待上架和已下架的商品
+
+        prolist=result1.concat(result02);//待上架和已下架的商品放后面
+        var render_tpl_productlistview = _.template($("#tpl_productlist").html().replace(/\~/igm, "%"));
+        var render_tpl_productlistviewHtml=render_tpl_productlistview({productlist: prolist});
+
+        $('#shopCategoryContent').html(render_tpl_productlistviewHtml);
+        $("img.lazy-load").scrollLoading({
+            container: $("#shopCategoryContent"),
+            callback: function() {
+                //this.style.border = "3px solid #a0b3d6";
+            }
+        });
+    };
+
+    function UpdateShopProductShelf(id,status) {
+        ApiInvoke('shop','UpdateShopProductShelf',{ id:id,status:status,shopcode:'<%= shopcode %>' },function (err,result) {
+            if (err){
+                $.alert(err);
+            }else {
+               var l=prolist.length;
+               for(var i=0;i<l;i++){
+                   if (prolist[i].sourceCode==result.sourceCode){
+                       prolist[i]=result;
+                   }
+               }
+               renderProductList();
             }
         });
     }

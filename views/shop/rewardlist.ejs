@@ -43,7 +43,7 @@
             <span><~= item.status==0?'待结算':(item.status==1?'已结算':'已取消') ~></span>
             <~ } ~>
             |
-            <span style="color: red;">销售利润</span>
+            <span style="color: red;"><~= item.reward_type==0?'销售回佣':'伙伴奖励' ~></span>
         </div>
     </div>
 

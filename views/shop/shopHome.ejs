@@ -68,6 +68,8 @@
 
         <% } %>
 
+        <% if (activityProducts.length>0) { %>
+
         <div class="shopHomeActivity">
             <div class="shopHomeActivityTitle">
                 <p>
@@ -88,6 +90,8 @@
                 </div>
             </div>
         </div>
+
+        <% } %>
 
         <!--<div class="shopHomeSubActivity">-->
         <!--<div>-->
@@ -146,7 +150,7 @@
     $(document).ready(function () {
         window._weixin_shareInfo={ //微信分享信息
             title:"来自 <%= user.userName%> 的推荐-><%= title %>",
-            link:window.location.href,
+            link:'<%= sharelink %>',
             imgurl:"<%= mysaleshop.shopicon %>"
         }
         $("img.lazy-load").scrollLoading({

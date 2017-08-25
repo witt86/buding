@@ -1,145 +1,264 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <% include ./../header.ejs %>
 <body class="orderSettle">
-<header>
-    <div class="bd-index-header">
-        <div class="bd-index-header-icon-back" id="reset_btn_back">
-            <span></span>
+<div id="orderpay" data-title="填写订单" class="allpage orderpay ">
+    <header>
+        <div class="bd-index-header">
+            <div class="bd-index-header-icon-back" id="reset_btn_back">
+                <span></span>
+            </div>
+            <div class="bd-index-header-title">
+                <%= title %>
+            </div>
         </div>
-        <div class="bd-index-header-title">
-            <%= title %>
-        </div>
-    </div>
-</header>
-<div class="common-wrapper">
-    <div class="checkout">
-        <div class="step1 border-1px">
-            <div class="m step1-in ">
-                <a href="#" class="s-href" onclick="openwechatAddress()">
-                    <div class="mt_new">
-                        <div class="s1-name">
-                            <span id="receiver_text"><%= user.userName %></span>
-                            <input type="hidden" id="receiver_value"/>
+    </header>
+    <div class="common-wrapper">
+        <div class="checkout">
+            <div class="step1 border-1px">
+                <div class="m step1-in ">
+                    <a href="#" class="s-href" onclick="openAddress()">
+                        <div class="mt_new">
+                            <div class="s1-name">
+                                <span id="receiver_text"><%= user.userName %></span>
+                                <input type="hidden" id="receiver_value"/>
+                            </div>
+                            <div class="s1-phone">
+                                <span id="receiver_mobile_text"><%= user.mobile ? user.mobile.substring(0, 3) + "****" + user.mobile.substring(7) : "" %></span>
+                                <input type="hidden" id="receiver_mobile_value"/>
+                            </div>
+                            <div class="s1-default-new" id="address-default" style="display: block">
+                                默认
+                            </div>
                         </div>
-                        <div class="s1-phone">
-                            <span id="receiver_mobile_text"><%= user.mobile ? user.mobile.substring(0, 3) + "****" + user.mobile.substring(7) : "" %></span>
-                            <input type="hidden" id="receiver_mobile_value"/>
-                        </div>
-                        <div class="s1-default-new" id="address-default" style="display: block">
-                            默认
-                        </div>
-                    </div>
-                    <div class="mc step1-in-con">
-                        <i class="location-pic"></i>
-                        <span id="address-where" class="ship_address_text">
+                        <div class="mc step1-in-con">
+                            <i class="location-pic"></i>
+                            <span id="address-where" class="ship_address_text">
                             请填写收货地址
                         </span>
-                        <input type="hidden" id="ship_address_value"/>
-                        <input type="hidden" id="ship_city_value"/>
-                        <input type="hidden" id="ship_province_value"/>
-                        <input type="hidden" id="ship_district_value"/>
+                            <input type="hidden" id="ship_address_value"/>
+                            <input type="hidden" id="ship_city_value"/>
+                            <input type="hidden" id="ship_province_value"/>
+                            <input type="hidden" id="ship_district_value"/>
+                        </div>
+                    </a>
+                </div>
+                <b class="s1-borderB"></b>
+                <span class="s-point"></span>
+            </div>
+        </div>
+        <div class="weui-panel weui-panel_access">
+            <div class="weui-panel__hd">商品列表</div>
+            <div class="weui-panel__bd">
+                <% if ( shopCartItems.items && shopCartItems.items.length > 0 ) { %>
+
+                <% shopCartItems.items.forEach(function (item) { %>
+
+                <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+                    <div class="weui-media-box__hd">
+                        <img class="weui-media-box__thumb"
+                             src="<%= item.product.image %>">
+                    </div>
+                    <div class="weui-media-box__bd">
+                        <h4 class="weui-media-box__title"><%= item.product.name %></h4>
+                        <p class="weui-media-box__desc"> <%= item.product.brief %> </p>
+                    </div>
+                    <div class="weui-cell__ft">
+                        <p>
+                            <span class="price mini"><%= item.product.retail_price %></span>
+                        </p>
+                        <p>
+                            <span class="quantity"><%= item.pcs %></span>
+                        </p>
                     </div>
                 </a>
+
+                <% }) %>
+
+                <% } %>
             </div>
-            <b class="s1-borderB"></b>
-            <span class="s-point"></span>
+            <div class="weui-panel__ft">
+                <a href="javascript:void(0);" class="weui-cell weui-cell_access weui-cell_link"
+                   style="position: relative">
+                    <div class="weui-cell__bd" style="color:#262629">配送方式</div>
+                    <span class="weui-cell__ft" style="color:#262629" id="shiptext">快递</span>
+                    <select class="weui-select" id="shipvalue" style="
+    z-index: 10;
+    position: absolute;
+    opacity: 0;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;">
+                        <option selected="selected" value="express">快递</option>
+                        <option value="selfpick">自提</option>
+                    </select>
+                </a>
+            </div>
         </div>
-    </div>
-    <div class="weui-panel weui-panel_access">
-        <div class="weui-panel__hd">商品列表</div>
-        <div class="weui-panel__bd">
-            <% if ( shopCartItems.items && shopCartItems.items.length > 0 ) { %>
-
-            <% shopCartItems.items.forEach(function (item) { %>
-
-            <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
-                <div class="weui-media-box__hd">
-                    <img class="weui-media-box__thumb"
-                         src="<%= item.product.image %>">
+        <div class="weui-cells nopadding">
+            <a class="weui-cell">
+                <div class="weui-cell__bd">
+                    <span class="px15">+ 运费</span>
                 </div>
-                <div class="weui-media-box__bd">
-                    <h4 class="weui-media-box__title"><%= item.product.name %></h4>
-                    <p class="weui-media-box__desc"> <%= item.product.brief %> </p>
+                <div class="weui-cell__ft" id="shipfee">
+                    <span class="px14"></span>
+                </div>
+            </a>
+            <a class="weui-cell weui-cell_access" onclick="usecoupon()">
+                <div class="weui-cell__bd">
+                    <span class="px15">- 优惠券</span>
+                    <i class="sitem-tip"><span id="counonsum">0</span>张可用</i>
+                </div>
+                <div class="weui-cell__ft" id="coupondis">
+                    <span class="px14">未使用</span>
+                </div>
+            </a>
+            <a class="weui-cell weui-cell_access" href="javascript:;">
+                <div class="weui-cell__bd">
+                    <span class="px15">会员积分</span>
+                    <i class="sitem-tip">0分可用</i>
                 </div>
                 <div class="weui-cell__ft">
-                    <p>
-                        <span class="price mini"><%= item.product.retail_price %></span>
-                    </p>
-                    <p>
-                        <span class="quantity"><%= item.pcs %></span>
-                    </p>
+                    <span class="px14">未使用</span>
                 </div>
             </a>
-
-            <% }) %>
-
-            <% } %>
         </div>
-        <div class="weui-panel__ft">
-            <a href="javascript:void(0);" class="weui-cell weui-cell_access weui-cell_link">
-                <div class="weui-cell__bd" style="color:#262629">配送方式</div>
-                <span class="weui-cell__ft" style="color:#262629">快递</span>
-            </a>
-        </div>
-    </div>
-    <div class="weui-cells nopadding">
-        <a class="weui-cell weui-cell_access" onclick="usecoupon()">
-            <div class="weui-cell__bd">
-                <span class="px15">优惠券</span>
-                <i class="sitem-tip"><span id="counonsum">0</span>张可用</i>
-            </div>
-            <div class="weui-cell__ft" id="coupondis">
-                <span class="px14">未使用</span>
-            </div>
-        </a>
-        <a class="weui-cell weui-cell_access" href="javascript:;">
-            <div class="weui-cell__bd">
-                <span class="px15">会员积分</span>
-                <i class="sitem-tip">0分可用</i>
-            </div>
-            <div class="weui-cell__ft">
-                <span class="px14">未使用</span>
-            </div>
-        </a>
-    </div>
-    <div class="step5 border-1px-top outpay-items" id="yunfeeList">
-        <div class="price-items">
+        <div class="step5 border-1px-top outpay-items" id="yunfeeList">
+            <div class="price-items">
               <span class="price-items-all">
                      <span>
                          总价:
                          <span class="price maxnoweight" id="sumprice"><%= shopCartItems.pay_amount %></span>
                      </span>
               </span> <em
-                    class="priceweight">(总重:0.680kg)</em>                                                                                                                                                                                                                                                                                                                                            </span>
-            <em class="priceweight">(总重:0.680kg)</em>                                                                                                                                                                                                                                                                                                                                            </span>
+                        class="priceweight">(总重:0.680kg)</em>                                                                                                                                                                                                                                                                                                                                            </span>
+                <em class="priceweight">(总重:0.680kg)</em>                                                                                                                                                                                                                                                                                                                                            </span>
+            </div>
+            <a href="javascript:;">
+                <div class="pay-leak-btn-red" id="makeorder">在线支付</div>
+            </a>
+            <!--<a href="javascript:;">-->
+            <!--<div class="pay-leak-btn">货到付款</div>-->
+            <!--</a>-->
         </div>
-        <a href="javascript:;">
-            <div class="pay-leak-btn-red" id="makeorder">在线支付</div>
-        </a>
-        <!--<a href="javascript:;">-->
-        <!--<div class="pay-leak-btn">货到付款</div>-->
-        <!--</a>-->
     </div>
-</div>
-<div id="half" class='weui-popup__container popup-bottom'>
-    <div class="weui-popup__overlay" style="opacity: inherit;"></div>
-    <div class="weui-popup__modal">
-        <div class="toolbar">
-            <div class="toolbar-inner">
-                <a href="javascript:;" style="color: #c2c2c2" class="picker-button close-popup">关闭</a>
-                <h1 class="title">选择现金抵用券</h1>
+    <div id="half" class='weui-popup__container popup-bottom'>
+        <div class="weui-popup__overlay" style="opacity: inherit;"></div>
+        <div class="weui-popup__modal">
+            <div class="toolbar">
+                <div class="toolbar-inner">
+                    <a href="javascript:;" style="color: #c2c2c2" class="picker-button close-popup">关闭</a>
+                    <h1 class="title">选择现金抵用券</h1>
+                </div>
+            </div>
+            <div class="modal-content" id="modal-content" style="max-height:400px">
+
+            </div>
+            <div style="text-align: center;width: 100%;margin-top: 10px;margin-bottom: 10px">
+                <a href="javascript:;" style="margin: auto" onclick="qxcoupon()"
+                   class="weui-btn weui-btn_mini weui-btn_primary">取消用券</a>
             </div>
         </div>
-        <div class="modal-content" id="modal-content" style="max-height:400px">
+    </div>
+    <input type="hidden" value="" id="coupon"/>
+</div>
 
+<div id="addressList" data-title="收货地址" class="allpage addressList disnone">
+
+</div>
+
+<div id="addressEdit" data-title="收货地址" class="allpage addressEdit disnone">
+
+</div>
+<script type="text/html" id="tpl_addressList">
+    <div class="weui-cells weui-cells_radio">
+        <~ if(addressList && addressList.length>0){ ~>
+
+        <~ addressList.forEach(function(item){ ~>
+
+        <div class="weui-cell">
+            <div class="weui-cell__bd"  onclick="selectTmsAddress('<~= item.id ~>');">
+                <p style="font-size: 14px;font-weight: 700"><~= item.receiver+' '+ item.receiver_mobile.substring(0, 3) + "****" +
+                    item.receiver_mobile.substring(7) ~></p>
+                <p style="font-size: 14px"><~= item.ship_province+' '+item.ship_city+' '+ item.ship_district+ ' '+ item.ship_address ~></p>
+            </div>
+            <div class="weui-cell__ft">
+                <a class="weui-btn weui-btn_primary weui-btn_mini" onclick="addOrEditAddress('<~= item.id ~>');"
+                   style="background-color: #1AAD19">修改</a>
+            </div>
         </div>
-        <div style="text-align: center;width: 100%;margin-top: 10px;margin-bottom: 10px">
-            <a href="javascript:;" style="margin: auto" onclick="qxcoupon()" class="weui-btn weui-btn_mini weui-btn_primary">取消用券</a>
+
+        <~ }) ~>
+        <~ } ~>
+        <div class="weui-cell  weui-cell_access" onclick="addOrEditAddress()">
+            <div class="weui-cell__bd">
+                <p style="font-weight: 700;font-size: 15px;line-height: 30px">新增收货地址</p>
+            </div>
+            <div class="weui-cell__ft">
+            </div>
+        </div>
+        <div class="weui-cell weui-cell_access" onclick="openwechatAddress()">
+            <div class="weui-cell__bd">
+                <p  style="font-weight: 700;font-size: 15px;line-height: 30px">从微信选择地址</p>
+            </div>
+            <div class="weui-cell__ft">
+            </div>
         </div>
     </div>
-</div>
-<input type="hidden" value="" id="coupon"  />
+</script>
+<script type="text/html" id="tpl_addressEdit">
+    <div class="weui-cells weui-cells_form weui-cell_access">
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">收货人</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" type="text" id="receiver" value="<~= addressEdit.receiver ~>"
+                       placeholder="姓名">
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">联系方式</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" type="number" id="receiver_mobile" value="<~= addressEdit.receiver_mobile ~>"
+                       placeholder="手机号码">
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">省市区县</label></div>
+            <div class="weui-cell__bd">
+                <input type="text" class="weui-input" id='city_picker' value="<~= addressEdit.ship_province+' '+addressEdit.ship_city+(addressEdit.ship_district?(' '+addressEdit.ship_district):'')  ~>"/>
+            </div>
+            <div class="weui-cell__ft">
+
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">详细地址</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" value=" <~= addressEdit.ship_address ~>" id="ship_address"
+                       placeholder="详细地址需填写楼栋楼层或房间号信息"/>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <button class="weui-btn weui-btn_primary" style="background-color: #1AAD19" onclick="saveAddress()">保存
+                </button>
+            </div>
+        </div>
+        <~ if(addressEdit.receiver && addressEdit.receiver_mobile && addressEdit.id>0 ){ ~>
+
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <button class="weui-btn weui-btn_plain-default"
+                        onclick="deleteAddress('<~= addressEdit.id ~>')">删除
+                </button>
+            </div>
+        </div>
+
+        <~ } ~>
+
+    </div>
+</script>
 <script type="text/html" id="tpl_couponList">
     <~ if(couponList && couponList.length>0 ) { ~>
 
@@ -149,7 +268,7 @@
         <div class="weui-panel__bd">
             <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
                 <div class="weui-media-box__hd" style="font-size: 32px;color: orange">
-                      <~= item.discount ~>
+                    <~= item.discount ~>
                 </div>
                 <div class="weui-media-box__bd">
                     <h4 class="weui-media-box__title"><~= item.name ~></h4>
@@ -165,9 +284,38 @@
 </script>
 <% include ./../footer.ejs %>
 <script type='text/javascript' src="/libs/jq-weui/js/swiper.min.js" charset='utf-8'></script>
+<script type="text/javascript" src="/libs/jq-weui/js/city-picker.js" charset="utf-8"></script>
+
 <script type="text/javascript">
-    var pay_amount=<%- shopCartItems.pay_amount %>;
+    var pay_amount =<%- shopCartItems.pay_amount %>;
+    var shipvalue = $("#shipvalue");
+    var shiptext = $("#shiptext");
+    var remoteaddress = {
+        "内蒙古自治区": "内蒙古",
+        "广西壮族自治区": "广西",
+        "西藏自治区": "西藏",
+        "宁夏回族自治区": "宁夏",
+        "新疆维吾尔自治区": "新疆",
+    };
+
     $(function () {
+        window.addEventListener('popstate', function (event) {
+            var ind = event.state;
+            if (ind == null ) {
+                window.history.go(-1);
+                return;
+            }
+            var allpage = $(".allpage");
+            if (allpage && allpage.length > 0) {
+                $(".allpage").hide();
+            }
+            var indelement = $(ind.data);
+            if (indelement && indelement.length > 0) {
+                $('title').html(indelement.attr('data-title'));
+                indelement.show();
+            }
+        });
+        history.pushState({data: ".orderpay"}, "");
         $("#makeorder").click(function () {
             if ($("#ship_address_value").val() == "") {
                 $.alert("请填写收货地址");
@@ -177,7 +325,7 @@
                 buyer_note: "",
                 note_to_receiver: "",
                 coupon: $("#coupon").val(),
-                ship_type: "express",
+                ship_type: shipvalue.val(),
                 local_address: {
                     receiver: $("#receiver_value").val() || "-",
                     receiver_mobile: $("#receiver_mobile_value").val() || "-",
@@ -212,82 +360,307 @@
             if (err) {
                 $.alert("获取优惠券失败，请稍后重试!");
             } else {
-                if (result.length==0)return;
+                if (result.length == 0)return;
                 var render_tpl_couponlistview = _.template($("#tpl_couponList").html().replace(/\~/igm, "%"));
-                var render_tpl_couponlistviewHtml=render_tpl_couponlistview({couponList: result});
+                var render_tpl_couponlistviewHtml = render_tpl_couponlistview({couponList: result});
                 $("#modal-content").html(render_tpl_couponlistviewHtml);
                 $("#counonsum").text(result.length);
-               // $("#half").popup();
+                // $("#half").popup();
             }
+        });
+        shipvalue.change(function () {
+            shiptext.text($("#shipvalue option:selected").text());
         });
     });
     function openwechatAddress() {
-        window.wx.openAddress({
-            trigger: function (res) {
-                // alert('用户开始拉出地址');
-            },
-            success: function (res) {
-                $("#receiver_value").val(res.userName);
-                $("#receiver_text").text(res.userName);
+        try {
+            window.wx.openAddress({
+                trigger: function (res) {
+                    // alert('用户开始拉出地址');
+                },
+                success: function (res) {
+                    selectAddress(res, true);
+                    window.history.go(-1);
+                    //预计算
+                    preorder();
+                },
+                cancel: function (res) {
+                    console.log(res);
+                },
+                fail: function (res) {
+                    console.log(res);
+                }
+            });
+        } catch (e) {
+            alert(e);
+        }
 
-                $("#receiver_mobile_value").val(res.telNumber);
-                $("#receiver_mobile_text").text(res.telNumber ? res.telNumber.substring(0, 3) + "****" + res.telNumber.substring(7) : "");
-
-                $("#address-where").text(res.provinceName + " " + res.cityName + " " + res.countryName + " " + res.detailInfo);
-
-                $("#ship_address_value").val(res.detailInfo);
-                $("#ship_city_value").val(res.cityName);
-                $("#ship_province_value").val(res.provinceName);
-                $("#ship_district_value").val(res.countryName);
-            },
-            cancel: function (res) {
-                console.log(res);
-            },
-            fail: function (res) {
-                console.log(res);
-            }
-        });
     }
+    function selectAddress(res) {
+        var s = remoteaddress[res.provinceName];
+        if (s) {
+            res.provinceName = s;  //统一微信地址叫法，方便计算邮费模板
+        }
+        res.provinceName = res.provinceName.replace('省', '');
+        $("#receiver_value").val(res.userName);
+        $("#receiver_text").text(res.userName);
 
+        $("#receiver_mobile_value").val(res.telNumber);
+        $("#receiver_mobile_text").text(res.telNumber ? res.telNumber.substring(0, 3) + "****" + res.telNumber.substring(7) : "");
+
+        $("#address-where").text(res.provinceName + " " + res.cityName + " " + res.countryName + " " + res.detailInfo);
+
+        $("#ship_address_value").val(res.detailInfo);
+        $("#ship_city_value").val(res.cityName);
+        $("#ship_province_value").val(res.provinceName);
+        $("#ship_district_value").val(res.countryName);
+    }
+    ;
     function usecoupon() {
-        if ($("#counonsum").text()==0)return;
+        if ($("#counonsum").text() == 0)return;
 
-        if ($("#modal-content").children().length>0){
-           // $("#drapBelow").addClass("drapBelow");
+        if ($("#modal-content").children().length > 0) {
+            // $("#drapBelow").addClass("drapBelow");
             $("#half").popup();
-        }else {
+        } else {
             ApiInvoke("shop", "getUserValidCoupon", {shopcode: "<%= shopcode %>"}, function (err, result) {
                 if (err) {
                     $.alert("获取优惠券失败，请稍后重试!");
                 } else {
                     var render_tpl_couponlistview = _.template($("#tpl_couponList").html().replace(/\~/igm, "%"));
-                    var render_tpl_couponlistviewHtml=render_tpl_couponlistview({couponList: result});
+                    var render_tpl_couponlistviewHtml = render_tpl_couponlistview({couponList: result});
                     $("#modal-content").html(render_tpl_couponlistviewHtml);
                     $("#half").popup();
                 }
             });
         }
     }
-    
     function selectcoupon(obj) {
-        var data=JSON.parse($(obj).attr('data-coupon'));
-        var discount=data.discount;
-        var coupons=data.coupons;
-        var code=coupons[0].code;
+        var data = JSON.parse($(obj).attr('data-coupon'));
+        var discount = data.discount;
+        var coupons = data.coupons;
+        var code = coupons[0].code;
+        var currcode = $("#coupon").val();
 
         $("#coupon").val(code);
-        $("#coupondis").html('<span style="color:#e4393c">-<span class="price">'+discount+'</span></span>');
-        var sumprice= $("#sumprice");
-        sumprice.html(parseInt(pay_amount,10)-parseInt(discount,10));
+
+        if (code != currcode) {
+            //预计算
+            preorder();
+        }
 
         $.closePopup();
     }
     function qxcoupon() {
         $("#coupon").val("");
         $("#coupondis").html('<span class="px14">未使用</span>');
-        var sumprice= $("#sumprice");
-        sumprice.html(parseInt(pay_amount,10)-parseInt(0,10));
+        //预计算
+        preorder();
         $.closePopup();
+    };
+    function preorder() {
+//        if ($("#ship_address_value").val() == "") {
+//            $.alert("请填写收货地址");
+//            return;
+//        }
+        var buyInfo = {
+            buyer_note: "",
+            note_to_receiver: "",
+            coupon: $("#coupon").val(),
+            ship_type: shipvalue.val(),
+            local_address: {
+                receiver: $("#receiver_value").val() || "-",
+                receiver_mobile: $("#receiver_mobile_value").val() || "-",
+                ship_address: $("#ship_address_value").val() || "-",
+                ship_city: $("#ship_city_value").val() || "-",
+                ship_district: $("#ship_district_value").val() || "-",
+                ship_province: $("#ship_province_value").val() || "-"
+            }
+        };
+        var shopcode = "<%= shopcode %>";
+
+        ApiInvokeNoloading('shop', 'preOrders', {buyInfo: buyInfo, shopcode: shopcode}, function (err, result) {
+            if (err) {
+                if (typeof err == 'string') {
+                    $.alert(err);
+                } else if (typeof err == 'object') {
+                    console.log(err);
+                    $.alert(err.msg);
+                }
+            } else {
+                var orderinfo = result;
+                $("#sumprice").text(orderinfo.pay_amount);
+                $("#shipfee").html('<span style="color:#e4393c"><span class="price mini">' + parseFloat(orderinfo.ship_fee - orderinfo.ship_fee_off).toFixed(2) + '</span></span>');
+                if (orderinfo.shop_amount_off == 0) {
+                    $("#coupondis").html('<span class="px14">未使用</span>');
+                } else {
+                    $("#coupondis").html('<span style="color:#e4393c"><span class="price mini">' + parseFloat(orderinfo.shop_amount_off).toFixed(2) + '</span></span>');
+                }
+            }
+        });
+    };
+    var addressListInfo = "";
+    function openAddress() {
+        ApiInvoke('shop', 'getAddressList', {}, function (err, result) {
+            if (err) {
+                alert(err);
+            } else {
+                addressListInfo = result;
+                var render_tpl_addresslistview = _.template($("#tpl_addressList").html().replace(/\~/igm, "%"));
+                var render_tpl_addresslistviewHtml = render_tpl_addresslistview({addressList: result});
+                $("#addressList").html(render_tpl_addresslistviewHtml);
+                gopage(".addressList");
+            }
+        });
+    }
+    function addOrEditAddress(id) {
+        var obj;
+        if (!id) {
+            obj = {
+                receiver: "",
+                receiver_mobile: "",
+                ship_province: "",
+                ship_city: "",
+                ship_district: "",
+                ship_address: ""
+            }
+        } else {
+            var datainfo = addressListInfo.filter(function (item) {
+                return item.id == id;
+            });
+            obj = datainfo[0];
+        }
+        var render_tpl_addressEditview = _.template($("#tpl_addressEdit").html().replace(/\~/igm, "%"));
+        var render_tpl_addressEditviewHtml = render_tpl_addressEditview({addressEdit: obj});
+        $("#addressEdit").html(render_tpl_addressEditviewHtml);
+        $("#city_picker").cityPicker({
+            title: "省市区"
+        });
+        gopage(".addressEdit");
+        return false;
+    };
+
+    function deleteAddress(id) {
+        $.confirm("确定要删除该收件地址吗?", function () {
+            ApiInvoke('shop', 'DelAddress', {id: id}, function (err, reuslt) {
+                if (err) {
+                    alert(err);
+                } else {
+                    ApiInvoke('shop', 'getAddressList', {}, function (err, result) {
+                        if (err) {
+                            alert(err);
+                        } else {
+                            addressListInfo = result;
+                            var render_tpl_addresslistview = _.template($("#tpl_addressList").html().replace(/\~/igm, "%"));
+                            var render_tpl_addresslistviewHtml = render_tpl_addresslistview({addressList: result});
+                            $("#addressList").html(render_tpl_addresslistviewHtml);
+                            window.history.go(-1);
+                        }
+                    });
+                }
+            })
+        }, function () {
+
+        });
+
+    }
+    //保存TMS地址
+    function saveAddress() {
+        var addressObj = {
+            provinceName: "",
+            userName: "",
+            telNumber: "",
+            cityName: "",
+            countryName: "",
+            detailInfo: ""
+        }
+        var city_picker = $("#city_picker");
+        var city_picker_V = city_picker.val();
+        var citys = city_picker_V.split(' ');
+        var province = "";
+        var city = "";
+        var district = "";
+        if (citys.length == 3) {
+            province = citys[0];
+            city = citys[1];
+            district = citys[2];
+        } else if (citys.length == 2) {
+            province = citys[0];
+            city = citys[1];
+        }
+        addressObj.provinceName = province;
+        addressObj.cityName = city;
+        addressObj.countryName = district;
+        addressObj.userName = $("#receiver").val();
+        addressObj.telNumber = $("#receiver_mobile").val();
+        addressObj.detailInfo = $("#ship_address").val();
+        if (addressObj.provinceName.trim()=="" ||
+                addressObj.cityName.trim()=="" ||
+                addressObj.userName.trim()=="" ||
+                addressObj.telNumber.trim()=="" ||
+                addressObj.detailInfo.trim()==""
+        ){
+            alert('请填写完整的收件地址信息');
+            return;
+        }
+        selectAddress(addressObj);
+        window.history.go(-2);
+        //预计算
+        preorder();
+        ApiInvoke('shop','AddOrUpdateAddressList',{
+            receiver:addressObj.userName,
+            receiver_mobile:addressObj.telNumber,
+            ship_address:addressObj.detailInfo,
+            ship_province:addressObj.provinceName,
+            ship_city:addressObj.cityName,
+            ship_district:addressObj.countryName
+        },function (err,result) {
+
+        })
+    }
+    //选择TMS地址
+    function selectTmsAddress(id) {
+        var obj = addressListInfo.filter(function (item) {
+            return item.id == id;
+        })[0];
+        var addressObj = {
+            provinceName: obj.ship_province,
+            userName: obj.receiver,
+            telNumber: obj.receiver_mobile,
+            cityName: obj.ship_city,
+            countryName: obj.ship_district,
+            detailInfo: obj.ship_address
+        };
+        selectAddress(addressObj);
+        gopage('.orderpay');
+        //预计算
+        preorder();
+
+        return false;
+    }
+    function gopage(page) {
+        var curpage = $(page);
+        if (curpage && curpage.length > 0 && curpage.css("display") == "block") {
+            return;
+        }
+        ;
+        var ind = window.history.state;
+
+        if (!ind || ind.data != page) {
+            window.history.pushState({data: page}, '');
+        }
+        ;
+        var allpage = $(".allpage");
+        if (allpage && allpage.length > 0) {
+            allpage.hide();
+        }
+        ;
+        if (curpage && curpage.length > 0) {
+            $('title').html(curpage.attr('data-title'));
+            curpage.show()
+        }
+        ;
+
     }
 </script>
 </body>

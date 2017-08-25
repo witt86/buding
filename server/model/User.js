@@ -10,7 +10,8 @@ import crypto from 'crypto';
 export const findAndCreateUserFromWeixinAuthor = async(accessTokenInfo)=> {
     try {
         if (!accessTokenInfo)throw "微信accessTokenInfo不允许为空";
-        const weixin = accessTokenInfo;
+        let weixin = accessTokenInfo;
+        weixin.nickname=weixin.nickname.replace(/\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F]/g, "");////去掉表情字符
         //包含管理员属性
         let olduser = await DataModel.RegUser.findOne({
             where: {"wx_openID": weixin.openid}
@@ -167,7 +168,7 @@ export const StaffRegister=async ({ uid,TrueName,mobile,shopcode,pid,role })=>{
      if (!TrueName) throw '真实姓名不允许为空!';
      if (!mobile) throw '手机号不允许为空!';
      if (!shopcode) throw '店铺不允许为空!';
-     if (!pid) throw '推荐人不允许为空!';
+     if (!pid) throw '推荐人允许为空!';
 
      const reguser=await DataModel.RegUser.findOne({ where:{ uid } });
      if (!reguser) throw '指定用户不存在';

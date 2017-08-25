@@ -97,6 +97,8 @@
 
             $('.shopCategoryContent').empty();
             if(result.length > 0){
+                //筛选出上架商品
+                result=result.filter(item=>{ return item.shopfieldObj.status==1 });
                 result.map(function (item) {
                     var func = "goProductDetail('" + item.code + "')";
                     var grid = '<div class="shopCategoryProduct" onclick="' + func.trim() + '">'+

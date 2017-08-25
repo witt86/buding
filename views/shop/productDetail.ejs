@@ -112,12 +112,11 @@
         <%- productInfo.intro %>
     </div>
 </div>
+
 <% include ./../components/productFloatBottomBar.ejs %>
 <% include ./../footer.ejs %>
 
 <script type='text/javascript' src="/libs/jq-weui/js/swiper.min.js" charset='utf-8'></script>
-<script src="https://unpkg.com/vue"></script>
-
 <script type="text/javascript">
     var spec_list=<%- JSON.stringify(productInfo.spec_list?productInfo.spec_list:[]) %>;
     var spec="<%= productInfo.spec %>";
@@ -126,9 +125,9 @@
     $(document).ready(function () {
         window._weixin_shareInfo={ //微信分享信息
             title:"来自 <%= user.userName%> 的推荐-><%= productInfo.name %>",
-            link:window.location.href,
+            link:'<%= sharelink %>',
             imgurl:"<%= productInfo.images[0] %>"
-        }
+        };
         //轮播
         $('.swiper-container')//轮播图统一传750*750的图片
                 .swiper({
@@ -220,9 +219,17 @@
     function selectSpec(o,index) {
         specArr[index]=o;
         var product=spec_list.filter((item)=>{
-            return  specArr.indexOf(item.spec_tag1)>=0 && specArr.indexOf(item.spec_tag2)>=0 && specArr.indexOf(item.spec_tag3)>=0
+            if (specArr.length==1){
+                return specArr.indexOf(item.spec_tag1)>=0;
+            }else if (specArr.length==2){
+                return specArr.indexOf(item.spec_tag1)>=0 && specArr.indexOf(item.spec_tag2)>=0;
+            }else if (specArr.length==3){
+                return  specArr.indexOf(item.spec_tag1)>=0 && specArr.indexOf(item.spec_tag2)>=0 && specArr.indexOf(item.spec_tag3)>=0
+            }else {
+                return null;
+            }
         });
-        if (!product || product.length==0){
+        if (!product || product.length==0 || product[0]==null){
             alert('指定规格商品不存在');
             return;
         }else {

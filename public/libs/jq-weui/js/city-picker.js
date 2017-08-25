@@ -16551,7 +16551,7 @@ $.rawCitiesData = [
     }
 
     if (d) return [p.code, c.code, d.code];
-    return [p.code, c.code];
+    return [p.code,c?c.code:""];
   }
 
   $.fn.cityPicker = function(params) {
