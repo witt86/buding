@@ -24,7 +24,7 @@ router.all("*",multipart(),async (req,res,next)=>{
         let data=(req.query&&JSON.stringify(req.query)!='{}')?req.query: req.body;
         const result= await OpenApiModel[methodName](data);
         res.json({ err:null,result:result });
-    }catch (e){
+    } catch (e){
         res.json({ err:e,result:null });
     }
 });
