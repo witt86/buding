@@ -18,3 +18,8 @@ export const GetShopManageOrderList=async ({ uid,status,pos,size,shopcode })=>{
       });
       return orderlist;
 };
+
+export const set_order_note=async ({ uid,order_no,buyer_note })=>{
+     const result=await TMSProductAPI('set_order_note',{ uid,order_no,buyer_note });
+     return result;
+};

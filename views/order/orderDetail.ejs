@@ -73,9 +73,22 @@
             </a>
             <% }) %>
             <% } %>
-
         </div>
     </div>
+
+    <% if ([0,97,1].indexOf(parseInt(orderInfo.order_state))>=0 ){ %>
+
+    <div class="weui-cells__title" style="font-size: 13px">留言</div>
+    <div class="weui-cells">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <input class="weui-input" id="buyer_note" style="font-size: 14px" value="<%= orderInfo.buyer_note %>" type="text" placeholder="给卖家的留言信息">
+            </div>
+        </div>
+    </div>
+
+    <% } %>
+
 
     <div class="weui-panel weui-panel_access">
         <div class="weui-panel__hd  weui-flex">
@@ -241,7 +254,25 @@
 
             });
         });
+
+        //修改订单信息
+        try {
+            if ($("#buyer_note")){
+                $("#buyer_note").change(function () {
+                    var buyer_note=$(this).val();
+                    ApiInvoke('order','set_order_note',{order_no:'<%= orderInfo.order_no %>',buyer_note:buyer_note},function (err,result) {
+                        console.error(err);
+                        console.log(result);
+                    });
+                });
+            }
+        }catch (e){
+
+        }
     })
+
+
+
     function cancelOrder() {
         ApiInvoke("shop", "cancelOrder", {order_no: order_no,}, function (err, result) {
               if (err){

@@ -96,6 +96,14 @@
                 </a>
             </div>
         </div>
+        <div class="weui-cells__title" style="font-size: 13px">留言</div>
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <input class="weui-input" style="font-size: 14px" type="text" id="buyer_note" placeholder="给卖家的留言,如开票、发货等" />
+                </div>
+            </div>
+        </div>
         <div class="weui-cells nopadding">
             <a class="weui-cell">
                 <div class="weui-cell__bd">
@@ -322,7 +330,7 @@
                 return;
             }
             var buyInfo = {
-                buyer_note: "",
+                buyer_note: $("#buyer_note").val(),
                 note_to_receiver: "",
                 coupon: $("#coupon").val(),
                 ship_type: shipvalue.val(),
@@ -464,7 +472,7 @@
 //            return;
 //        }
         var buyInfo = {
-            buyer_note: "",
+            buyer_note: $("#buyer_note").val(),
             note_to_receiver: "",
             coupon: $("#coupon").val(),
             ship_type: shipvalue.val(),

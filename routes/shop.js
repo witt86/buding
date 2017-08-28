@@ -27,7 +27,7 @@ router.all("*", async(req, res, next)=> {
         }
         if (referrer){
             const saleShop=await TMSProductAPI('bd_get_saleshop',{ code:shopcode });
-            if (saleShop && saleShop.state==1 && user.uid!=referrer ){
+            if (saleShop && saleShop.state==1){
                 const query = {
                     where: {
                         uid: user.uid,

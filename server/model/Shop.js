@@ -142,8 +142,7 @@ export const makeOrder = async({uid, shopcode, buyInfo})=> {
     //     throw global.errobj("paySignErr", `生成支付密钥失败`, e);
     // }
 };
-
-
+//预下单
 export const preOrders = async({uid, shopcode,  buyInfo})=> {
     //检查用户是否存在
     const reguser = await DataModel.RegUser.findOne({where: {uid}});
@@ -204,7 +203,6 @@ export const preOrders = async({uid, shopcode,  buyInfo})=> {
         throw global.errobj("pre_orderErr", e, e);
     }
 };
-
 //支付订单
 export const payOrder = async({uid, orderId})=> {
     //检查用户是否存在
