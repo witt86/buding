@@ -29,16 +29,23 @@ router.get('/mine', async(req, res, next) => {
         //获得用户身份
         const bduser=await TMSProductAPI('bd_get_user',{ uid:user.uid });
         if (!shopcode){
-            //去哪个店?
+            //去哪个店?  这里的逻辑是，如果是店里的店员店主店长，则直接去到自己的店，否则是游客则去到最后一次进过的店
+            //逻辑优先级是 自己的店->最后一次进过的店->默认店铺
             let shopcode=_config.officialShopcode;//默认店铺
-            const userShopcodes=await DataModel.User_ShopCode.findAll({
-                where:{
-                    uid:user.uid
-                },
-                order: [["createdAt", "DESC"]]
-            });
-            if (userShopcodes && userShopcodes.length>0){ //去最后一次进过的店铺
-                shopcode=userShopcodes[0].shopcode;
+            //看是否是店里的店员
+            if (bduser&&bduser.length>0){
+                shopcode=bduser[0].shopcode;
+            }else {
+                const userShopcodes=await DataModel.User_ShopCode.findAll({
+                    where:{
+                        uid:user.uid
+                    },
+                    order: [["createdAt", "DESC"]]
+                });
+
+                if (userShopcodes && userShopcodes.length>0){ //去最后一次进过的店铺
+                    shopcode=userShopcodes[0].shopcode;
+                }
             }
             res.redirect(`/user/mine?shopcode=${ shopcode }`);
         }else {

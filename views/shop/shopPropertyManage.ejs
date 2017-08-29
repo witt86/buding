@@ -14,7 +14,7 @@
     </a>
     <a class="weui-cell weui-cell_access" onclick="towithDraw()">
         <div class="weui-cell__bd">
-            <p>可提现<%= role==1?"(店长暂不支持直接提现)":"" %></p>
+            <p>可提现<span style="color: red"><%= role==1&&shopInfo.shop_type==0?"(直营店长暂不支持直接提现)":"" %></span></p>
         </div>
         <div class="weui-cell__ft">
             <span class="price bdcolor"><%= RewardsstatisticInfo.cashAmount %></span>

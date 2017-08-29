@@ -161,7 +161,7 @@ background: #EB652A;color: #fff;">预览店铺
                 ApiInvokeNoloading('shop', 'UploadShopInfo',{ code:shopcode,name:input }, function (err, result) {
                     if (err) {
                         $.alert(err);
-                    } else
+                    } else{
                         $("#name").html(result.name);
                         $('title').html(result.name);
                     }

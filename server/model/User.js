@@ -118,7 +118,7 @@ export const ShopkeeperRegister = async({uid, mobile, truename, photo, photoReve
     return regResult;
 };
 //店铺注册
-export const ShopRegister = async({uid, name, province, city, district, address})=> {
+export const ShopRegister = async({uid, name, province, city, district, address,shop_type})=> {
     const reguser = await DataModel.RegUser.findOne({where: {uid}});
     if (!reguser) throw '指定用户不存在!';
     if (!name) throw '店铺名称不允许为空!';
@@ -153,6 +153,7 @@ export const ShopRegister = async({uid, name, province, city, district, address}
         province,
         city,
         district,
+        shop_type,
         address
     });
     return regResult;

@@ -615,16 +615,16 @@
         window.history.go(-2);
         //预计算
         preorder();
-        ApiInvoke('shop','AddOrUpdateAddressList',{
-            receiver:addressObj.userName,
-            receiver_mobile:addressObj.telNumber,
-            ship_address:addressObj.detailInfo,
-            ship_province:addressObj.provinceName,
-            ship_city:addressObj.cityName,
-            ship_district:addressObj.countryName
-        },function (err,result) {
-
-        })
+//        ApiInvoke('shop','AddOrUpdateAddressList',{
+//            receiver:addressObj.userName,
+//            receiver_mobile:addressObj.telNumber,
+//            ship_address:addressObj.detailInfo,
+//            ship_province:addressObj.provinceName,
+//            ship_city:addressObj.cityName,
+//            ship_district:addressObj.countryName
+//        },function (err,result) {
+//
+//        })
     }
     //选择TMS地址
     function selectTmsAddress(id) {

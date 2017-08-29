@@ -23,6 +23,29 @@
             </div>
         </div>
     </div>
+    <div class="weui-cells__title">
+        店铺类型
+    </div>
+    <div class="weui-cells weui-cells_radio">
+        <label class="weui-cell weui-check__label" for="direct">
+            <div class="weui-cell__bd">
+                <p>直营</p>
+            </div>
+            <div class="weui-cell__ft">
+                <input type="radio" class="weui-check" name="shop_type" value="0" id="direct"   checked="checked" />
+                <span class="weui-icon-checked"></span>
+            </div>
+        </label>
+        <label class="weui-cell weui-check__label" for="join">
+            <div class="weui-cell__bd">
+                <p>加盟</p>
+            </div>
+            <div class="weui-cell__ft">
+                <input type="radio"  class="weui-check" name="shop_type" value="1" id="join"  />
+                <span class="weui-icon-checked"></span>
+            </div>
+        </label>
+    </div>
     <div class="weui-btn weui-btn_primary" onclick="infoSubmit()">
         提交
     </div>
@@ -50,6 +73,7 @@
         var province = "";
         var city = "";
         var district = "";
+        var shop_type = $('input[name="shop_type"]:checked').val();
         if (citys.length == 3) {
             province = citys[0];
             city = citys[1];
@@ -65,7 +89,8 @@
                     province: province,
                     city: city,
                     district: district,
-                    address: address_V
+                    address: address_V,
+                    shop_type:shop_type
                 }, function (err, result) {
                     if (err) {
                         $.alert(err);

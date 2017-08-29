@@ -248,6 +248,32 @@ router.get('/:shopcode/productCategory', async(req, res, next) => {
     }
 });
 
+router.get('/:shopcode/productSearch',async (req,res,next)=>{
+    try {
+        let [rs,shopcode,key_word] = [{}, req.params.shopcode,req.query.key_word];
+        let shopProduct=await Shop.getShopProducts({ shopcode });
+        shopProduct=shopProduct.filter((item)=>{
+            return item.shopfieldObj &&
+                   item.shopfieldObj.status==1
+        });
+        let SearchResult=[];
+        if (key_word){
+            SearchResult=shopProduct.filter((item,index)=>{
+                return item.name.indexOf(key_word)>=0 ||(item.key_word && item.key_word.indexOf(key_word)>=0);
+            });
+        }
+        rs.SearchResult=SearchResult;
+        rs.title="商品搜索";
+        rs.key_word=key_word;
+        rs.shopcode=shopcode;
+        res.render('shop/shopProductSearch', rs);
+    } catch (e) {
+        console.error('-----e:/shopProductSearch-----');
+        console.error(e);
+        res.alert(types.ALERT_WARN, e, " ");
+    }
+});
+
 router.get('/:shopcode/shopCar', async(req, res, next) => {
     try {
         let [rs,shopcode] = [{}, req.params.shopcode];
@@ -422,7 +448,8 @@ router.get('/:shopcode/propertyManage',async (req,res,next)=>{
         let rs = {};
         const { shopcode }=req.params;
         const user=req.session.user;
-
+        //获得店铺信息
+        const shopInfo=await TMSProductAPI('bd_get_saleshop',{ code:shopcode });
         //获得用户身份
         const bduser=await TMSProductAPI('bd_get_user',{ uid:user.uid });
         if (!bduser || bduser.length==0 ){
@@ -434,6 +461,7 @@ router.get('/:shopcode/propertyManage',async (req,res,next)=>{
         console.log(temparr);
         rs.title='我的收益';
         rs.shopcode=shopcode;
+        rs.shopInfo=shopInfo;
         const RewardsstatisticInfo=await Shop.GetRewardsstatisticInfo({ uid:user.uid,shopcode });
         rs.RewardsstatisticInfo=RewardsstatisticInfo;
         rs.role=temparr.length>0?temparr[0].role:1;

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<% include ../header.ejs %>
+<body class="shopProductSearch">
+
+<div class="weui-search-bar" id="searchBar" style="position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;">
+    <form class="weui-search-bar__form" id="seachForm" >
+        <div class="weui-search-bar__box">
+            <i class="weui-icon-search"></i>
+            <input type="search" class="weui-search-bar__input" id="searchInput" value="<%= key_word?key_word:'' %>" placeholder="搜索" required="">
+            <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+        </div>
+        <label class="weui-search-bar__label" id="searchText">
+            <i class="weui-icon-search"></i>
+            <span><%= key_word?key_word:"" %></span>
+        </label>
+    </form>
+    <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+</div>
+
+<div class="seachResultList" style="padding-top: 45px">
+    <% if (SearchResult && SearchResult.length>0) { %>
+
+    <div class="weui-panel weui-panel_access">
+        <div class="weui-panel__bd">
+            <% SearchResult.forEach(function (item) { %>
+
+            <a href="/shop/<%= shopcode %>/productDetail/<%= item.code %>" class="weui-media-box weui-media-box_appmsg"  >
+                <div class="weui-media-box__hd">
+                    <img class="weui-media-box__thumb" src="<%= item.image %>">
+                </div>
+                <div class="weui-media-box__bd">
+                    <h4 class="weui-media-box__title" style="font-size: 15px"><%= item.name %></h4>
+                    <p class="weui-media-box__desc"><%= item.spec %></p>
+                    <p style="font-size: 12px;color:#f23030 ">¥ <span style="font-size: 17px;"><%= item.retail_price %></span></p>
+                </div>
+            </a>
+
+            <% }) %>
+        </div>
+    </div>
+    <% } else { %>
+
+    <p style="margin-top: 100px;
+    font-size: 15px;
+    text-align: center;
+    color: #989696;">没有搜索到相关商品</p>
+
+    <% }%>
+</div>
+<% include ../footer.ejs %>
+<script>
+    $(function () {
+        $("#seachForm").submit(function () {
+            window.location.href="/shop/<%= shopcode %>/productSearch?key_word="+$("#searchInput").val();
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

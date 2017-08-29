@@ -32,8 +32,6 @@ router.get('/myshop',async (req,res,next)=>{
      }
 });
 
-
-
 router.get('/',async (req,res,next)=>{
   try {
     const user=req.session.user;
@@ -70,7 +68,4 @@ router.get('/',async (req,res,next)=>{
 router.all('/error', async (req, res, next) => {
   res.render('/error');
 });
-
-
-
 module.exports = router;
