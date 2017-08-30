@@ -2217,6 +2217,145 @@ html, body {
     color: red;
   }
 }
+.searchPage{
+  display: none;
+  position: fixed;
+  left: 0;
+  top:0;
+  z-index: 52;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  .searchPageConatiner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    overflow-y: scroll;
+    .SPHeader {
+      position: fixed;
+      top:0;
+      left: 0;
+      width: 100%;
+      background: #efefef url(/images/header-bg.png) repeat-x 0 0;
+      background-size: 100% 44px;
+      min-height: 44px;
+      .SPClose {
+        position: absolute;
+        left: 10px;
+        font-size: 24px;
+        top: 3px;
+        color: #666;
+      }
+      .SPInput {
+        background: #fff;
+        display: block;
+        margin: 7px 0 0 37px;
+        width: calc(~'100% - 32px - 15px - 30px');
+        -moz-border-radius: 4px 0 0 4px;
+        -webkit-border-radius: 4px 0 0 4px;
+        border-radius: 4px 0 0 4px;
+        overflow: hidden;
+        font-size: 12px;
+        border: 1px solid #bfbfbf;
+        height: 30px;
+        border-right: 0;
+        input {
+          -webkit-appearance: none;
+          border: 0;
+          display: inline-block;
+          background: 0;
+          font-size: 12px;
+          line-height: 16px;
+          height: 16px;
+          width: 100%;
+          vertical-align: middle;
+          color: #666;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          outline: 0;
+          resize: none;
+          margin: 6px 10px;
+        }
+      }
+      .SPSearch {
+        position: absolute;
+        right: 10px;
+        width: 30px;
+        height: 30px;
+        top: 7px;
+        -moz-border-radius: 0 4px 4px 0;
+        -webkit-border-radius: 0 4px 4px 0;
+        border-radius: 0 4px 4px 0;
+        border: 1px solid #bfbfbf;
+        text-align: center;
+        color: #666;
+      }
+    }
+    .SPQucikStart {
+      position: relative;
+      margin-top: 45px;
+      width: 100%;
+      .SPSearchLand {
+        .SPSearchLandHeader {
+          padding: 0 15px 5px 0;
+          p {
+            font-size: 16px;
+            line-height: 16px;
+            color: #232326;
+            float: left;
+            padding-left: 1px;
+            margin: 10px;
+          }
+          i {
+            float: right;
+            font-size: 22px;
+            padding: 7px 0;
+          }
+        }
+        ::after {
+          content: "";
+          display: block;
+          height: 0;
+          clear: both;
+          visibility: hidden;
+        }
+        .SPSearchLandContainer {
+          padding-right: 2px;
+          padding-left: 10px;
+          overflow: hidden;
+          font-size: .75rem;
+          text-align: center;
+          span {
+            display: block;
+            max-width: 100%;
+            overflow: hidden;
+            padding-right: 10px;
+            padding-bottom: 10px;
+            float: left;
+            a {
+              height: 22px;
+              line-height: 22px;
+              border-radius: 3px;
+              display: block;
+              width: 100%;
+              color: #686868;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              background-color: #f0f2f5;
+              padding-left: 13px;
+              padding-right: 13px;
+              outline: 0 none;
+              text-decoration: none;
+              font-size: 12px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
 .shopCar {
   header {
     display: block;
@@ -2455,29 +2594,48 @@ html, body {
     border-bottom: 1px solid #bfbfbf;
     border-width: 0 0 1px 0;
   }
-  .bd-index-header-icon-back {
-    position: absolute;
-    width: 40px;
-    height: 44px;
-    span {
-      width: 20px;
-      height: 20px;
-      background-position: -20px 0;
-      margin: 12px 0 0 10px;
-      text-indent: -100px;
-      overflow: hidden;
-      display: block;
-      background: url(/images/jd-sprites.png) no-repeat -20px top ;
-      background-size: 200px 200px;
-    }
-  }
+  //.bd-index-header-icon-back {
+  //  position: absolute;
+  //  width: 40px;
+  //  height: 44px;
+  //  span {
+  //    width: 20px;
+  //    height: 20px;
+  //    background-position: -20px 0;
+  //    margin: 12px 0 0 10px;
+  //    text-indent: -100px;
+  //    overflow: hidden;
+  //    display: block;
+  //    background: url(/images/jd-sprites.png) no-repeat -20px top ;
+  //    background-size: 200px 200px;
+  //  }
+  //}
   .bd-index-header-title {
-    margin: 0 50px;
-    text-align: center;
     height: 44px;
     line-height: 44px;
     font-size: 16px;
     color: #252525;
+    padding-top: 5px;
+    div {
+      background: #fff;
+      display: block;
+      width: calc(~'100% - 30px');
+      margin: 0 0 0 15px;
+      -moz-border-radius: 4px 0 0 4px;
+      -webkit-border-radius: 4px 0 0 4px;
+      border-radius: 4px;
+      overflow: hidden;
+      font-size: 12px;
+      border: 1px solid #bfbfbf;
+      height: 30px;
+      line-height: 30px;
+      color: #888;
+      float: left;
+      padding: 0 15px;
+      i {
+        margin-right: 5px;
+      }
+    }
   }
   .shopHomeNavbar {
     position: fixed;
@@ -2526,6 +2684,7 @@ html, body {
         border-bottom: none !important;
       }
     }
+
     .shopHomeCate{
       overflow: hidden;
       height: 33px;
@@ -3086,6 +3245,50 @@ html, body {
        -webkit-transform-origin: top left;
      }
    }
+  .shopHomeSearch {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 44px;
+    z-index: 50;
+    @shopHomeLocationWidth:60px;
+    .bd-index-header {
+      position: relative;
+      background: #efefef url(/images/header-bg.png) repeat-x 0 0;
+      background-size: 100% 44px;
+      min-height: 44px;
+      border-bottom: 1px solid #bfbfbf;
+      border-width: 0 0 1px 0;
+    }
+    .bd-index-header-title {
+      height: 44px;
+      line-height: 44px;
+      font-size: 16px;
+      color: #252525;
+      padding-top: 6px;
+      div {
+        background: #fff;
+        display: block;
+        width: calc(~'100% - 30px');
+        margin: 0 0 0 15px;
+        -moz-border-radius: 4px 0 0 4px;
+        -webkit-border-radius: 4px 0 0 4px;
+        border-radius: 4px;
+        overflow: hidden;
+        font-size: 12px;
+        border: 1px solid #bfbfbf;
+        height: 30px;
+        line-height: 30px;
+        color: #888;
+        float: left;
+        padding: 0 15px;
+        i {
+          margin-right: 5px;
+        }
+      }
+    }
+  }
 }
 .shopPropertyManage{
   background: #F1F0F5;
