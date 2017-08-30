@@ -97,6 +97,11 @@ router.get('/:shopcode', async(req, res, next) => {
                 rs.sharelink=rs.sharelink+`?referrer=${referrer}`;
             }
 
+            //获取热搜和最近搜索
+            const searches = await Shop.getSearchs({uid:user.uid});
+            rs.hotSearch = searches.hotSearch;
+            rs.recentSearch = searches.recentSearch;
+
             rs.sections = categorys;
             rs.shopcode = shopcode;
             rs.type = 'shopHome';
@@ -234,6 +239,17 @@ router.get('/:shopcode/productCategory', async(req, res, next) => {
              });
              return catProducts.length>0;
         });
+
+        const user = await DataModel.RegUser.findOne({
+            where:{
+                uid:req.session.user.uid
+            }
+        });
+        if(!user) throw '未知的用户信息';
+        //获取热搜和最近搜索
+        const searches = await Shop.getSearchs({uid:user.uid});
+        rs.hotSearch = searches.hotSearch;
+        rs.recentSearch = searches.recentSearch;
 
         rs.categorys=categorys;
         rs.title = '分类';
