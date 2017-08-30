@@ -337,9 +337,9 @@ let ProductSource = sequelize.define('productsource', {
     is_multispec: Sequelize.BOOLEAN,
     spec: Sequelize.STRING,
     spec_group: Sequelize.STRING(15),
-    spec_tag1: Sequelize.STRING(15),
-    spec_tag2: Sequelize.STRING(15),
-    spec_tag3: Sequelize.STRING(15),
+    spec_tag1: Sequelize.STRING(512),
+    spec_tag2: Sequelize.STRING(512),
+    spec_tag3: Sequelize.STRING(512),
     spec_tag_desc: Sequelize.STRING(64),
     lower_limit: Sequelize.INTEGER,
     unit: Sequelize.STRING,
@@ -363,7 +363,9 @@ let ProductSource = sequelize.define('productsource', {
     origin_country: Sequelize.STRING(32),
     origin_province: Sequelize.STRING(32),
     origin_city: Sequelize.STRING(32),
-    key_word: Sequelize.STRING(256)
+    key_word: Sequelize.STRING(256),
+    reward_zyd:Sequelize.INTEGER,
+    reward_jmd:Sequelize.INTEGER
 }, {
     'deletedAt': 'dtime',
     'paranoid': true,

@@ -2,7 +2,7 @@
 BUID=78901234 DEBUG=resetdb3 NODE_ENV=development node test/run-resetModel.js
 
 tms同步商品
-node ./test/run-ProductSync.js
+node ./server/task-run.js
 
 标签类型：
 好礼：代表该商品为好礼商品

@@ -81,7 +81,7 @@
             <p class="proprice">
                 <span class="price nocolor"><~= item.retail_price ~></span>
 
-                <span class="kz">赚<~= (item.margin*([1].indexOf(<%= role %>)<0?0.75:1)).toFixed(2) ~>元</span>
+                <span class="kz">赚<~= (item.margin*([1].indexOf(<%= role %>)<0?(window.shop_type==0?(!item.reward_zyd?window.defultreward_zyd:item.reward_zyd/100):(!item.reward_jmd?window.defultreward_jmd:item.reward_jmd/100)):1)).toFixed(2) ~>元</span>
             </p>
             <% if ([1,2].indexOf(role)>=0) { %>
             <~ if(item.shopfieldObj.status==1){ ~>
@@ -105,9 +105,13 @@
 <script type="text/javascript" src="/javascripts/jquery.scrollLoading-min.js"  charset='utf-8'></script>
 <script type="text/javascript">
     var prolist=[];
+
     var kw ="";
     var role="<%= role %>";
     var bili=0.75;
+    var shop_type=<%= shopInfo.shop_type %>;
+    var defultreward_zyd=<%= reward_zhiyingdian/100 %>;
+    var defultreward_jmd=<%= reward_jiamengdian/100 %>;
     $(document).ready(function () {
         //搜索框
         $('#searchText').on('click',function () {

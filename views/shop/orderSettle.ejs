@@ -503,7 +503,7 @@
             }
         });
     };
-    var addressListInfo = "";
+    var addressListInfo = [];
     function openAddress() {
         ApiInvoke('shop', 'getAddressList', {}, function (err, result) {
             if (err) {
@@ -532,16 +532,28 @@
             var datainfo = addressListInfo.filter(function (item) {
                 return item.id == id;
             });
-            obj = datainfo[0];
+            obj =datainfo && datainfo.length>0? datainfo[0]:{
+                receiver: "",
+                receiver_mobile: "",
+                ship_province: "",
+                ship_city: "",
+                ship_district: "",
+                ship_address: ""
+            };
         }
-        var render_tpl_addressEditview = _.template($("#tpl_addressEdit").html().replace(/\~/igm, "%"));
-        var render_tpl_addressEditviewHtml = render_tpl_addressEditview({addressEdit: obj});
-        $("#addressEdit").html(render_tpl_addressEditviewHtml);
-        $("#city_picker").cityPicker({
-            title: "省市区"
-        });
-        gopage(".addressEdit");
-        return false;
+        try {
+            var render_tpl_addressEditview = _.template($("#tpl_addressEdit").html().replace(/\~/igm, "%"));
+            var render_tpl_addressEditviewHtml = render_tpl_addressEditview({addressEdit: obj});
+
+            $("#addressEdit").html(render_tpl_addressEditviewHtml);
+            $("#city_picker").cityPicker({
+                title: "省市区"
+            });
+            gopage(".addressEdit");
+            return false;
+        }catch (e){
+            alert(e);
+        }
     };
 
     function deleteAddress(id) {

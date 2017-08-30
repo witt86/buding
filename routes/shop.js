@@ -413,6 +413,10 @@ router.get('/:shopcode/productManage',async (req,res,next)=>{
 
         //获得用户身份
         const bduser=await TMSProductAPI('bd_get_user',{ uid:user.uid });
+        //获得店铺信息
+        const shopInfo=await TMSProductAPI('bd_get_saleshop',{ code:shopcode });
+        //获得TMS系统参数
+        const TmsParams=await TMSProductAPI('get_appsettings',{});
         //判断是否为店里员工
         let temparr=bduser.filter(item=>{ return item.shopcode==shopcode});
         if (!temparr || temparr.length==0){
@@ -435,6 +439,9 @@ router.get('/:shopcode/productManage',async (req,res,next)=>{
         rs.title = '商品管理';
         rs.shopcode = shopcode;
         rs.role=temparr[0].role;
+        rs.shopInfo=shopInfo;
+        rs.reward_zhiyingdian=TmsParams.filter((item)=>{ return item.name=='reward_zhiyingdian' })[0].value;
+        rs.reward_jiamengdian=TmsParams.filter((item)=>{ return item.name=='reward_jiamengdian' })[0].value;
         res.render('shop/shopProductManeage', rs);
     } catch (e) {
         console.error('-----e:/productCategory-----');

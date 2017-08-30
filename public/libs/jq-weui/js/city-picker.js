@@ -16510,7 +16510,7 @@ $.rawCitiesData = [
   };
 
   var sub = function(data) {
-    if(!data.sub) return [{ name: '', code: data.code }];  // 有可能某些县级市没有区
+    if(!data||!data.sub) return [{ name: '', code: data.code }];  // 有可能某些县级市没有区
     return format(data.sub);
   };
 
@@ -16539,15 +16539,19 @@ $.rawCitiesData = [
     raw.map(function (t) {
       if (t.name === tokens[0]) p = t;
     });
+    if (p && p.sub){
+      p.sub.map(function (t) {
+        if (t.name === tokens[1]) c = t;
+      })
+    }
 
-    p.sub.map(function (t) {
-      if (t.name === tokens[1]) c = t;
-    })
 
     if (tokens[2]) {
-      c.sub.map(function (t) {
-        if (t.name === tokens[2]) d = t;
-      })
+      if (c&&c.sub){
+        c.sub.map(function (t) {
+          if (t.name === tokens[2]) d = t;
+        })
+      }
     }
 
     if (d) return [p.code, c.code, d.code];
