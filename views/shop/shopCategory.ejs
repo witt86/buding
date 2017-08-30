@@ -34,54 +34,63 @@
 <script type="text/javascript" src="/javascripts/jquery.scrollLoading-min.js"  charset='utf-8'></script>
 <script type="text/javascript">
     $(document).ready(function () {
+        try {
 
-        //搜索框
-        $('#searchText').on('click',function () {
-            $('#searchBar').addClass('weui-search-bar_focusing');
-            $('#searchInput').focus();
-        });
-        $('#searchInput').on('blur',function () {
-            $('#searchBar').removeClass('weui-search-bar_focusing');
-            $('#searchText').show();
-        }).on('keydown',function () {
-            if(event.keyCode == "13"){
+            //搜索框
+            $('#searchText').on('click',function () {
+                $('#searchBar').addClass('weui-search-bar_focusing');
+                $('#searchInput').focus();
+            });
+            $('#searchInput').on('blur',function () {
+                $('#searchBar').removeClass('weui-search-bar_focusing');
+                $('#searchText').show();
+            }).on('keydown',function () {
+                if(event.keyCode == "13"){
+                    $('.searchBar').removeClass('weui-search-bar_focusing');
+                    $('.searchText').show();
+                }
+            });
+            $('.confirmSearch').on('click',function () {
                 $('.searchBar').removeClass('weui-search-bar_focusing');
                 $('.searchText').show();
-            }
-        });
-        $('.confirmSearch').on('click',function () {
-            $('.searchBar').removeClass('weui-search-bar_focusing');
-            $('.searchText').show();
-        });
-        
-        //左侧导航
-        $('.shopCategoryNavItem').on('click',function () {
-            loadProducts(this.id);
-            $('.shopCategoryNavItem').removeClass('shopCategoryNavActive');
-            $(this).addClass('shopCategoryNavActive');
-            history.replaceState(null, document.title, location.href.split("?")[0] + "?" + 'query=' + this.id);
-        })
+            });
 
-        //默认加载推荐
-        var kw = location.search;
-        if(kw.indexOf('?') != -1){
-            kw = kw.split('=')[1];
-            $('.shopCategoryNavItem').removeClass('shopCategoryNavActive');
-            $('#' + kw).addClass('shopCategoryNavActive');
-            loadProducts(kw)
-        }else{
-            loadProducts('hot')
-        }
-
-        //获取购物车数量
-        ApiInvokeNoloading('shop','GetShopCart',{shopcode:'<%= shopcode %>'},function (err,res) {
-            var count = 0;
-            res.items.map(function (item) {
-                count += item.pcs;
+            //左侧导航
+            $('.shopCategoryNavItem').on('click',function () {
+                loadProducts(this.id);
+                $('.shopCategoryNavItem').removeClass('shopCategoryNavActive');
+                $(this).addClass('shopCategoryNavActive');
+                history.replaceState(null, document.title, location.href.split("?")[0] + "?" + 'query=' + this.id);
             })
-            if(count > 0) $('.shopcarDot').html(count);
-            else $('.shopcarDot').fadeOut(1);
-        });
+
+            //默认加载推荐
+            var kw = location.search;
+            if(kw.indexOf('?') != -1){
+                kw = kw.split('=')[1];
+                $('.shopCategoryNavItem').removeClass('shopCategoryNavActive');
+                $('#' + kw).addClass('shopCategoryNavActive');
+                loadProducts(kw)
+            }else{
+                loadProducts('hot')
+            }
+
+            //获取购物车数量
+            ApiInvokeNoloading('shop','GetShopCart',{shopcode:'<%= shopcode %>'},function (err,res) {
+                var count = 0;
+                res.items.map(function (item) {
+                    count += item.pcs;
+                })
+                if(count > 0) $('.shopcarDot').html(count);
+                else $('.shopcarDot').fadeOut(1);
+            });
+            
+        }catch (e){
+            alert(e);
+            ApiInvokeNoloading('shop','aaa',{reqs:e},function (err,result) {
+
+            });
+        }
+       
     });
     
     function loadProducts(code) {

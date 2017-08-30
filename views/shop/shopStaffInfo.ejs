@@ -12,11 +12,101 @@
         </div>
     </div>
 </header>
+<div class="shopStaffList">
+    <% if (ShopStore_owner && ShopStore_owner.length>0) { %>
+    <div class="weui-cells__title">
+        店主
+    </div>
+    <div class="weui-cells ">
+        <% ShopStore_owner.forEach(function (item) { %>
+
+        <div class="weui-cell">
+            <div class="weui-cell__hd">
+                <img class="headimg" src="<%= item.headimgurl %>">
+            </div>
+            <div class="weui-cell__bd">
+                <p  class="name"><%= item.truename %></p>
+            </div>
+            <div class="weui-cell__ft"></div>
+        </div>
+
+        <% }) %>
+
+    </div>
+
+    <% } %>
+    <% if (ShopStore_manager && ShopStore_manager.length>0) { %>
+    <div class="weui-cells__title">
+        店长
+    </div>
+    <div class="weui-cells ">
+        <% ShopStore_manager.forEach(function (item) { %>
+
+        <div class="weui-cell weui-cell_access"  onclick="handleStaffClick(<%= item.id %>,this)">
+            <div class="weui-cell__hd">
+                <img class="headimg" src="<%= item.headimgurl %>">
+            </div>
+            <div class="weui-cell__bd">
+                <p  class="name"><%= item.truename %></p>
+            </div>
+            <div class="weui-cell__ft"></div>
+        </div>
+
+        <% }) %>
+
+    </div>
+
+    <% } %>
+    <% if (ShopStore_staff && ShopStore_staff.length>0) { %>
+    <div class="weui-cells__title">
+        店员
+    </div>
+    <div class="weui-cells">
+        <% ShopStore_staff.forEach(function (item) { %>
+
+        <div class="weui-cell  weui-cell_access"  onclick="handleStaffClick(<%= item.id %>,this)">
+            <div class="weui-cell__hd">
+                <img class="headimg" src="<%= item.headimgurl %>">
+            </div>
+            <div class="weui-cell__bd">
+                <p class="name"><%= item.truename %></p>
+            </div>
+            <div class="weui-cell__ft"></div>
+        </div>
+
+        <% }) %>
+
+    </div>
+
+    <% } %>
+
+
+</div>
 
 <% include ./../footer.ejs %>
-
-<script type='text/javascript' src="/libs/jq-weui/js/swiper.min.js" charset='utf-8'></script>
 <script type="text/javascript">
+    function handleStaffClick(id,obj) {
+        $.actions({
+            actions: [{
+                className: "bg-warning",
+                text: "移除",
+                onClick: function() {
+                    $.confirm("确定要移除该员工吗?", function() {
+                         ApiInvokeNoloading('shop','RemoveStaffInfo',{ shopcode:'<%= shopcode %>',id:id },function (err,result) {
+                             if (err){
+                                 alert(err);
+                             }else {
+                                 $(obj).remove();
+                             }
+                         });
+                    }, function() {
+                        //点击取消后的回调函数
+                    });
+                }
+            }]
+        });
+    }
+    
 </script>
 </body>
 </html>

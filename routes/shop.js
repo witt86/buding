@@ -3,7 +3,7 @@ import TMSProductAPI from './../server/lib/TMSProductAPI';
 import * as DataModel from './../server/model/DataModel';
 import * as types from './../server/constants';
 import * as Shop from './../server/model/Shop';
-import {uniq,unionBy,reduce} from 'lodash';
+import {uniq, unionBy, reduce} from 'lodash';
 import moment from "moment";
 import _config from './../config.js' ;
 const router = new Router();
@@ -19,15 +19,15 @@ router.all("*", async(req, res, next)=> {
         return;
     }
     try {
-        const shopcode= req.params[0].split('/')[1];
-        const user=req.session.user;
-        let referrer="";
-        if (req.query &&req.query.referrer){
-            referrer=req.query.referrer;
+        const shopcode = req.params[0].split('/')[1];
+        const user = req.session.user;
+        let referrer = "";
+        if (req.query && req.query.referrer) {
+            referrer = req.query.referrer;
         }
-        if (referrer){
-            const saleShop=await TMSProductAPI('bd_get_saleshop',{ code:shopcode });
-            if (saleShop && saleShop.state==1){
+        if (referrer) {
+            const saleShop = await TMSProductAPI('bd_get_saleshop', {code: shopcode});
+            if (saleShop && saleShop.state == 1) {
                 const query = {
                     where: {
                         uid: user.uid,
@@ -43,7 +43,7 @@ router.all("*", async(req, res, next)=> {
                 let [User_ShopCode, created] = await DataModel.User_ShopCode.findOrCreate(query);
             }
         }
-    }catch (e){
+    } catch (e) {
         console.error(e);
     }
     next();
@@ -55,55 +55,63 @@ router.get('/:shopcode', async(req, res, next) => {
 
         const {shopcode}=req.params;
 
-        const mysaleshop=await TMSProductAPI('bd_get_saleshop',{ code:shopcode });
-        if (mysaleshop.state==2){
+        const mysaleshop = await TMSProductAPI('bd_get_saleshop', {code: shopcode});
+        if (mysaleshop.state == 2) {
             res.alert(types.ALERT_WARN, "店铺休息中", " ");
-        }else {
+        } else {
             rs.title = mysaleshop.name;
             //店铺上架商品
-            let shopProduct=await Shop.getShopProducts({ shopcode });
-             shopProduct=shopProduct.filter((item,index)=>{;
-                return item.shopfieldObj && item.shopfieldObj.status==1
-             });
+            let shopProduct = await Shop.getShopProducts({shopcode});
+            shopProduct = shopProduct.filter((item, index)=> {
+                ;
+                return item.shopfieldObj && item.shopfieldObj.status == 1
+            });
             //今日秒杀商品
-            rs.activityProducts=shopProduct.filter((item)=>{
-                return item.tags.indexOf('今日秒杀')>=0 && item.status==1;
-            }).sort((s1,s2)=>{ return s2.list_order-s1.list_order });
+            rs.activityProducts = shopProduct.filter((item)=> {
+                return item.tags.indexOf('今日秒杀') >= 0 && item.status == 1;
+            }).sort((s1, s2)=> {
+                return s2.list_order - s1.list_order
+            });
             //首页分类商品
             let categorys = await DataModel.ProductCategory.findAll({
-                where:{ is_active:1  },
+                where: {is_active: 1},
                 order: [["list_order", "DESC"]]
             });
             categorys = JSON.parse(JSON.stringify(categorys));
             for (let category of categorys) {
-                category.products=shopProduct.filter((item)=>{
-                    return item.productcategoryId==category.id && item.status==1 && item.tags.indexOf('首页')>=0;
-                }).sort((s1,s2)=>{ return s2.list_order-s1.list_order });
-            };
-            //首页bannel和大图标
-            let bannerAndAD=await TMSProductAPI("get_navilinks",{ scenario:'首页轮播,首页大图标'});
-
-            const user=req.session.user;
-            //获得用户身份
-            const bduser=await TMSProductAPI('bd_get_user',{ uid:user.uid });
-            //判断是否为店里员工
-            let temparr=bduser.filter(item=>{ return item.shopcode==shopcode});
-            let referrer="";
-            if (temparr && temparr.length>0){
-                referrer=user.uid;
+                category.products = shopProduct.filter((item)=> {
+                    return item.productcategoryId == category.id && item.status == 1 && item.tags.indexOf('首页') >= 0;
+                }).sort((s1, s2)=> {
+                    return s2.list_order - s1.list_order
+                });
             }
-            rs.sharelink=`${_config.sitehost}/shop/${shopcode}`;
-            if (referrer){
-                rs.sharelink=rs.sharelink+`?referrer=${referrer}`;
+            ;
+            //首页bannel和大图标
+            let bannerAndAD = await TMSProductAPI("get_navilinks", {scenario: '首页轮播,首页大图标'});
+
+            const user = req.session.user;
+            //获得用户身份
+            const bduser = await TMSProductAPI('bd_get_user', {uid: user.uid});
+            //判断是否为店里员工
+            let temparr = bduser.filter(item=> {
+                return item.shopcode == shopcode
+            });
+            let referrer = "";
+            if (temparr && temparr.length > 0) {
+                referrer = user.uid;
+            }
+            rs.sharelink = `${_config.sitehost}/shop/${shopcode}`;
+            if (referrer) {
+                rs.sharelink = rs.sharelink + `?referrer=${referrer}`;
             }
 
             rs.sections = categorys;
             rs.shopcode = shopcode;
             rs.type = 'shopHome';
-            rs.banner=bannerAndAD.filter(item=>item.scenario=='首页轮播');
-            rs.nav=bannerAndAD.filter(item=>item.scenario=='首页大图标');
-            rs.user=req.session.user;
-            rs.mysaleshop=mysaleshop;
+            rs.banner = bannerAndAD.filter(item=>item.scenario == '首页轮播');
+            rs.nav = bannerAndAD.filter(item=>item.scenario == '首页大图标');
+            rs.user = req.session.user;
+            rs.mysaleshop = mysaleshop;
             res.render('shop/shopHome', rs);
         }
     } catch (e) {
@@ -119,24 +127,26 @@ router.get('/:shopcode/productDetail/:code', async(req, res, next) => {
 
         rs.productInfo = await TMSProductAPI('get_product', {code: code,});
 
-        let multispec=[];
-        if (rs.productInfo.is_multispec){
-            multispec= getProductMultispec1(rs.productInfo);
+        let multispec = [];
+        if (rs.productInfo.is_multispec) {
+            multispec = getProductMultispec1(rs.productInfo);
             console.log(multispec);
         }
 
-        const user=req.session.user;
+        const user = req.session.user;
         //获得用户身份
-        const bduser=await TMSProductAPI('bd_get_user',{ uid:user.uid });
+        const bduser = await TMSProductAPI('bd_get_user', {uid: user.uid});
         //判断是否为店里员工
-        let temparr=bduser.filter(item=>{ return item.shopcode==shopcode });
-        let referrer="";
-        if (temparr && temparr.length>0){
-            referrer=user.uid;
+        let temparr = bduser.filter(item=> {
+            return item.shopcode == shopcode
+        });
+        let referrer = "";
+        if (temparr && temparr.length > 0) {
+            referrer = user.uid;
         }
-        rs.sharelink=`${_config.sitehost}/shop/${shopcode}/productDetail/${code}`;
-        if (referrer){
-            rs.sharelink=rs.sharelink+`?referrer=${referrer}`;
+        rs.sharelink = `${_config.sitehost}/shop/${shopcode}/productDetail/${code}`;
+        if (referrer) {
+            rs.sharelink = rs.sharelink + `?referrer=${referrer}`;
         }
 
         rs.title = rs.productInfo.name;
@@ -145,7 +155,7 @@ router.get('/:shopcode/productDetail/:code', async(req, res, next) => {
 
         rs.multispec = multispec;
 
-        rs.user=req.session.user;
+        rs.user = req.session.user;
 
         res.render('shop/productDetail', rs);
     } catch (e) {
@@ -159,17 +169,17 @@ const getProductMultispec = (productInfo)=> {
     const spec = productInfo.spec;
     if (!spec)return [];
     const spec_tag_desc = productInfo.spec_tag_desc;
-    const spec_list=productInfo.spec_list;
+    const spec_list = productInfo.spec_list;
 
-    const spec_tag_descArr=spec_tag_desc.split(',').splice(0,1);
+    const spec_tag_descArr = spec_tag_desc.split(',').splice(0, 1);
 
-    let Multispec=[];
+    let Multispec = [];
 
-    let s={ title:spec_tag_descArr[0],spec_list:[] };
-    for (let p of spec_list ){
-        s.spec_list.push({ text:p.spec_tag1,value:p.code } );
+    let s = {title: spec_tag_descArr[0], spec_list: []};
+    for (let p of spec_list) {
+        s.spec_list.push({text: p.spec_tag1, value: p.code});
     }
-    s.spec_list= unionBy(s.spec_list,'text');
+    s.spec_list = unionBy(s.spec_list, 'text');
     Multispec.push(s);
     return Multispec;
 };
@@ -178,22 +188,22 @@ const getProductMultispec1 = (productInfo)=> {
     const spec = productInfo.spec;
     if (!spec)return [];
     const spec_tag_desc = productInfo.spec_tag_desc;
-    const spec_list=productInfo.spec_list;
+    const spec_list = productInfo.spec_list;
 
-    const spec_tag_descArr=spec_tag_desc.split(',');
-    let Multispec=[];
+    const spec_tag_descArr = spec_tag_desc.split(',');
+    let Multispec = [];
 
-    spec_tag_descArr.forEach((item,index)=>{
-        let s={ title:item,spec_list:[] };
-        s.spec_list=spec_list.map(item=>{
-            let t=item["spec_tag"+(index+1)];
-            if (t&&t.length>0){
+    spec_tag_descArr.forEach((item, index)=> {
+        let s = {title: item, spec_list: []};
+        s.spec_list = spec_list.map(item=> {
+            let t = item["spec_tag" + (index + 1)];
+            if (t && t.length > 0) {
                 return t;
-            }else {
+            } else {
                 return "";
             }
         });
-        s.spec_list=unionBy(s.spec_list);
+        s.spec_list = unionBy(s.spec_list);
         Multispec.push(s);
     });
     return Multispec;
@@ -223,19 +233,19 @@ router.get('/:shopcode/productCategory', async(req, res, next) => {
         let categorys = await DataModel.ProductCategory.findAll({
             order: [["list_order", "DESC"]]
         });
-        let shopProduct=await Shop.getShopProducts({ shopcode });
+        let shopProduct = await Shop.getShopProducts({shopcode});
 
         //筛选出店铺上架的商品
-        shopProduct=shopProduct.filter(item=>item.shopfieldObj.status==1);
+        shopProduct = shopProduct.filter(item=>item.shopfieldObj.status == 1);
 
-        categorys=categorys.filter((item)=>{
-             let catProducts=shopProduct.filter((product)=>{
-                 return product.productcategoryId==item.id && product.status==1;
-             });
-             return catProducts.length>0;
+        categorys = categorys.filter((item)=> {
+            let catProducts = shopProduct.filter((product)=> {
+                return product.productcategoryId == item.id && product.status == 1;
+            });
+            return catProducts.length > 0;
         });
 
-        rs.categorys=categorys;
+        rs.categorys = categorys;
         rs.title = '分类';
 
         rs.shopcode = shopcode;
@@ -248,24 +258,24 @@ router.get('/:shopcode/productCategory', async(req, res, next) => {
     }
 });
 
-router.get('/:shopcode/productSearch',async (req,res,next)=>{
+router.get('/:shopcode/productSearch', async(req, res, next)=> {
     try {
-        let [rs,shopcode,key_word] = [{}, req.params.shopcode,req.query.key_word];
-        let shopProduct=await Shop.getShopProducts({ shopcode });
-        shopProduct=shopProduct.filter((item)=>{
+        let [rs,shopcode,key_word] = [{}, req.params.shopcode, req.query.key_word];
+        let shopProduct = await Shop.getShopProducts({shopcode});
+        shopProduct = shopProduct.filter((item)=> {
             return item.shopfieldObj &&
-                   item.shopfieldObj.status==1
+                item.shopfieldObj.status == 1
         });
-        let SearchResult=[];
-        if (key_word){
-            SearchResult=shopProduct.filter((item,index)=>{
-                return item.name.indexOf(key_word)>=0 ||(item.key_word && item.key_word.indexOf(key_word)>=0);
+        let SearchResult = [];
+        if (key_word) {
+            SearchResult = shopProduct.filter((item, index)=> {
+                return item.name.indexOf(key_word) >= 0 || (item.key_word && item.key_word.indexOf(key_word) >= 0);
             });
         }
-        rs.SearchResult=SearchResult;
-        rs.title="商品搜索";
-        rs.key_word=key_word;
-        rs.shopcode=shopcode;
+        rs.SearchResult = SearchResult;
+        rs.title = "商品搜索";
+        rs.key_word = key_word;
+        rs.shopcode = shopcode;
         res.render('shop/shopProductSearch', rs);
     } catch (e) {
         console.error('-----e:/shopProductSearch-----');
@@ -310,7 +320,7 @@ router.get('/:shopcode/orderpayresult', async(req, res, next) => {
     }
 });
 
-router.get('/:shopcode/couponcenter',async (req,res,next)=>{
+router.get('/:shopcode/couponcenter', async(req, res, next)=> {
     try {
         let [rs,shopcode] = [{}, req.params.shopcode];
         const user = req.session.user;
@@ -325,54 +335,62 @@ router.get('/:shopcode/couponcenter',async (req,res,next)=>{
 });
 
 //判断是否人员身份
-const getUserShopManageLimits=async (uid,shopcode)=>{
+const getUserShopManageLimits = async(uid, shopcode)=> {
     //获得用户身份
-    const bduser=await TMSProductAPI('bd_get_user',{ uid:uid });
+    const bduser = await TMSProductAPI('bd_get_user', {uid: uid});
 
     //判断是否有权限进入店铺管理,默认只有店主和店长有权进入店铺管理
-    let temparr=bduser.filter(item=>{ return item.shopcode==shopcode&&[1,2].indexOf(item.role)>=0});
+    let temparr = bduser.filter(item=> {
+        return item.shopcode == shopcode && [1, 2].indexOf(item.role) >= 0
+    });
 
-    return temparr && temparr.length>0
+    return temparr && temparr.length > 0
 };
 
 router.get('/:shopcode/shopManage', async(req, res, next)=> {
     try {
         let rs = {};
-        const { shopcode }=req.params;
-        const user=req.session.user;
+        const {shopcode}=req.params;
+        const user = req.session.user;
 
         //是否有权限进入店铺管理
-        const userlimits=await getUserShopManageLimits(user.uid,shopcode);
-        if (!userlimits){
+        const userlimits = await getUserShopManageLimits(user.uid, shopcode);
+        if (!userlimits) {
             res.alert(types.ALERT_WARN, "没有权限", " ");
             return;
         }
 
         //获得店铺信息
-        const mysaleshop=await TMSProductAPI('bd_get_saleshop',{ code:shopcode });
+        const mysaleshop = await TMSProductAPI('bd_get_saleshop', {code: shopcode});
         //获得未发货订单
-        const pay_since=moment().format("YYYY-MM-DD");
-        let waitShipOrderToday=[],ShipPayOrderToday=[];
-        const ShopShipOrderAll=await TMSProductAPI('query_orders',{ pos:0,size:100,store_code:shopcode });
+        const pay_since = moment().format("YYYY-MM-DD");
+        let waitShipOrderToday = [], ShipPayOrderToday = [];
+        const ShopShipOrderAll = await TMSProductAPI('query_orders', {pos: 0, size: 100, store_code: shopcode});
 
-        const waitShipOrderAll=ShopShipOrderAll.filter(item=>{ return item.order_state == 1 });//获得未发货订单
-        if (ShopShipOrderAll && ShopShipOrderAll.length>0){
+        const waitShipOrderAll = ShopShipOrderAll.filter(item=> {
+            return item.order_state == 1
+        });//获得未发货订单
+        if (ShopShipOrderAll && ShopShipOrderAll.length > 0) {
             //今日未发货订单
-            waitShipOrderToday=ShopShipOrderAll.filter(item=>{ return item.pay_date && item.pay_date.indexOf(pay_since)>=0 && item.order_state==1 });
+            waitShipOrderToday = ShopShipOrderAll.filter(item=> {
+                return item.pay_date && item.pay_date.indexOf(pay_since) >= 0 && item.order_state == 1
+            });
             //今日付款订单
-            ShipPayOrderToday=ShopShipOrderAll.filter(item=>{ return item.pay_date && item.pay_date.indexOf(pay_since)>=0  });
+            ShipPayOrderToday = ShopShipOrderAll.filter(item=> {
+                return item.pay_date && item.pay_date.indexOf(pay_since) >= 0
+            });
         }
         rs.title = mysaleshop.name;
-        rs.waitShipOrderToday=waitShipOrderToday;
-        rs.waitShipOrderAll=waitShipOrderAll;
+        rs.waitShipOrderToday = waitShipOrderToday;
+        rs.waitShipOrderAll = waitShipOrderAll;
         //今日付款金额
-        rs.todayPayAmount=reduce(ShipPayOrderToday, (sum, item)=> {
+        rs.todayPayAmount = reduce(ShipPayOrderToday, (sum, item)=> {
             return sum + parseFloat(item.pay_amount)
         }, 0);
-        rs.pay_since=pay_since;
-        rs.shopcode=shopcode;
-        rs.ShipPayOrderToday=ShipPayOrderToday;
-        res.render('shop/shopManage',rs);
+        rs.pay_since = pay_since;
+        rs.shopcode = shopcode;
+        rs.ShipPayOrderToday = ShipPayOrderToday;
+        res.render('shop/shopManage', rs);
     } catch (e) {
         console.error('-----e:/shopManage-----');
         console.error(e);
@@ -383,20 +401,20 @@ router.get('/:shopcode/shopManage', async(req, res, next)=> {
 router.get('/:shopcode/shopInfo', async(req, res, next)=> {
     try {
         let rs = {};
-        const { shopcode }=req.params;
-        const user=req.session.user;
+        const {shopcode}=req.params;
+        const user = req.session.user;
 
         //是否有权限进入店铺管理
-        const userlimits=await getUserShopManageLimits(user.uid,shopcode);
-        if (!userlimits){
+        const userlimits = await getUserShopManageLimits(user.uid, shopcode);
+        if (!userlimits) {
             res.alert(types.ALERT_WARN, "没有权限", " ");
             return;
         }
 
-        const shopInfo=await TMSProductAPI('bd_get_saleshop',{ code:shopcode });
-        rs.shopInfo=shopInfo;
-        rs.title=shopInfo.name;
-        rs.shopcode=shopcode;
+        const shopInfo = await TMSProductAPI('bd_get_saleshop', {code: shopcode});
+        rs.shopInfo = shopInfo;
+        rs.title = shopInfo.name;
+        rs.shopcode = shopcode;
         res.render('shop/shopInfo', rs);
     } catch (e) {
         console.error('-----e:/shopInfo-----');
@@ -405,21 +423,23 @@ router.get('/:shopcode/shopInfo', async(req, res, next)=> {
     }
 });
 
-router.get('/:shopcode/productManage',async (req,res,next)=>{
+router.get('/:shopcode/productManage', async(req, res, next)=> {
     try {
         let rs = {};
-        const { shopcode }=req.params;
-        const user=req.session.user;
+        const {shopcode}=req.params;
+        const user = req.session.user;
 
         //获得用户身份
-        const bduser=await TMSProductAPI('bd_get_user',{ uid:user.uid });
+        const bduser = await TMSProductAPI('bd_get_user', {uid: user.uid});
         //获得店铺信息
-        const shopInfo=await TMSProductAPI('bd_get_saleshop',{ code:shopcode });
+        const shopInfo = await TMSProductAPI('bd_get_saleshop', {code: shopcode});
         //获得TMS系统参数
-        const TmsParams=await TMSProductAPI('get_appsettings',{});
+        const TmsParams = await TMSProductAPI('get_appsettings', {});
         //判断是否为店里员工
-        let temparr=bduser.filter(item=>{ return item.shopcode==shopcode});
-        if (!temparr || temparr.length==0){
+        let temparr = bduser.filter(item=> {
+            return item.shopcode == shopcode
+        });
+        if (!temparr || temparr.length == 0) {
             res.alert(types.ALERT_WARN, "没有权限", " ");
             return;
         }
@@ -427,21 +447,25 @@ router.get('/:shopcode/productManage',async (req,res,next)=>{
         let categorys = await DataModel.ProductCategory.findAll({
             order: [["list_order", "DESC"]]
         });
-        const shopProduct=await Shop.getShopProducts({ shopcode });
-        categorys=categorys.filter((item)=>{
-            let catProducts=shopProduct.filter((product)=>{
-                return product.productcategoryId==item.id && product.status==1;
+        const shopProduct = await Shop.getShopProducts({shopcode});
+        categorys = categorys.filter((item)=> {
+            let catProducts = shopProduct.filter((product)=> {
+                return product.productcategoryId == item.id && product.status == 1;
             });
-            return catProducts.length>0;
+            return catProducts.length > 0;
         });
 
-        rs.categorys=categorys;
+        rs.categorys = categorys;
         rs.title = '商品管理';
         rs.shopcode = shopcode;
-        rs.role=temparr[0].role;
-        rs.shopInfo=shopInfo;
-        rs.reward_zhiyingdian=TmsParams.filter((item)=>{ return item.name=='reward_zhiyingdian' })[0].value;
-        rs.reward_jiamengdian=TmsParams.filter((item)=>{ return item.name=='reward_jiamengdian' })[0].value;
+        rs.role = temparr[0].role;
+        rs.shopInfo = shopInfo;
+        rs.reward_zhiyingdian = TmsParams.filter((item)=> {
+            return item.name == 'reward_zhiyingdian'
+        })[0].value;
+        rs.reward_jiamengdian = TmsParams.filter((item)=> {
+            return item.name == 'reward_jiamengdian'
+        })[0].value;
         res.render('shop/shopProductManeage', rs);
     } catch (e) {
         console.error('-----e:/productCategory-----');
@@ -450,103 +474,146 @@ router.get('/:shopcode/productManage',async (req,res,next)=>{
     }
 });
 
-router.get('/:shopcode/propertyManage',async (req,res,next)=>{
+router.get('/:shopcode/shopStaffInfo', async(req, res, next)=> { //员工管理
     try {
         let rs = {};
-        const { shopcode }=req.params;
-        const user=req.session.user;
-        //获得店铺信息
-        const shopInfo=await TMSProductAPI('bd_get_saleshop',{ code:shopcode });
+        const {shopcode}=req.params;
+        const user = req.session.user;
+        //权限判断
         //获得用户身份
-        const bduser=await TMSProductAPI('bd_get_user',{ uid:user.uid });
-        if (!bduser || bduser.length==0 ){
+        const bduser = await TMSProductAPI('bd_get_user', {uid: user.uid});
+        console.log(bduser);
+        //判断是否为店长或者店主
+        let temparr = bduser.filter(item=> {
+            return item.shopcode == shopcode && item.role != 0
+        });
+        if (!temparr || temparr.length == 0) {
             res.alert(types.ALERT_WARN, "没有权限", " ");
             return;
         };
-        //判断是否为店里员工
-        let temparr=bduser.filter(item=>{ return item.shopcode==shopcode});
-        console.log(temparr);
-        rs.title='我的收益';
+        let staffList = await TMSProductAPI('bd_getusersfromshop', {uid: user.uid, shopcode: shopcode});
+        if (staffList && staffList.length > 0) {
+            for (let item of staffList) {
+                const userInfo = await DataModel.RegUser.findOne({
+                    where: {uid: item.uid},
+                    attributes: ['uid', 'headimgurl']
+                });
+                item.headimgurl=userInfo? userInfo.headimgurl:"";
+            }
+        }
+        rs.title = '我的员工';
+        rs.ShopStore_owner = staffList.filter(item=>item.role==2);
+        rs.ShopStore_manager=staffList.filter(item=>item.role==1);
+        rs.ShopStore_staff=staffList.filter(item=>item.role==0);
         rs.shopcode=shopcode;
-        rs.shopInfo=shopInfo;
-        const RewardsstatisticInfo=await Shop.GetRewardsstatisticInfo({ uid:user.uid,shopcode });
-        rs.RewardsstatisticInfo=RewardsstatisticInfo;
-        rs.role=temparr.length>0?temparr[0].role:1;
+        res.render('shop/shopStaffInfo', rs);
+    } catch (e) {
+        console.error('-----e:/productCategory-----');
+        console.error(e);
+        res.alert(types.ALERT_WARN, e, " ");
+    }
+});
 
-        res.render('shop/shopPropertyManage',rs);
-    }catch (e){
+router.get('/:shopcode/propertyManage', async(req, res, next)=> {
+    try {
+        let rs = {};
+        const {shopcode}=req.params;
+        const user = req.session.user;
+        //获得店铺信息
+        const shopInfo = await TMSProductAPI('bd_get_saleshop', {code: shopcode});
+        //获得用户身份
+        const bduser = await TMSProductAPI('bd_get_user', {uid: user.uid});
+        if (!bduser || bduser.length == 0) {
+            res.alert(types.ALERT_WARN, "没有权限", " ");
+            return;
+        }
+        ;
+        //判断是否为店里员工
+        let temparr = bduser.filter(item=> {
+            return item.shopcode == shopcode
+        });
+        console.log(temparr);
+        rs.title = '我的收益';
+        rs.shopcode = shopcode;
+        rs.shopInfo = shopInfo;
+        const RewardsstatisticInfo = await Shop.GetRewardsstatisticInfo({uid: user.uid, shopcode});
+        rs.RewardsstatisticInfo = RewardsstatisticInfo;
+        rs.role = temparr.length > 0 ? temparr[0].role : 1;
+
+        res.render('shop/shopPropertyManage', rs);
+    } catch (e) {
         console.error('-----e:/propertyManage-----');
         console.error(e);
         res.alert(types.ALERT_WARN, e, " ");
     }
 });
 
-router.get('/:shopcode/rewardlist/:status/:reward_type',async (req,res,next)=>{
+router.get('/:shopcode/rewardlist/:status/:reward_type', async(req, res, next)=> {
     try {
         let rs = {};
-        const { shopcode,status,reward_type }=req.params;
-        const user=req.session.user;
+        const {shopcode, status, reward_type}=req.params;
+        const user = req.session.user;
         //获得用户身份
-        const bduser=await TMSProductAPI('bd_get_user',{ uid:user.uid });
-        if (!bduser || bduser.length==0 ){
+        const bduser = await TMSProductAPI('bd_get_user', {uid: user.uid});
+        if (!bduser || bduser.length == 0) {
             res.alert(types.ALERT_WARN, "没有权限", " ");
             return;
         }
 
-        rs.shopcode=shopcode;
-        rs.status=status;
-        rs.reward_type=reward_type;
+        rs.shopcode = shopcode;
+        rs.status = status;
+        rs.reward_type = reward_type;
 
-        rs.title='我的收益';
-        res.render('shop/rewardlist',rs);
-    }catch (e){
+        rs.title = '我的收益';
+        res.render('shop/rewardlist', rs);
+    } catch (e) {
         console.error('-----e:/rewardlist-----');
         console.error(e);
         res.alert(types.ALERT_WARN, e, " ");
     }
 });
 
-router.get('/:shopcode/accountlist',async (req,res,next)=>{
+router.get('/:shopcode/accountlist', async(req, res, next)=> {
     try {
         let rs = {};
-        const { shopcode}=req.params;
-        const user=req.session.user;
+        const {shopcode}=req.params;
+        const user = req.session.user;
         //获得用户身份
-        const bduser=await TMSProductAPI('bd_get_user',{ uid:user.uid });
-        if (!bduser || bduser.length==0 ){
+        const bduser = await TMSProductAPI('bd_get_user', {uid: user.uid});
+        if (!bduser || bduser.length == 0) {
             res.alert(types.ALERT_WARN, "没有权限", " ");
             return;
         }
 
-        rs.shopcode=shopcode;
-        rs.title='我的收益';
-        res.render('shop/accountlist',rs);
-    }catch (e){
+        rs.shopcode = shopcode;
+        rs.title = '我的收益';
+        res.render('shop/accountlist', rs);
+    } catch (e) {
         console.error('-----e:/accountlist-----');
         console.error(e);
         res.alert(types.ALERT_WARN, e, " ");
     }
 });
 
-router.get('/:shopcode/withDrawManage',async (req,res,next)=>{
+router.get('/:shopcode/withDrawManage', async(req, res, next)=> {
     try {
         let rs = {};
-        const { shopcode}=req.params;
-        const user=req.session.user;
+        const {shopcode}=req.params;
+        const user = req.session.user;
 
         //获得用户身份
-        const bduser=await TMSProductAPI('bd_get_user',{ uid:user.uid });
-        if (!bduser || bduser.length==0 ){
+        const bduser = await TMSProductAPI('bd_get_user', {uid: user.uid});
+        if (!bduser || bduser.length == 0) {
             res.alert(types.ALERT_WARN, "没有权限", " ");
             return;
         }
 
-        let accounts_summary = await TMSProductAPI('get_accounts_summary', {uid:user.uid});//获取用户资金账户总额
-        rs.accounts_summary=accounts_summary;
-        rs.shopcode=shopcode;
-        rs.title='提现';
-        res.render('shop/withDrawManage',rs);
-    }catch (e){
+        let accounts_summary = await TMSProductAPI('get_accounts_summary', {uid: user.uid});//获取用户资金账户总额
+        rs.accounts_summary = accounts_summary;
+        rs.shopcode = shopcode;
+        rs.title = '提现';
+        res.render('shop/withDrawManage', rs);
+    } catch (e) {
         console.error('-----e:/withDrawManage-----');
         console.error(e);
         res.alert(types.ALERT_WARN, e, " ");

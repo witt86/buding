@@ -345,7 +345,7 @@
             };
             var shopcode = "<%= shopcode %>";
 
-            ApiInvoke('shop', 'makeOrder', {buyInfo: buyInfo, shopcode: shopcode}, function (err, result) {
+            ApiInvokeNoloading('shop', 'makeOrder', {buyInfo: buyInfo, shopcode: shopcode}, function (err, result) {
                 if (err) {
                     if (typeof err == 'string') {
                         $.alert(err);

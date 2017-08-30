@@ -545,6 +545,12 @@ export const UpdateShopProductShelf=async ({ uid,id,status,shopcode })=>{
    return productInfo;
 };
 
+//移除店员
+export const RemoveStaffInfo=async ({ uid,id,shopcode })=>{
+    const s = await TMSProductAPI('bd_deleteuserfromshop',{ uid,id,shopcode });
+    return s;
+};
+
 //更新店铺商品缓存，并返回
 const UpdateShopProductCache=async ({ shopproduct,shopcode })=>{
     let productlist=[];
@@ -726,6 +732,7 @@ export const DelAddress=async ({ uid,id })=>{
 };
 
 export const aaa=async ({uid,reqs})=>{
+    console.error('-------客户的抛过来的js错误-------');
     console.error(uid);
     console.error(reqs);
     return true;

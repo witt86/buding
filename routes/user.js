@@ -264,7 +264,7 @@ router.get('/shopinviteqrcode',async (req,res,next)=>{
         const user=req.session.user;
         const qrcode=await User.createShopInviteQrcode({ uid:user.uid,shopcode:shopcode });
         rs.qrcode=qrcode;
-        rs.title = '店铺员工邀请码!';
+        rs.title = '店铺员工邀请码';
         res.render('user/shopInviteQrcode', rs);
     }catch (e){
         console.error('-----e:/shopqrcode-----');
