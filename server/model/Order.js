@@ -9,7 +9,6 @@ export const GetOrderList=async({ uid,status,pos,size })=>{
 
 export const GetShopManageOrderList=async ({ uid,status,pos,size,shopcode })=>{
       const orderlist=await TMSProductAPI('query_orders',{
-            uid,
             status,
             order_by:"-order_date",
             pos,
