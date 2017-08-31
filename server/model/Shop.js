@@ -767,26 +767,25 @@ export const getSearchs = async ({uid}) => {
    }
 };
 
-export const deleteRecent = async ({uid}) => {
+export const immediateSearch = async ({uid, keyword}) => {
     try{
-        if(!uid) throw '缺少参数！';
+        if(!keyword) throw '缺少参数！';
 
-        let user = await DataModel.RegUser.findOne({
+        const result = await DataModel.HotSearch.findAll({
             where:{
-                uid:uid
-            }
+                name:{
+                    $like:`%${keyword}%`
+                }
+            },
+            order:[
+                ["count", "DESC"]
+            ],
+            limit:10
         });
-        if(!user) throw '未知的用户信息';
 
-        await DataModel.RecentSearch.destroy({
-            where:{
-                reguserId:user.id
-            }
-        });
-
-        return true;
+        return result;
     }catch (e){
-        console.error("-----deleteRecent:e------");
+        console.error("-----immediateSearch:e------");
         console.error(e);
         throw e;
     }

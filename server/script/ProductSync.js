@@ -103,6 +103,24 @@ async function System_synProducts(Info) {
             let result = await DataModel.ProductSource.create(twohou_prod);
             await result.setSupplier(supplier);
             await result.setProductcategory(pcategory);
+
+            //商品名，标签存入热搜
+            await DataModel.HotSearch.findOrCreate({
+                where:{
+                    name:twohou_prod.name
+                }
+            });
+            const keywords = twohou_prod.key_word.split(',');
+            if(keywords.length > 0){
+                for(let keyword of keywords){
+                    await DataModel.HotSearch.findOrCreate({
+                        where:{
+                            name:keyword
+                        }
+                    });
+                }
+            }
+
             saved++;
         } else if (productExist){
             //更新时不覆盖"销量"

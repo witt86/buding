@@ -46,21 +46,54 @@
                 <% } %>
             </div>
         </div>
+
+        <div class="SPImmediateSearch">
+            <ul id="resultList"></ul>
+        </div>
     </div>
 </div>
 
 <script type="text/javascript">
+    var timer = null;
     $(document).ready(function () {
         $('#keyword').on('keydown',function () {
-            if (event.keyCode == "13") {
+            if (event.keyCode == "13") { //回车监控
                 searchProducts('');
+            }else{
+                if(timer){ //自动查询
+                    clearTimeout(timer)
+                }
+                timer = setTimeout(function(){
+                    var keyword = $('#keyword').val().trim();
+                    if(keyword == ''){
+                        $('.SPImmediateSearch').fadeOut(10);
+                        $('.SPQucikStart').fadeIn(100);
+                    }else{
+                        ApiInvokeNoloading('shop', 'immediateSearch', {keyword:keyword}, function (err, res) {
+                            if(err){
+                                console.log(err);
+                            }else{
+                                $('#resultList').empty();
+                                if(res.length > 0){
+                                    res.map(function (item) {
+                                        $('#resultList').append('<li onclick=' + 'searchProducts("' + item.name + '")' + '><span>' + item.name + '</span></li>');
+                                    });
+                                }
+
+                                $('.SPQucikStart').fadeOut(10);
+                                $('.SPImmediateSearch').fadeIn(100);
+                            }
+                        });
+                    }
+                },300);
             }
         });
     })
 
     function openSearch(key_word) {
-        $('#keyword').val(key_word)
+        $('#keyword').val(key_word);
         $('.searchPage').fadeIn(100);
+        $('#keyword').focus();
     }
 
     function closeSearch() {
