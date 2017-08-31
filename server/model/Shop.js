@@ -738,3 +738,63 @@ export const aaa=async ({uid,reqs})=>{
     return true;
 };
 
+export const getSearchs = async ({uid}) => {
+   try{
+       if(!uid) throw '缺少参数！';
+
+       const user = await DataModel.RegUser.findOne({
+           where:{
+               uid:uid
+           }
+       });
+       if(!user) throw '未知的用户信息';
+
+       const hotSearch = await DataModel.HotSearch.findAll({
+           limit:10,
+           order:[
+               ["count", "DESC"],
+               ["updatedAt", "DESC"]
+           ]
+       });
+       const recentSearch = await DataModel.RecentSearch.findAll({
+           where:{
+               reguserId:user.id
+           },
+           order:[
+               ["updatedAt", "DESC"]
+           ],
+           limit:10
+       });
+
+       return {hotSearch:hotSearch, recentSearch:recentSearch}
+   }catch (e){
+       console.error("-----getSearchs:e------");
+       console.error(e);
+       throw e;
+   }
+};
+
+export const deleteRecent = async ({uid}) => {
+    try{
+        if(!uid) throw '缺少参数！';
+
+        let user = await DataModel.RegUser.findOne({
+            where:{
+                uid:uid
+            }
+        });
+        if(!user) throw '未知的用户信息';
+
+        await DataModel.RecentSearch.destroy({
+            where:{
+                reguserId:user.id
+            }
+        });
+
+        return true;
+    }catch (e){
+        console.error("-----deleteRecent:e------");
+        console.error(e);
+        throw e;
+    }
+};

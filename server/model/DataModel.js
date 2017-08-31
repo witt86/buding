@@ -530,7 +530,12 @@ let Paynotify_weixin = sequelize.define('paynotify_weixin',
 let HotSearch = sequelize.define('hotsearch', {
     district: Sequelize.STRING(32),
     code: Sequelize.STRING(16),
-    name: Sequelize.STRING(32)
+    name: Sequelize.STRING(32),
+    count:{
+        'type': Sequelize.INTEGER,
+        'allowNull': false,
+        'defaultValue': 1
+    }
 });
 
 //用户键值对
@@ -593,6 +598,12 @@ let User_ShopCode=sequelize.define('usershopcode',{
     'paranoid': true
 });
 
+//用户最近搜索
+let RecentSearch = sequelize.define('recentsearch',{
+    keyword:Sequelize.STRING(64),
+    timestamp:Sequelize.STRING(64)
+},{});
+
 //短信
 SMSMessage.belongsTo(RegUser);
 RegUser.hasMany(SMSMessage);
@@ -610,7 +621,9 @@ PayRecord.belongsTo(RegUser, {as: 'Payer', foreignKey: "payerID"});
 //支付记录 1:N 支付通讯日志
 PayRecord.hasMany(Paynotify_weixin);
 Paynotify_weixin.belongsTo(PayRecord);
-
+//最近搜索
+RecentSearch.belongsTo(RegUser);
+RegUser.hasMany(RecentSearch);
 
 
 module.exports.RegUser = RegUser;
@@ -625,6 +638,7 @@ module.exports.HotSearch = HotSearch;
 module.exports.SMSMessage = SMSMessage;
 module.exports.SaleShopProduct=SaleShopProduct;
 module.exports.User_ShopCode=User_ShopCode;
+module.exports.RecentSearch=RecentSearch;
 
 //由sql组成的函数方法,注意:需要对传入的所有参数做防SQL注入过滤(字符串替换或数值转换操作)
 module.exports.Functions = {};

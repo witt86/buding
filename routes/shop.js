@@ -105,6 +105,11 @@ router.get('/:shopcode', async(req, res, next) => {
                 rs.sharelink = rs.sharelink + `?referrer=${referrer}`;
             }
 
+            //获取热搜和最近搜索
+            const searches = await Shop.getSearchs({uid:user.uid});
+            rs.hotSearch = searches.hotSearch;
+            rs.recentSearch = searches.recentSearch;
+
             rs.sections = categorys;
             rs.shopcode = shopcode;
             rs.type = 'shopHome';
@@ -245,7 +250,18 @@ router.get('/:shopcode/productCategory', async(req, res, next) => {
             return catProducts.length > 0;
         });
 
-        rs.categorys = categorys;
+        const user = await DataModel.RegUser.findOne({
+            where:{
+                uid:req.session.user.uid
+            }
+        });
+        if(!user) throw '未知的用户信息';
+        //获取热搜和最近搜索
+        const searches = await Shop.getSearchs({uid:user.uid});
+        rs.hotSearch = searches.hotSearch;
+        rs.recentSearch = searches.recentSearch;
+
+        rs.categorys=categorys;
         rs.title = '分类';
 
         rs.shopcode = shopcode;
@@ -272,10 +288,38 @@ router.get('/:shopcode/productSearch', async(req, res, next)=> {
                 return item.name.indexOf(key_word) >= 0 || (item.key_word && item.key_word.indexOf(key_word) >= 0);
             });
         }
-        rs.SearchResult = SearchResult;
-        rs.title = "商品搜索";
-        rs.key_word = key_word;
-        rs.shopcode = shopcode;
+
+        const user = await DataModel.RegUser.findOne({
+            where:{
+                uid:req.session.user.uid
+            }
+        });
+        if(!user) throw '未知的用户信息';
+
+        //更新热搜和最近搜索
+        const [oldHot, hotCreated] = await DataModel.HotSearch.findOrCreate({
+            where:{
+                name:key_word
+            }
+        });
+        if(!hotCreated) await oldHot.update({count:(oldHot.count + 1)});
+        const [oldRecent, recentCreated] = await DataModel.RecentSearch.findOrCreate({
+            where:{
+                reguserId:user.id,
+                keyword:key_word
+            }
+        });
+        if(!recentCreated) await oldRecent.update({timestamp:new Date().getTime()});
+
+        //获取热搜和最近搜索
+        const searches = await Shop.getSearchs({uid:user.uid});
+        rs.hotSearch = searches.hotSearch;
+        rs.recentSearch = searches.recentSearch;
+
+        rs.SearchResult=SearchResult;
+        rs.title="商品搜索";
+        rs.key_word=key_word;
+        rs.shopcode=shopcode;
         res.render('shop/shopProductSearch', rs);
     } catch (e) {
         console.error('-----e:/shopProductSearch-----');

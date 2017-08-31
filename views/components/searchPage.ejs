@@ -1,0 +1,89 @@
+<div class="searchPage">
+    <div class="searchPageConatiner">
+        <div class="SPHeader">
+            <span class="SPClose" onclick="closeSearch()">
+                <i class="fa fa-close"></i>
+            </span>
+            <div class="SPInput">
+                <input id="keyword" type="text" maxlength="25" autocomplete="off" placeholder="中秋好礼 火热发售">
+            </div>
+            <span class="SPSearch" onclick="searchProducts('')">
+                <i class="fa fa-search"></i>
+            </span>
+        </div>
+
+        <div class="SPQucikStart">
+            <div class="SPSearchLand">
+                <% if(recentSearch.length > 0){ %>
+                <div id="recentTitle" class="SPSearchLandHeader">
+                    <p>最近搜索</p>
+                    <i class="fa fa-trash-o" onclick="deleteRecent()"></i>
+                </div>
+                <div id="recentBody" class="SPSearchLandContainer">
+                    <% recentSearch.map(function (item) { %>
+                    <span>
+                        <a href="javascript:void(0);" onclick="searchProducts('<%= item.keyword %>')">
+                            <%= item.keyword %>
+                        </a>
+                    </span>
+                    <% }) %>
+                </div>
+                <% } %>
+
+                <% if(hotSearch.length > 0){ %>
+                <div class="SPSearchLandHeader">
+                    <p>热门搜索</p>
+                </div>
+                <div class="SPSearchLandContainer">
+                    <% hotSearch.map(function (item) { %>
+                    <span>
+                        <a href="javascript:void(0);" onclick="searchProducts('<%= item.name %>')">
+                            <%= item.name %>
+                        </a>
+                    </span>
+                    <% }) %>
+                </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#keyword').on('keydown',function () {
+            if (event.keyCode == "13") {
+                searchProducts('');
+            }
+        });
+    })
+
+    function openSearch(key_word) {
+        $('#keyword').val(key_word)
+        $('.searchPage').fadeIn(100);
+    }
+
+    function closeSearch() {
+        $('.searchPage').fadeOut(100);
+    }
+    
+    function searchProducts(keyword) {
+        if(keyword == ''){
+            keyword = $('#keyword').val().trim();
+            if(keyword == '') keyword = '中秋';
+        }
+        window.location.href = '/shop/<%= shopcode %>/productSearch/?key_word=' + keyword;
+    }
+
+    function deleteRecent() {
+        ApiInvokeNoloading('shop', 'deleteRecent', {}, function (err, res) {
+            if(err){
+                console.log(err);
+            }else{
+                $('#recentTitle').fadeOut(100);
+                $('#recentBody').fadeOut(100);
+            }
+        });
+    }
+
+</script>

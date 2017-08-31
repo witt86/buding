@@ -3,23 +3,15 @@
 <% include ../header.ejs %>
 <body class="shopProductSearch">
 
-<div class="weui-search-bar" id="searchBar" style="position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;">
-    <form class="weui-search-bar__form" id="seachForm" >
-        <div class="weui-search-bar__box">
-            <i class="weui-icon-search"></i>
-            <input type="search" class="weui-search-bar__input" id="searchInput" value="<%= key_word?key_word:'' %>" placeholder="搜索" required="">
-            <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+<div class="shopHomeSearch">
+    <div class="bd-index-header">
+        <div class="bd-index-header-title" onclick="openSearch('<%= key_word %>')">
+            <div>
+                <i class="fa fa-search"></i>
+                <%= key_word %>
+            </div>
         </div>
-        <label class="weui-search-bar__label" id="searchText">
-            <i class="weui-icon-search"></i>
-            <span><%= key_word?key_word:"" %></span>
-        </label>
-    </form>
-    <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+    </div>
 </div>
 
 <div class="seachResultList" style="padding-top: 45px">
@@ -53,6 +45,7 @@
     <% }%>
 </div>
 <% include ../footer.ejs %>
+<% include ../components/searchPage.ejs %>
 <script>
     $(function () {
         $("#seachForm").submit(function () {

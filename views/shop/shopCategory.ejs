@@ -4,16 +4,17 @@
 <body class="shopCategory">
 
 <div class="pageContainer">
-    <div class="pageContainerSearch" id="searchBar">
+    <div class="shopHomeSearch">
         <div class="bd-index-header">
-            <div class="bd-index-header-icon-back" id="reset_btn_back">
-                <span></span>
-            </div>
-            <div class="bd-index-header-title">
-                <%= title %>
+            <div class="bd-index-header-title" onclick="openSearch('')">
+                <div>
+                    <i class="fa fa-search"></i>
+                    中秋好礼 火热发售
+                </div>
             </div>
         </div>
     </div>
+
     <div class="shopCategoryNav">
         <div class="shopCategoryNavContainer" style="height: <%= 50 * ( categorys.length + 1 ) %>px;">
             <div class="shopCategoryNavItem shopCategoryNavActive" id="hot">
@@ -31,6 +32,7 @@
 
 <% include ../components/floatBottomBar.ejs %>
 <% include ./../footer.ejs %>
+<% include ../components/searchPage.ejs %>
 <script type="text/javascript" src="/javascripts/jquery.scrollLoading-min.js"  charset='utf-8'></script>
 <script type="text/javascript">
     $(document).ready(function () {

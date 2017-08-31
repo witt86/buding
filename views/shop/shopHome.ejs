@@ -4,16 +4,21 @@
 <body class="shopHome">
 <div class="pageContainer">
     <div class="shopHomeNavbar">
+
         <div class="shopHomeSearch">
             <div class="bd-index-header">
-                <div class="bd-index-header-icon-back" id="reset_btn_back">
-                    <span></span>
-                </div>
-                <div class="bd-index-header-title">
-                    <%= title%>
+                <!--<div class="bd-index-header-icon-back" id="reset_btn_back">-->
+                    <!--<span></span>-->
+                <!--</div>-->
+                <div class="bd-index-header-title" onclick="openSearch('')">
+                    <div>
+                        <i class="fa fa-search"></i>
+                        中秋好礼 火热发售
+                    </div>
                 </div>
             </div>
         </div>
+
         <div class="shopHomeCate">
             <div style="width: <%= 86 * (sections.length + 1) %>px">
                 <div class="shopHomeCateItem shopHomeCateActive" id="homeNav">
@@ -142,6 +147,7 @@
 </div>
 <% include ../components/floatBottomBar.ejs %>
 <% include ./../footer.ejs %>
+<% include ../components/searchPage.ejs %>
 
 <script type='text/javascript' src="/libs/jq-weui/js/swiper.min.js" charset='utf-8'></script>
 <script type='text/javascript' src="/libs/jQuery/jquery.scrollTo.min.js" charset='utf-8'></script>
