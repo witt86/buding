@@ -2385,6 +2385,52 @@ html, body {
         }
       }
     }
+    .SPImmediateSearch {
+      position: relative;
+      margin-top: 45px;
+      width: 100%;
+      display: none;
+      ul {
+        list-style: none;
+        padding-left: 12px;
+        position: relative;
+        li {
+          height: 40px;
+          line-height: 40px;
+          display: block;
+          position: relative;
+          padding-right: 12px;
+          span {
+            display: block;
+            color: #232326;
+            font-size: 14px;
+            padding-top: 1px;
+            padding-bottom: 1px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+        }
+        ::after{
+          content: '';
+          height: 1px;
+          width: 200%;
+          position: absolute;
+          left: 0;
+          top: auto;
+          right: auto;
+          bottom: 0;
+          background-color: #f0f2f5;
+          border: 0 solid transparent;
+          border-radius: 0;
+          -webkit-border-radius: 0;
+          transform: scale(0.5);
+          -webkit-transform: scale(0.5);
+          transform-origin: top left;
+          -webkit-transform-origin: top left;
+        }
+      }
+    }
   }
 }
 .shopCar {
