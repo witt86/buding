@@ -62,7 +62,7 @@
             </div>
         </div>
 
-        <div class="weui-panel__bd"  onclick="go_to('/order/orderdetail/<~= item.order_no~>')">
+        <div class="weui-panel__bd"  onclick="go_to('/order/orderdetail/<~= item.order_no~>?referrer=<~= window.referrer ~>')">
             <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
 
                 <~ if(item.items.length<=1){ ~>
@@ -94,6 +94,8 @@
         <div class="weui-panel__ft">
             <div href="javascript:void(0);" class="weui-cell weui-cell_link">
                 <div class="weui-cell__bd" style="color: #000">实付款:¥<~= item.pay_amount ~></div>
+                <~ if(!window.referrer || window.referrer.length>0){ ~>
+
                 <div class="weui-cell__ft">
                     <~ if(item.order_state==0){ ~>
                     <a href="/dopay/<~= item.order_no~>?shopcode=<%= shopcode %>"
@@ -110,6 +112,9 @@
                     </a>
                     <~ } ~>
                 </div>
+
+                <~ } ~>
+
             </div>
         </div>
     </div>
@@ -127,7 +132,7 @@
 <script>
     var loading=false;
     var fun_id="<%= fun_id %>";
-
+    var referrer="<%= referrer %>";
     $(function () {
         $(".li_orderlist").click(function () {
             $(".li_orderlist").removeClass('curr');
@@ -177,7 +182,9 @@
     }
     //加载订单
     function loadOrder(status, pos,callback) {
-        ApiInvoke("order", "GetOrderList", {status: status, pos: pos, size: 10}, function (err, result) {
+
+
+        ApiInvoke("order", "GetOrderList", {status: status, pos: pos, size: 10,referrer:referrer}, function (err, result) {
             if (err) {
                 $("#noOrder").show();
                 $("#allOrders").hide();

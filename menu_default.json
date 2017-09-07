@@ -2,8 +2,13 @@
   "button": [
     {
       "type": "view",
+      "name": "门店店铺",
+      "url": "{hostname}/myshop"
+    },
+    {
+      "type": "view",
       "name": "乐途逸品",
-      "url": "{hostname}/saleshop"
+      "url": "{hostname}/shop/01442494"
     },
     {
       "type": "view",

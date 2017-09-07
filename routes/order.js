@@ -23,10 +23,11 @@ router.all("*",async (req, res, next)=>{
 router.get('/orderlist', async (req, res, next) => {
     try{
         let [rs] = [{}];
-        let { fun_id,shopcode }=req.query;
-        rs.title="我的订单";
+        let { fun_id,shopcode,referrer}=req.query;
+        rs.title=referrer&&referrer.length>0?"我推广的订单":"我的订单";
         rs.shopcode=shopcode?shopcode:_config.officialShopcode;
         rs.fun_id=fun_id?fun_id:"newUserAllOrderList";
+        rs.referrer=referrer&&referrer.length>0?referrer:"";
         res.render('order/orderList', rs);
     }catch (e){
         console.error('-----e:/orderlist-----');
@@ -37,11 +38,11 @@ router.get('/orderlist', async (req, res, next) => {
 router.get('/orderdetail/:orderno', async (req, res, next) => {
     try{
         let [rs,orderno] = [{},req.params.orderno];
-        let { shopcode }=req.query;
+        let { shopcode,referrer }=req.query;
         rs.title="订单详情";
         rs.shopcode=shopcode?shopcode:_config.officialShopcode;
         rs.orderno=orderno;
-
+        rs.referrer=referrer;
         const orderInfo=await TMSProductAPI("get_order",{ order_no:orderno });
 
         rs.orderInfo=orderInfo;

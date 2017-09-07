@@ -2,8 +2,19 @@ import * as DataModel from './DataModel';
 import TMSProductAPI from '../lib/TMSProductAPI';
 import _config from './../../config.js' ;
 
-export const GetOrderList=async({ uid,status,pos,size })=>{
-      const orderlist=await TMSProductAPI('query_orders',{ uid,status,order_by:"-order_date",pos,size });
+export const GetOrderList=async({ uid,status,pos,size,referrer })=>{
+      let query={
+            uid,
+            status,
+            order_by:"-order_date",
+            pos,
+            size
+      };
+      if (referrer && referrer.length>0){
+            query.referrer=referrer;
+            delete query.uid;
+      }
+      const orderlist=await TMSProductAPI('query_orders',query);
       return orderlist;
 };
 

@@ -133,14 +133,14 @@ export const Refund_Weixn = async({payrecord, rAmount, reseanMsg})=> {
         let total_fee=payrecord.payAmount;
         let refund_fee=refundAmount;
 
-        //如果是开发或测试环境
-        if (process.env.NODE_ENV == 'development' ||
-            process.env.NODE_ENV == 'test'
-        ) {
-            total_fee=0.01;
-            refund_fee = 0.01;
-            console.dir('调整为测试支付金额!');
-        }
+        // //如果是开发或测试环境
+        // if (process.env.NODE_ENV == 'development' ||
+        //     process.env.NODE_ENV == 'test'
+        // ) {
+        //     total_fee=0.01;
+        //     refund_fee = 0.01;
+        //     console.dir('调整为测试支付金额!');
+        // }
         const params = {
             appid: _config.wxconfig.pay.appid,
             mch_id: _config.wxconfig.pay.mch_id,

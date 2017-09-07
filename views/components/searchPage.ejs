@@ -88,12 +88,26 @@
                 },300);
             }
         });
+       // history.pushState({data: ".searchPage"}, "");
+//        window.addEventListener('popstate', function (event) {
+//            var ind = event.state;
+//            console.log(ind);
+//            if (ind == null ) {
+//                window.history.go(-1);
+//                return;
+//            }
+//            var indelement = $(ind.data);
+//            if (indelement && indelement.length > 0) {
+//                indelement.hide();
+//            }
+//        });
     })
 
     function openSearch(key_word) {
         $('#keyword').val(key_word);
         $('.searchPage').fadeIn(100);
         $('#keyword').focus();
+        //history.pushState({data: ".sssss"}, "");
     }
 
     function closeSearch() {

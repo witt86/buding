@@ -54,7 +54,6 @@ router.get('/:shopcode', async(req, res, next) => {
         let [rs] = [{}];
 
         const {shopcode}=req.params;
-
         const mysaleshop = await TMSProductAPI('bd_get_saleshop', {code: shopcode});
         if (mysaleshop.state == 2) {
             res.alert(types.ALERT_WARN, "店铺休息中", " ");

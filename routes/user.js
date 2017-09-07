@@ -245,8 +245,12 @@ router.get('/shopqrcode',async (req,res,next)=>{
       try {
           let { shopcode }=req.query;
           let rs={};
+
           const user=req.session.user;
+          const shopInfo = await TMSProductAPI('bd_get_saleshop', {code: shopcode});
+
           const qrcode=await User.createShopQrcode({ uid:user.uid,shopcode:shopcode });
+          rs.shopInfo = shopInfo;
           rs.qrcode=qrcode;
           rs.title = '店铺推广码';
           res.render('user/shopqrcode', rs);

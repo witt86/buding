@@ -108,6 +108,14 @@
     <div class="weui-panel weui-panel_access">
         <div class="weui-panel__hd  weui-flex">
             <div class="weui-flex__item" style="color: #000;">
+                购买人
+            </div>
+            <div class="weui-flex__item" style="color: #000;text-align: right">
+                <%= orderInfo.buyer %>
+            </div>
+        </div>
+        <div class="weui-panel__hd  weui-flex">
+            <div class="weui-flex__item" style="color: #000;">
                 支付方式
             </div>
             <div class="weui-flex__item" style="color: #000;text-align: right">
@@ -199,6 +207,8 @@
         </div>
     </div>
 
+    <% if (! referrer || referrer.length==0){ %>
+
     <div class="btn-bar" id="btnBar">
         <div class="bb-info" id="bbInfo">
             <% if ( orderInfo.order_state == 0 ) { %>
@@ -239,6 +249,9 @@
             <% }%>
         </div>
     </div>
+
+    <% } %>
+
 </div>
 <% include ../footer.ejs %>
 <script>

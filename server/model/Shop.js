@@ -797,3 +797,27 @@ export const immediateSearch = async ({uid, keyword}) => {
         throw e;
     }
 };
+export const deleteRecent = async ({uid}) => {
+    try{
+        if(!uid) throw '缺少参数！';
+
+        let user = await DataModel.RegUser.findOne({
+            where:{
+                uid:uid
+            }
+        });
+        if(!user) throw '未知的用户信息';
+
+        await DataModel.RecentSearch.destroy({
+            where:{
+                reguserId:user.id
+            }
+        });
+
+        return true;
+    }catch (e){
+        console.error("-----deleteRecent:e------");
+        console.error(e);
+        throw e;
+    }
+};
