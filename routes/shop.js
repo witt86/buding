@@ -399,7 +399,7 @@ router.get('/:shopcode/shopManage', async(req, res, next)=> {
         //是否有权限进入店铺管理
         const userlimits = await getUserShopManageLimits(user.uid, shopcode);
         if (!userlimits) {
-            res.alert(types.ALERT_WARN, "没有权限", " ");
+            res.alert(types.ALERT_WARN, "没有权限:shopManage:"+user.uid+"--"+shopcode, " ");
             return;
         }
 
@@ -450,7 +450,7 @@ router.get('/:shopcode/shopInfo', async(req, res, next)=> {
         //是否有权限进入店铺管理
         const userlimits = await getUserShopManageLimits(user.uid, shopcode);
         if (!userlimits) {
-            res.alert(types.ALERT_WARN, "没有权限", " ");
+            res.alert(types.ALERT_WARN, "没有权限:shopInfo:"+user.uid+"--"+shopcode, " ");
             return;
         }
 
@@ -483,7 +483,7 @@ router.get('/:shopcode/productManage', async(req, res, next)=> {
             return item.shopcode == shopcode
         });
         if (!temparr || temparr.length == 0) {
-            res.alert(types.ALERT_WARN, "没有权限", " ");
+            res.alert(types.ALERT_WARN, "没有权限:productManage:"+user.uid+"--"+shopcode, " ");
             return;
         }
 
@@ -531,7 +531,7 @@ router.get('/:shopcode/shopStaffInfo', async(req, res, next)=> { //员工管理
             return item.shopcode == shopcode && item.role != 0
         });
         if (!temparr || temparr.length == 0) {
-            res.alert(types.ALERT_WARN, "没有权限", " ");
+            res.alert(types.ALERT_WARN, "没有权限:shopStaffInfo:"+user.uid, " ");
             return;
         };
         let staffList = await TMSProductAPI('bd_getusersfromshop', {uid: user.uid, shopcode: shopcode});
@@ -567,7 +567,7 @@ router.get('/:shopcode/propertyManage', async(req, res, next)=> {
         //获得用户身份
         const bduser = await TMSProductAPI('bd_get_user', {uid: user.uid});
         if (!bduser || bduser.length == 0) {
-            res.alert(types.ALERT_WARN, "没有权限", " ");
+            res.alert(types.ALERT_WARN, "没有权限:propertyManage:"+user.uid, " ");
             return;
         }
         ;
@@ -599,7 +599,7 @@ router.get('/:shopcode/rewardlist/:status/:reward_type', async(req, res, next)=>
         //获得用户身份
         const bduser = await TMSProductAPI('bd_get_user', {uid: user.uid});
         if (!bduser || bduser.length == 0) {
-            res.alert(types.ALERT_WARN, "没有权限", " ");
+            res.alert(types.ALERT_WARN, "没有权限:rewardlist:"+user.uid, " ");
             return;
         }
 
@@ -624,7 +624,7 @@ router.get('/:shopcode/accountlist', async(req, res, next)=> {
         //获得用户身份
         const bduser = await TMSProductAPI('bd_get_user', {uid: user.uid});
         if (!bduser || bduser.length == 0) {
-            res.alert(types.ALERT_WARN, "没有权限", " ");
+            res.alert(types.ALERT_WARN, "没有权限:accountlist:"+user.uid, " ");
             return;
         }
 
@@ -647,7 +647,7 @@ router.get('/:shopcode/withDrawManage', async(req, res, next)=> {
         //获得用户身份
         const bduser = await TMSProductAPI('bd_get_user', {uid: user.uid});
         if (!bduser || bduser.length == 0) {
-            res.alert(types.ALERT_WARN, "没有权限", " ");
+            res.alert(types.ALERT_WARN, "没有权限:withDrawManage:"+user.uid, " ");
             return;
         }
 

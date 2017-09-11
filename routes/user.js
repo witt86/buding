@@ -266,7 +266,10 @@ router.get('/shopinviteqrcode',async (req,res,next)=>{
         let { shopcode }=req.query;
         let rs={};
         const user=req.session.user;
+        const shopInfo = await TMSProductAPI('bd_get_saleshop', {code: shopcode});
+
         const qrcode=await User.createShopInviteQrcode({ uid:user.uid,shopcode:shopcode });
+        rs.shopInfo = shopInfo;
         rs.qrcode=qrcode;
         rs.title = '店铺员工邀请码';
         res.render('user/shopInviteQrcode', rs);
