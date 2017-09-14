@@ -152,7 +152,7 @@ global.EnterprisePay = async(partner_trade_no, wx_openID, money)=> {
         openid: wx_openID,
         check_name: 'NO_CHECK',
         amount: money * 100,
-        desc: '员工收益提现',
+        desc: '推广收益提现',
         spbill_create_ip: _config.siteIP
     }
     let PayResult = await global.wxpay.EnterprisePay(PayParams);
