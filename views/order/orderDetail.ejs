@@ -222,12 +222,6 @@
                     <div class="bb-btn1">取消订单</div>
                 </a>
             </div>
-            <% } else if (orderInfo.order_state == 3 || orderInfo.order_state == 31) { %>
-            <div class="bottom-but">
-                <a href="#" class="bb-btn1-red againBuy">
-                    再次购买
-                </a>
-            </div>
             <% } else if ( orderInfo.order_state == 2 ) { %>
             <div class="bottom-but">
                 <a href="#" class="bb-btn1-red shipSignoff">
@@ -240,12 +234,24 @@
                     <div class="bb-btn1">取消订单</div>
                 </a>
             </div>
-            <% } else { %>
+            <% } else   { %>
+
             <div class="bottom-but">
                 <a href="#" class="bb-btn1-red againBuy">
                     再次购买
                 </a>
             </div>
+
+            <% if ((orderInfo.order_state == 3 || orderInfo.order_state == 31) && orderInfo.is_closed==0){ %>
+
+            <div class="bottom-but">
+                <a href="#" class="bb-btn1-default requestRefund">
+                    申请退款
+                </a>
+            </div>
+
+            <% } %>
+
             <% }%>
         </div>
     </div>
@@ -280,6 +286,27 @@
                 shipSignoffOrder();
             }, function () {
 
+            });
+        });
+        
+        $(".requestRefund").click(function () {
+            $.prompt({
+                title: '退款理由',
+                text: '请输入您的备注信息:退款理由、您的联系电话，方便后台人员审核',
+                input: '',
+                empty: true, // 是否允许为空
+                onOK: function (input) {
+                    ApiInvoke('shop','requestRefund',{ order_no:order_no,reason:input},function (err,result) {
+                         if (err){
+                             alert(err);
+                         }else {
+                             window.location.href=window.location.href;
+                         }
+                    });
+                },
+                onCancel: function () {
+                    //点击取消
+                }
             });
         });
 

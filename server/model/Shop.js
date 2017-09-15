@@ -413,6 +413,13 @@ export const againBuy = async({uid, order_no, shopcode})=> {
     }
     return true;
 };
+//申请退款
+export  const requestRefund=async ({uid, order_no,reason})=>{
+    const orderInfo = await TMSProductAPI("get_order", {uid, order_no});
+    if (!orderInfo) throw '指定订单不存在!';
+    let  result=await TMSProductAPI("request_refund",{ order_no,uid, reason});
+    return result;
+};
 export const selectAll = async({uid, status = 1, shopcode})=> {
     try {
         const shopCar = await TMSProductAPI('get_shopcart', {

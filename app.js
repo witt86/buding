@@ -162,7 +162,10 @@ app.get('/MP_verify_6Z01ozWuNW2rVSen.txt',(req,res)=>{
 
 app.get('/saleshop',(req,res)=>{
    res.redirect('/');
-})
+});
+app.get('/index.html',(req,res)=>{
+    res.redirect('/myshop');
+});
 app.use('/',wechat_auth,Index);
 
 // catch 404 and forward to error handler
