@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<script src="/javascripts/aa.js"></script>
+<canvas id="stockGraph" style="width: 100%" height="300">
+
+</canvas>
+<script type="text/javascript">
+    var canvas = document.getElementById('stockGraph');
+    var player = new JSMpeg.Player("ws://127.0.0.1:8888",{loop: true, autoplay: true,canvas:canvas,disableGl:true });
+//    player.play();
+//   var player = new JSMpeg.Player("ws://127.0.0.1:8888", {
+//        canvas: canvas // Canvas should be a canvas DOM element
+//    });
+
+//    ws.onopen = function()
+//    {
+//        // Web Socket 已连接上，使用 send() 方法发送数据
+//        ws.send("发送数据");
+//        alert("数据发送中...");
+//    };
+//
+//    ws.onmessage = function (evt)
+//    {
+//        var received_msg = evt.data;
+//        console.log(evt);
+//    };
+//
+//    ws.onclose = function()
+//    {
+//        // 关闭 websocket
+//        alert("连接已关闭...");
+//    };
+
+
+</script>
+</body>
+</html>

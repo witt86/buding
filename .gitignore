@@ -99,3 +99,11 @@ src/routes/ShopManage/AssertManage/
 src/routes/Travel/
 token_wx/
 cordova/
+.DS_Store
+bin/.DS_Store
+public/.DS_Store
+public/libs/.DS_Store
+public/libs/Jcrop/.DS_Store
+routes/.DS_Store
+server/.DS_Store
+views/.DS_Store

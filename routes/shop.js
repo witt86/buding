@@ -6,6 +6,8 @@ import * as Shop from './../server/model/Shop';
 import {uniq, unionBy, reduce} from 'lodash';
 import moment from "moment";
 import _config from './../config.js' ;
+import {delayRun} from './../server/util/util';
+
 const router = new Router();
 
 router.all("*", async(req, res, next)=> {
@@ -18,8 +20,15 @@ router.all("*", async(req, res, next)=> {
         }
         return;
     }
-    try {
-        const shopcode = req.params[0].split('/')[1];
+    delayRun(async()=>{
+        console.log(req.params);
+        let shopcode ="";
+        if (req&&req.params&&req.params.shopcode){
+            shopcode=req.params.shopcode;
+        }else {
+            shopcode=req.params[0].split('/')[1];
+        }
+
         const user = req.session.user;
         let referrer = "";
         if (req.query && req.query.referrer) {
@@ -41,11 +50,19 @@ router.all("*", async(req, res, next)=> {
                     }
                 };
                 let [User_ShopCode, created] = await DataModel.User_ShopCode.findOrCreate(query);
+                if(!created){
+
+                    await User_ShopCode.update({
+                        updatefiled:Math.random()
+                    });
+                }
             }
         }
-    } catch (e) {
-        console.error(e);
-    }
+
+    },500,err=>{
+        console.error('----更新推荐人----');
+        console.error(err);
+    });
     next();
 });
 

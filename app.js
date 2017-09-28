@@ -143,6 +143,12 @@ app.get("/dopay/:orderId", wechat_auth, async(req, res)=> {
         }
     }
 });
+//测试
+app.get('/test',(req,res)=>{
+    let rs={};
+
+    res.render('test', rs);
+});
 //微信测试支付openId映射
 app.use("/openid-map", wechat_auth, openid_map);
 //开放的api入口
@@ -168,6 +174,7 @@ app.get('/index.html',(req,res)=>{
 });
 app.use('/',wechat_auth,Index);
 
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     var err = new Error('Not Found');
@@ -190,6 +197,13 @@ if (app.get('env') === 'development') {
 //网站启动事件
 delayRun(()=> {
    // OnWebSiteStartEvent();
+
+  const  Stream = require('node-rtsp-stream');
+  const  stream = new Stream({
+        name: 'name',
+        streamUrl: 'rtsp://184.72.239.149/vod/mp4://BigBuckBunny_175k.mov',
+        wsPort: 8888
+    });
 }, 10, (err)=> {
     console.dir("网站启动事件运行出错:" + err);
 });

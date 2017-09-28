@@ -115,7 +115,7 @@ export const makeOrder = async({uid, shopcode, buyInfo})=> {
     //看一下下单人是谁推荐过来的
     const usershopcode = await DataModel.User_ShopCode.findAll({
         where: {uid, shopcode},
-        order: [["createdAt","DESC"]]
+        order: [["updatedAt","DESC"]]
     });
     if (usershopcode && usershopcode.length>0 && usershopcode[0].referrer) {
         orderInfo.referrer_id = usershopcode[0].referrer;

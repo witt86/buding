@@ -51,7 +51,7 @@ const synequestWithDrawInfo = async()=> {
                             uid: withdraw.uid,
                             id: withdraw.id,
                             trans_no: PayResult.payment_no
-                        }
+                        };
                         let confirmResult = await TMSProductAPI("confirm_withdraw", q);
                         console.log("---提现成功，后台确认结果---");
                         console.log("提现openid:" + wx_openID);
